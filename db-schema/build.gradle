@@ -1,0 +1,56 @@
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.2.2'
+    }
+}
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id "org.flywaydb.flyway" version "7.14.1"
+}
+
+group = "com.volunteer.api"
+version = '1.0.0'
+
+repositories {
+    mavenCentral()
+}
+
+// M2_HOME env variable should be set
+// M2_HOME\conf\settings.xml should be present
+// local repo will be based on <localRepository> section
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}
+
+flyway {
+    url = 'jdbc:postgresql://localhost:5432/volunteer'
+    user = 'postgres'
+    password = 'root'
+    table = 'schema_history'
+    schemas = ['public']
+    locations = ['classpath:db/migration']
+}
+
+flywayMigrate {
+    dependsOn build
+}
+
+task packageZip(type: Zip) {
+    dependsOn('build')
+    archiveFileName = "${rootProject.name}-${version}.zip"
+    destinationDirectory = file("$buildDir/libs")
+    into('/') {
+        from 'iac'
+        include 'buildspec.yaml'
+    }
+    into('/sql/') {
+        from 'src/main/resources/db/migration'
+        include '*.*'
+    }
+}

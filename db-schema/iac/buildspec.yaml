@@ -1,0 +1,29 @@
+version: 0.2
+
+env:
+  shell: bash
+  secrets-manager:
+    FLYWAY_USER: "${RDS_CREDENTIALS_SECRET_ARN}:username"
+    FLYWAY_PASSWORD: "${RDS_CREDENTIALS_SECRET_ARN}:password"   
+  variables:  
+    FLYWAY_VERSION: "7.15.0"
+
+phases:
+  install:
+    commands:
+      - mkdir flyway
+      - wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/$FLYWAY_VERSION/flyway-commandline-$FLYWAY_VERSION-linux-x64.tar.gz | tar xvz -C flyway --strip-components=1
+      - ls -la
+      - rm flyway/sql/*
+  pre_build:
+    commands:
+      - echo $CODEBUILD_SRC_DIR
+      - cp $CODEBUILD_SRC_DIR/sql/* flyway/sql/
+      - cd flyway/sql
+      - ls -la
+      - cd ..
+
+  build:
+    commands:
+      - ls -la
+      - ./flyway -community migrate -table="schema_history" -url="jdbc:mysql://${RDS_ENDPOINT_URL}:3306/sniper?useSSL=false"
