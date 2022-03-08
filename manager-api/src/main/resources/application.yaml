@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: "manager-api"
+  mvc:
+    throwExceptionIfNoHandlerFound: true
+  resources:
+    add-mappings: false
+  datasource:
+    driverClassName: 'org.postgresql.Driver'
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: 'validate'
+#      ddl-auto: 'create'
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        format_sql: true
+  profiles:
+    active: local
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'startup'
+
+server:
+  port: 8080
+
+---
+spring:
+  profiles: local
+  datasource:
+    url: 'jdbc:postgresql://localhost:5432/volunteer'
+    driverClassName: 'org.postgresql.Driver'
+    username: 'postgres'
+    password: 'root'
+
+---
+spring:
+  profiles: cloud
