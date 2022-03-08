@@ -2,17 +2,27 @@
 
 -- Drop table
 
--- DROP TABLE IF EXISTS address;
+-- DROP TABLE address;
 
 CREATE TABLE address (
-	id SERIAL,
+	id serial,
 	region varchar(100) NOT NULL,
 	city varchar(100) NOT NULL,
 	address varchar(2000) NULL,
-	CONSTRAINT address_pk PRIMARY KEY (id)
+	CONSTRAINT pk_address PRIMARY KEY (id)
 );
 
+-- public.user_role definition
 
+-- Drop table
+
+-- DROP TABLE user_role;
+
+CREATE TABLE user_role (
+	id serial,
+	"name" varchar(250) NOT NULL,
+	CONSTRAINT pk_user_role PRIMARY KEY (id)
+);
 
 -- public."user" definition
 
@@ -21,21 +31,21 @@ CREATE TABLE address (
 -- DROP TABLE "user";
 
 CREATE TABLE "user" (
-	id varchar(50) NOT NULL,
-	nickname varchar(100) NOT NULL,
-	"role" varchar(100) NOT NULL,
+	id serial,
+	user_name varchar(100) NOT NULL,
+	phone_number varchar(100) NOT NULL,
+	password varchar(250) NOT NULL,
+	role_id integer NOT NULL,
 	verified bool NOT NULL DEFAULT false,
-	phonenumber varchar(100) NOT NULL,
-	fullname varchar(250) NULL,
+	address_id integer NOT NULL,
+	full_name varchar(250) NULL,
 	email varchar(250) NULL,
-	address_id varchar(50) NOT NULL,
-	CONSTRAINT user_email_un UNIQUE (email),
-	CONSTRAINT user_nickname_un UNIQUE (nickname),
-	CONSTRAINT user_phonenumber_un UNIQUE (phonenumber),
-	CONSTRAINT user_pk PRIMARY KEY (id),
-	CONSTRAINT user_fk FOREIGN KEY (address_id) REFERENCES address(id)
+	CONSTRAINT pk_user PRIMARY KEY (id),
+	CONSTRAINT un_user_user_name UNIQUE (user_name),
+	CONSTRAINT un_user_phone_number UNIQUE (phone_number),
+	CONSTRAINT fk_user_address_id FOREIGN KEY (address_id) REFERENCES address(id),
+	CONSTRAINT fk_user_role_id FOREIGN KEY (role_id) REFERENCES user_role(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
-
 
 -- public.category definition
 
@@ -44,16 +54,15 @@ CREATE TABLE "user" (
 -- DROP TABLE category;
 
 CREATE TABLE category (
-	id varchar(50) NOT NULL,
-	parent_id varchar(50) NULL,
-	"name" varchar(2000) NOT NULL,
+	id serial,
+	parent_id integer NULL,
+	"name" varchar(50) NOT NULL,
 	note varchar(2000) NULL,
 	"path" varchar(2000) NOT NULL,
-	CONSTRAINT category_pk PRIMARY KEY (id),
-	CONSTRAINT category_un UNIQUE (name, parent_id),
-	CONSTRAINT category_fk FOREIGN KEY (parent_id) REFERENCES category(id) ON DELETE CASCADE ON UPDATE RESTRICT
+	CONSTRAINT pk_category PRIMARY KEY (id),
+	CONSTRAINT un_category UNIQUE (name, parent_id),
+	CONSTRAINT fk_category_parent_id FOREIGN KEY (parent_id) REFERENCES category(id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-
 
 -- public.product definition
 
@@ -62,51 +71,75 @@ CREATE TABLE category (
 -- DROP TABLE product;
 
 CREATE TABLE product (
-	id varchar(50) NOT NULL,
-	"name" varchar(2000) NOT NULL,
-	category_id varchar(50) NULL,
-	CONSTRAINT product_pk PRIMARY KEY (id),
-	CONSTRAINT product_category_fk FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+	id serial,
+	category_id integer NOT NULL,
+	"name" varchar(250) NOT NULL,
+	note varchar(2000) NULL,
+	CONSTRAINT pk_product PRIMARY KEY (id),
+	CONSTRAINT fk_product_category_id FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
 
-
--- public.task definition
+-- public.order_status definition
 
 -- Drop table
 
--- DROP TABLE task;
+-- DROP TABLE order_status;
+
+CREATE TABLE task_status (
+	id serial,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT pk_task_status PRIMARY KEY (id)
+);
+
+-- public."task" definition
+
+-- Drop table
+
+-- DROP TABLE "task";
 
 CREATE TABLE task (
-	id varchar(50) NOT NULL,
-	customer varchar(2000) NOT NULL,
-	store_address_id varchar(50) NOT NULL,
-	customer_address_id varchar(50) NOT NULL,
-	product_id varchar(50) NOT NULL,
+	id serial,
+	customer varchar(250) NOT NULL,
+	store_address_id integer NOT NULL,
+	customer_address_id integer NOT NULL,
+	product_id integer NOT NULL,
 	quantity numeric(20, 6) NOT NULL,
 	product_measure varchar(100) NOT NULL,
-	priority int4 NOT NULL DEFAULT 0,
+	priority integer NOT NULL DEFAULT 0,
 	deadline_date timestamp NOT NULL,
 	note varchar(2000) NULL,
-	status varchar(50) NOT NULL DEFAULT 'new'::character varying,
-	created_by varchar(50) NOT NULL,
+	status_id integer NOT NULL DEFAULT 1,
+	created_by integer NOT NULL,
 	created_at timestamp NOT NULL,
-	verified_by varchar(50) NULL,
+	verified_by integer NULL,
 	verified_at timestamp NULL,
-	closed_by varchar(50) NULL,
+	closed_by integer NULL,
 	closed_at timestamp NULL,
 	quantity_left numeric(20, 6) NOT NULL,
-	CONSTRAINT task_pk PRIMARY KEY (id),
-	CONSTRAINT task_created_by_fk FOREIGN KEY (created_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT task_customer_address_fk FOREIGN KEY (customer_address_id) REFERENCES address(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT task_product_fk FOREIGN KEY (product_id) REFERENCES product(id),
-	CONSTRAINT task_store_address_fk FOREIGN KEY (store_address_id) REFERENCES address(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT task_user_closed_fk FOREIGN KEY (closed_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT task_verified_by_fk FOREIGN KEY (verified_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+	CONSTRAINT pk_task PRIMARY KEY (id),
+	CONSTRAINT fk_task_store_address_id FOREIGN KEY (store_address_id) REFERENCES address(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_task_customer_address_id FOREIGN KEY (customer_address_id) REFERENCES address(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_task_product_id FOREIGN KEY (product_id) REFERENCES product(id),
+	CONSTRAINT fk_task_status_id FOREIGN KEY (status_id) REFERENCES task_status(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_task_created_by FOREIGN KEY (created_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_task_verified_by FOREIGN KEY (verified_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_task_closed_by FOREIGN KEY (closed_by) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
-CREATE INDEX request_customer_idx ON public.task USING btree (customer);
-CREATE INDEX request_product_name_idx ON public.task USING btree (product_id);
-CREATE INDEX request_status_idx ON public.task USING btree (status);
+CREATE INDEX idx_task_customer_id ON public.task USING btree (customer);
+CREATE INDEX idx_task_product_name ON public.task USING btree (product_id);
+CREATE INDEX idx_task_status ON public.task USING btree (status_id);
 
+-- public.subtask_status definition
+
+-- Drop table
+
+-- DROP TABLE subtask_status;
+
+CREATE TABLE subtask_status (
+	id serial,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT pk_subtask_status PRIMARY KEY (id)
+);
 
 -- public.subtask definition
 
@@ -115,19 +148,30 @@ CREATE INDEX request_status_idx ON public.task USING btree (status);
 -- DROP TABLE subtask;
 
 CREATE TABLE subtask (
-	id varchar(50) NOT NULL,
-	product_id varchar(50) NOT NULL,
+	id serial,
+	product_id integer NOT NULL,
 	quantity numeric(20, 6) NOT NULL,
-	product_measure varchar(100) NOT NULL,
-	status varchar(50) NOT NULL DEFAULT 'in_progress'::character varying,
-	"comment" varchar(2000) NULL,
-	transport_help_needed bool NOT NULL DEFAULT false,
-	transport_required
-	volunteer_id varchar(50) NOT NULL,
-	task_id varchar(50) NULL,
-	CONSTRAINT subtask_pk PRIMARY KEY (id),
-	CONSTRAINT subtask_fk FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT subtask_task_fk FOREIGN KEY (task_id) REFERENCES task(id) ON DELETE CASCADE ON UPDATE RESTRICT,
-	CONSTRAINT subtask_volunteer_fk FOREIGN KEY (volunteer_id) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT
+	status_id integer NOT NULL DEFAULT 1,
+	note varchar(2000) NULL,
+	transport_required bool NOT NULL DEFAULT false,
+	volunteer_id integer NOT NULL,
+	order_id integer NULL,
+	CONSTRAINT pk_subtask PRIMARY KEY (id),
+	CONSTRAINT fk_subtask_order_id FOREIGN KEY (order_id) REFERENCES task(id) ON DELETE CASCADE ON UPDATE RESTRICT,
+	CONSTRAINT fk_subtask_product_id FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_subtask_status_id FOREIGN KEY (status_id) REFERENCES subtask_status(id) ON DELETE RESTRICT ON UPDATE RESTRICT,
+	CONSTRAINT fk_subtask_volunteer_id FOREIGN KEY (volunteer_id) REFERENCES "user"(id) ON DELETE RESTRICT ON UPDATE RESTRICT
 );
-CREATE INDEX subtask_product_name_idx ON public.subtask USING btree (product_id);
+
+INSERT INTO user_role ("name") VALUES('root');
+INSERT INTO user_role ("name") VALUES('operator');
+INSERT INTO user_role ("name") VALUES('volunteer');
+
+INSERT INTO task_status ("name") VALUES('new');
+INSERT INTO task_status ("name") VALUES('verified');
+INSERT INTO task_status ("name") VALUES('completed');
+INSERT INTO task_status ("name") VALUES('rejected');
+
+INSERT INTO subtask_status ("name") VALUES('in_progress');
+INSERT INTO subtask_status ("name") VALUES('completed');
+INSERT INTO subtask_status ("name") VALUES('rejected');
