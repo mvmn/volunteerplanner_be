@@ -15,12 +15,12 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
-public class AddressController {
+public class AddressControllerV1 {
 
     private final AddressService addressService;
 
     @Autowired
-    public AddressController(AddressService addressService) {
+    public AddressControllerV1(AddressService addressService) {
         this.addressService = addressService;
     }
 
