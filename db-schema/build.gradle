@@ -8,6 +8,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id "org.flywaydb.flyway" version "7.14.1"
+    id 'eclipse'
 }
 
 group = "com.volunteer.api"
@@ -39,6 +40,10 @@ flyway {
 
 flywayMigrate {
     dependsOn build
+}
+
+dependencies {
+	implementation 'org.flywaydb:flyway-core:8.5.2'
 }
 
 task packageZip(type: Zip) {

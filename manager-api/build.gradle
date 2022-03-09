@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'eclipse'
 }
 
 group = 'com.volunteer.api'
@@ -36,6 +37,7 @@ dependencies {
 
     // spring doc
     //implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+    implementation project(':db-schema')
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
