@@ -13,9 +13,9 @@ import com.volunteer.api.data.user.model.dto.UserDto;
 public abstract class UserV1Mapper {
 
 	@Mapping(target = "role", source = "role.name")
+	@Mapping(target = "password", constant = "******")
 	public abstract UserV1 map(UserDto dto);
 
-	@Mapping(target = "password", constant = "******")
 	public abstract UserDto map(UserV1 user);
 
 	public RoleDto map(String roleName) {
