@@ -29,7 +29,7 @@ public class UserControllerV1 {
   private final UserService service;
   private final UserV1Mapper userV1Mapper;
 
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @PreAuthorize("hasAuthority('root')")
   @GetMapping
   public ResponseEntity<Collection<UserV1>> getAll() {
     final Collection<UserV1> result = userV1Mapper.map(service.getAll());

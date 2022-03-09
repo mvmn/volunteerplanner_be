@@ -1,6 +1,5 @@
 package com.volunteer.api.config;
 
-import com.volunteer.api.security.filter.JWTAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +13,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.volunteer.api.security.filter.JWTAuthorizationFilter;
+
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 @EnableWebSecurity
@@ -37,6 +42,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http.authorizeRequests()
         .antMatchers("/actuator/**").permitAll()
         .antMatchers("/authenticate").permitAll()
+        .antMatchers("/swagger-ui/**").permitAll()
+        .antMatchers("/swagger-ui.html").permitAll()
+        .antMatchers("/v3/**").permitAll()
         .anyRequest().authenticated();
 
     http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -48,4 +56,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     return super.authenticationManagerBean();
   }
 
+	@Bean
+	public OpenAPI customOpenAPI() {
+		return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
+				new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+	}
 }
