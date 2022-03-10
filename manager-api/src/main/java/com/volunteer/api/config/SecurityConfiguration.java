@@ -18,6 +18,7 @@ import com.volunteer.api.security.filter.JWTAuthorizationFilter;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
@@ -58,7 +59,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public OpenAPI customOpenAPI() {
-		return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
-				new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+
+		final String securitySchemeName = "bearerAuth";
+		return new OpenAPI().addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+				.components(new Components().addSecuritySchemes(securitySchemeName,
+						new SecurityScheme().name(securitySchemeName).type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
 	}
 }
