@@ -28,7 +28,7 @@ public class UserControllerV1 {
     this.service = service;
   }
 
-  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+  @PreAuthorize("hasAuthority('root')")
   @GetMapping
   public ResponseEntity<Collection<UserV1>> getAll() {
     final Collection<UserV1> result = UserV1Mapper.map(service.getAll());
