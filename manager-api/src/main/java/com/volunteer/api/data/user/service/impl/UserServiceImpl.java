@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   // TODO: add pagination and order / filter support
   public List<UserDto> getAll() {
-    return repository.findAll(Sort.by(Order.asc("name")));
+    return repository.findAll(Sort.by(Order.asc("userName")));
   }
 
   @Override
