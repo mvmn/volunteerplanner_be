@@ -9,9 +9,9 @@ import java.util.Collection;
 @Mapper(componentModel = "spring")
 public interface StoreDtoMapper {
 
-    Collection<StoreDtoV1> map(Collection<Store> stores);
+  Collection<StoreDtoV1> map(Collection<Store> stores);
 
-    StoreDtoV1 map(Store store);
+  StoreDtoV1 map(Store store);
 
-    Store map(StoreDtoV1 storeDto);
+  Store map(StoreDtoV1 storeDto);
 }

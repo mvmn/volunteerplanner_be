@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Collection;
 
 public interface StoreRepository extends JpaRepository<Store, Integer> {
-    Collection<Store> findAllByNameLike(String name);
+  Collection<Store> findAllByNameLike(String name);
 }

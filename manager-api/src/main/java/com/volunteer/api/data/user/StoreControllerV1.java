@@ -15,39 +15,37 @@ import java.util.Collection;
 @RequestMapping(path = "/stores", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class StoreControllerV1 {
-    private final StoreService storeService;
-    private final StoreDtoMapper storeDtoMapper;
+  private final StoreService storeService;
+  private final StoreDtoMapper storeDtoMapper;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<StoreDtoV1> getAll() {
-        return storeDtoMapper.map(storeService.getAll());
-    }
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public Collection<StoreDtoV1> getAll() {
+    return storeDtoMapper.map(storeService.getAll());
+  }
 
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<StoreDtoV1> getById(@PathVariable("id") final Integer id) {
-        return storeService.getById(id)
-                .map(s -> ResponseEntity.ok(storeDtoMapper.map(s)))
-                .orElse(ResponseEntity.notFound().build());
-    }
+  @GetMapping(path = "/{id}")
+  public ResponseEntity<StoreDtoV1> getById(@PathVariable("id") final Integer id) {
+    return storeService.getById(id)
+        .map(s -> ResponseEntity.ok(storeDtoMapper.map(s)))
+        .orElse(ResponseEntity.notFound().build());
+  }
 
-    @GetMapping(path = "/search/{name}")
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<StoreDtoV1> searchByName(@PathVariable("name") final String name) {
-        return storeDtoMapper.map(storeService.getByName(name));
-    }
+  @GetMapping(path = "/search/{name}")
+  @ResponseStatus(HttpStatus.OK)
+  public Collection<StoreDtoV1> searchByName(@PathVariable("name") final String name) {
+    return storeDtoMapper.map(storeService.getByName(name));
+  }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public StoreDtoV1 create(@RequestBody final StoreDtoV1 store) {
-        return storeDtoMapper.map(storeService.create(storeDtoMapper.map(store)));
-    }
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public StoreDtoV1 create(@RequestBody final StoreDtoV1 store) {
+    return storeDtoMapper.map(storeService.create(storeDtoMapper.map(store)));
+  }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public StoreDtoV1 update(@RequestBody final StoreDtoV1 store) {
-        return storeDtoMapper.map(storeService.update(storeDtoMapper.map(store)));
-    }
-
-
+  @PutMapping
+  @ResponseStatus(HttpStatus.OK)
+  public StoreDtoV1 update(@RequestBody final StoreDtoV1 store) {
+    return storeDtoMapper.map(storeService.update(storeDtoMapper.map(store)));
+  }
 }

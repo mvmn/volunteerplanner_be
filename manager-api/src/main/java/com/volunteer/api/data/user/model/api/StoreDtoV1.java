@@ -10,10 +10,10 @@ import lombok.Data;
 @JsonPropertyOrder({"id", "name", "address", "recipientAddress", "contactPerson", "note"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StoreDtoV1 {
-    private Integer id;
-    private String name;
-    private AddressDtoV1 address;
-    private AddressDtoV1 recipientAddress;
-    private String contactPerson;
-    private String note;
+  private Integer id;
+  private String name;
+  private AddressDtoV1 address;
+  private AddressDtoV1 recipientAddress;
+  private String contactPerson;
+  private String note;
 }

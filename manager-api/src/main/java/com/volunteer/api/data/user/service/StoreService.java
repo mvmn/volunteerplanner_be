@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.Optional;
 
 public interface StoreService {
-    Collection<Store> getAll();
+  Collection<Store> getAll();
 
-    Optional<Store> getById(Integer id);
+  Optional<Store> getById(Integer id);
 
-    Collection<Store> getByName(String name);
+  Collection<Store> getByName(String name);
 
-    Store create(Store store);
+  Store create(Store store);
 
-    Store update(Store store);
+  Store update(Store store);
 }
