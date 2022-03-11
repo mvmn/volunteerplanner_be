@@ -1,8 +1,7 @@
 package com.volunteer.api.data.user.mapping;
 
 import com.volunteer.api.data.user.model.api.AddressDtoV1;
-import com.volunteer.api.data.user.model.dto.Address;
-
+import com.volunteer.api.data.user.model.persistence.Address;
 import java.util.Collection;
 import java.util.stream.Collectors;
 

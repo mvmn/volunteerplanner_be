@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.service.impl;
 
-import com.volunteer.api.data.user.model.dto.RoleDto;
+import com.volunteer.api.data.user.model.persistence.Role;
 import com.volunteer.api.data.user.repository.RoleRepository;
 import com.volunteer.api.data.user.service.RoleService;
 import java.util.Collection;
@@ -20,18 +20,18 @@ public class RoleServiceImpl implements RoleService {
   }
 
   @Override
-  public Collection<RoleDto> getAll() {
+  public Collection<Role> getAll() {
     return repository.findAll(Sort.by(Order.asc("name")));
   }
 
   @Override
-  public RoleDto get(final String name) {
-    final Optional<RoleDto> result = Optional.ofNullable(repository.findByName(name));
+  public Role get(final String name) {
+    final Optional<Role> result = Optional.ofNullable(repository.findByName(name));
     if (result.isPresent()) {
       return result.get();
     }
 
-    final RoleDto role = new RoleDto();
+    final Role role = new Role();
     role.setName(name);
 
     return save(role);
@@ -39,7 +39,7 @@ public class RoleServiceImpl implements RoleService {
 
   @Override
   @Transactional
-  public RoleDto save(final RoleDto role) {
+  public Role save(final Role role) {
     return repository.save(role);
   }
 }

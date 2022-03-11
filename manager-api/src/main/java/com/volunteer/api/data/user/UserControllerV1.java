@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.volunteer.api.data.user.mapping.UserV1Mapper;
-import com.volunteer.api.data.user.model.api.UserV1;
-import com.volunteer.api.data.user.model.dto.UserDto;
+import com.volunteer.api.data.user.model.api.UserDtoV1;
+import com.volunteer.api.data.user.model.persistence.VPUser;
 import com.volunteer.api.data.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -31,14 +31,14 @@ public class UserControllerV1 {
 
   @PreAuthorize("hasAuthority('root')")
   @GetMapping
-  public ResponseEntity<Collection<UserV1>> getAll() {
-    final Collection<UserV1> result = userV1Mapper.map(service.getAll());
+  public ResponseEntity<Collection<UserDtoV1>> getAll() {
+    final Collection<UserDtoV1> result = userV1Mapper.map(service.getAll());
     return ResponseEntity.ok(result);
   }
 
   @GetMapping(path = "/{user-id}")
-  public ResponseEntity<UserV1> getById(@PathVariable("user-id") final Integer userId) {
-    final UserV1 result = userV1Mapper.map(service.get(userId)
+  public ResponseEntity<UserDtoV1> getById(@PathVariable("user-id") final Integer userId) {
+    final UserDtoV1 result = userV1Mapper.map(service.get(userId)
         .orElseThrow(() -> new IllegalArgumentException(String.format(
             "User with id '%d' does not exist", userId))));
 
@@ -46,18 +46,18 @@ public class UserControllerV1 {
   }
 
   @PostMapping
-  public ResponseEntity<UserV1> create(@RequestBody final UserV1 source) {
-    final UserV1 result = userV1Mapper.map(service.create(userV1Mapper.map(source)));
+  public ResponseEntity<UserDtoV1> create(@RequestBody final UserDtoV1 source) {
+    final UserDtoV1 result = userV1Mapper.map(service.create(userV1Mapper.map(source)));
     return ResponseEntity.status(HttpStatus.CREATED).body(result);
   }
 
   @PutMapping(path = "/{user-id}")
-  public ResponseEntity<UserV1> update(@PathVariable("user-id") final Integer userId,
-      @RequestBody final UserV1 source) {
-    final UserDto userDto = userV1Mapper.map(source);
+  public ResponseEntity<UserDtoV1> update(@PathVariable("user-id") final Integer userId,
+      @RequestBody final UserDtoV1 source) {
+    final VPUser userDto = userV1Mapper.map(source);
     source.setId(userId);
 
-    final UserV1 result = userV1Mapper.map(service.create(userDto));
+    final UserDtoV1 result = userV1Mapper.map(service.create(userDto));
     return ResponseEntity.status(HttpStatus.OK).body(result);
   }
 

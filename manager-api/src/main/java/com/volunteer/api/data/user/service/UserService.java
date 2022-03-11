@@ -1,21 +1,21 @@
 package com.volunteer.api.data.user.service;
 
-import com.volunteer.api.data.user.model.dto.UserDto;
 import java.util.List;
 import java.util.Optional;
+import com.volunteer.api.data.user.model.persistence.VPUser;
 
 public interface UserService {
 
-  List<UserDto> getAll();
+  List<VPUser> getAll();
 
-  Optional<UserDto> get(final Integer id);
+  Optional<VPUser> get(final Integer id);
 
-  Optional<UserDto> get(final String userName);
+  Optional<VPUser> get(final String userName);
 
-  UserDto create(final UserDto user);
+  VPUser create(final VPUser user);
 
-  UserDto update(final UserDto user);
+  VPUser update(final VPUser user);
 
-  UserDto changePassword(final Integer id, final String oldPassword, final String newPassword);
+  VPUser changePassword(final Integer id, final String oldPassword, final String newPassword);
 
 }

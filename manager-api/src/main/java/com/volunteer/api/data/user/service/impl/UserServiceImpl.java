@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.service.impl;
 
-import com.volunteer.api.data.user.model.dto.UserDto;
+import com.volunteer.api.data.user.model.persistence.VPUser;
 import com.volunteer.api.data.user.repository.UserRepository;
 import com.volunteer.api.data.user.service.RoleService;
 import com.volunteer.api.data.user.service.UserService;
@@ -39,23 +39,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   // TODO: add pagination and order / filter support
-  public List<UserDto> getAll() {
+  public List<VPUser> getAll() {
     return repository.findAll(Sort.by(Order.asc("userName")));
   }
 
   @Override
-  public Optional<UserDto> get(final Integer id) {
+  public Optional<VPUser> get(final Integer id) {
     return get(() -> repository.getById(id));
   }
 
   @Override
-  public Optional<UserDto> get(final String userName) {
+  public Optional<VPUser> get(final String userName) {
     return get(() -> repository.findByUserName(userName));
   }
 
   @Override
   public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-    final UserDto user = get(username).orElseThrow(
+    final VPUser user = get(username).orElseThrow(
         () -> new UsernameNotFoundException(String.format(
             "User with name '%s' does not exist", username)));
 
@@ -67,8 +67,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   @Transactional
-  public UserDto create(final UserDto user) {
-    final Optional<UserDto> current = get(user.getUserName());
+  public VPUser create(final VPUser user) {
+    final Optional<VPUser> current = get(user.getUserName());
     if (current.isPresent()) {
       throw new ObjectAlreadyExistsException(String.format(
           "User with '%s' username already exists", user.getUserName()));
@@ -81,13 +81,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return repository.save(user);
   }
 
-  public UserDto update(final UserDto user) {
+  public VPUser update(final VPUser user) {
     return null;
   }
 
-  public UserDto changePassword(final Integer id, final String oldPassword,
+  public VPUser changePassword(final Integer id, final String oldPassword,
       final String newPassword) {
-    final UserDto user = get(id).orElseThrow(
+    final VPUser user = get(id).orElseThrow(
         () -> new ObjectNotFoundException(String.format(
             "User with id '%d' does not exist", id)));
 
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     return user;
   }
 
-  private Optional<UserDto> get(final Supplier<UserDto> supplier) {
+  private Optional<VPUser> get(final Supplier<VPUser> supplier) {
     return Optional.ofNullable(supplier.get());
   }
 

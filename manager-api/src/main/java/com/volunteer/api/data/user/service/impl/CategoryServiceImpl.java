@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.service.impl;
 
-import com.volunteer.api.data.user.model.dto.Category;
+import com.volunteer.api.data.user.model.persistence.Category;
 import com.volunteer.api.data.user.repository.CategoryRepository;
 import com.volunteer.api.data.user.service.CategoryService;
 import org.apache.commons.lang3.StringUtils;
