@@ -8,7 +8,7 @@ public interface UserService {
 
   List<VPUser> getAll();
 
-  Optional<VPUser> get(final Integer id);
+  VPUser get(final Integer id);
 
   Optional<VPUser> get(final String userName);
 

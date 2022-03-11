@@ -1,19 +1,23 @@
 package com.volunteer.api.data.user.service;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.List;
 import com.volunteer.api.data.user.model.persistence.Category;
 
 public interface CategoryService {
-    Collection<Category> getAll();
 
-    Optional<Category> get(final Integer id);
+  Collection<Category> getAll();
 
-    Category save(Category category);
+  Category get(final Integer id);
 
-    Collection<Category> getRootCategories();
+  Category create(final Category category);
 
-    Collection<Category> getByParentId(Integer parentId);
+  Category update(final Category category);
 
-    Collection<Category> getByNameStartedWith(String name);
+  List<Category> getRoots();
+
+  List<Category> getByParentId(final Integer parentId);
+
+  List<Category> getByName(final String name);
+
 }

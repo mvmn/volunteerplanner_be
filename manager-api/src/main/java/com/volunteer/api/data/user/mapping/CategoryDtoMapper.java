@@ -9,10 +9,10 @@ import com.volunteer.api.data.user.model.persistence.Category;
 @Mapper(componentModel = "spring")
 public interface CategoryDtoMapper {
 
-  public Collection<CategoryDtoV1> map(Collection<Category> categories);
+  Collection<CategoryDtoV1> map(Collection<Category> categories);
 
   CategoryDtoV1 map(Category category);
 
-  @Mapping(target = "parentId", ignore = true)
+  @Mapping(target = "path", ignore = true)
   Category map(CategoryDtoV1 categoryDto);
 }

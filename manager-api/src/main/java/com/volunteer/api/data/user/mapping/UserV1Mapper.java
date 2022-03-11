@@ -11,9 +11,9 @@ import com.volunteer.api.data.user.model.persistence.VPUser;
 public abstract class UserV1Mapper {
 
   @Mapping(target = "role", source = "role.name")
+  @Mapping(target = "password", constant = "******")
   public abstract UserDtoV1 map(VPUser dto);
 
-  @Mapping(target = "password", constant = "******")
   public abstract VPUser map(UserDtoV1 user);
 
   public Role map(String roleName) {

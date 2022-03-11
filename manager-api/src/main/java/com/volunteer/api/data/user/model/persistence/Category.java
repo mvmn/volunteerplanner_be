@@ -1,11 +1,19 @@
 package com.volunteer.api.data.user.model.persistence;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -14,25 +22,24 @@ import javax.persistence.*;
 @Entity
 @Table(name = "category")
 public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_generator")
-    @SequenceGenerator(name = "category_generator", sequenceName = "category_id_seq", allocationSize = 1)
-    @Column(name = "id")
-    private Integer id;
 
-    @Column(name = "name")
-    private String name;
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_generator")
+  @SequenceGenerator(name = "category_generator", sequenceName = "category_id_seq", allocationSize = 1)
+  @Column(name = "id")
+  private Integer id;
 
-    @Column(name = "note")
-    private String note;
+  @ManyToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "parent_id")
+  private Category parent;
 
-    @Column(name = "path")
-    private String path;
+  @Column(name = "name")
+  private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "parent_id")
-    private Category parentCategory;
+  @Column(name = "note")
+  private String note;
 
-    @Column(name = "parent_id", insertable = false, updatable = false)
-    private Integer parentId;
+  @Column(name = "path")
+  private String path;
+
 }

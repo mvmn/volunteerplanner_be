@@ -7,7 +7,7 @@ buildscript {
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id "org.flywaydb.flyway" version "7.14.1"
+    id "org.flywaydb.flyway" version "8.5.2"
 }
 
 group = "com.volunteer.api"
