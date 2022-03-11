@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.postgresql:postgresql:42.3.3'
 
+    implementation project(':db-schema')
+
     // spring doc
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
     implementation 'org.springdoc:springdoc-openapi-security:1.6.6'

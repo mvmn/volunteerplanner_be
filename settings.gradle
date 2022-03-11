@@ -1,0 +1,2 @@
+rootProject.name = 'volonteeruaplanner'
+include 'manager-api', 'db-schema'

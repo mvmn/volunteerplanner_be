@@ -41,6 +41,10 @@ flywayMigrate {
     dependsOn build
 }
 
+dependencies {
+	implementation 'org.flywaydb:flyway-core:8.5.2'
+}
+
 task packageZip(type: Zip) {
     dependsOn('build')
     archiveFileName = "${rootProject.name}-${version}.zip"
