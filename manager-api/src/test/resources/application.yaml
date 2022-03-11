@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: "manager-api"
+  datasource:
+    url: jdbc:tc:postgresql:13.6:///test_database
+    username: user
+    password: password
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: 'validate'
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        format_sql: true
+
+springdoc:
+  api-docs:
+    enabled: false

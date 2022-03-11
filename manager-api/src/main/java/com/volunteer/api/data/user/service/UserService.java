@@ -8,7 +8,7 @@ public interface UserService {
 
   List<UserDto> getAll();
 
-  Optional<UserDto> get(final Integer id);
+  UserDto get(final Integer id);
 
   Optional<UserDto> get(final String userName);
 

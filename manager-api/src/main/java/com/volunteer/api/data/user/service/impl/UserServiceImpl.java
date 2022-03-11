@@ -44,8 +44,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public Optional<UserDto> get(final Integer id) {
-    return get(() -> repository.getById(id));
+  public UserDto get(final Integer id) {
+    return get(() -> repository.getById(id))
+        .orElseThrow(() -> new ObjectNotFoundException(String.format(
+            "User with ID '%d' does not exist", id)));
   }
 
   @Override
@@ -87,10 +89,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   public UserDto changePassword(final Integer id, final String oldPassword,
       final String newPassword) {
-    final UserDto user = get(id).orElseThrow(
-        () -> new ObjectNotFoundException(String.format(
-            "User with id '%d' does not exist", id)));
-
+    final UserDto user = get(id);
     if (!user.getPassword().equals(passwordEncoder.encode(oldPassword))) {
       throw new InvalidPasswordException();
     }
