@@ -24,6 +24,7 @@ public class TaskControllerV1 {
   private final TaskV1Mapper taskMapper;
 
   @PostMapping
+  @PreAuthorize("hasAuthority('operator')")
   public TaskDtoV1 createTask(@RequestBody @Valid TaskDtoV1 dto) {
     return taskMapper.map(taskService.createTask(taskMapper.map(dto)));
   }

@@ -21,6 +21,13 @@ public class ErrorHandler {
         .build();
   }
 
+  @ExceptionHandler(IllegalStateException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponse handleIllegalStateException(IllegalStateException exception) {
+    return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
+  }
+
+
   @ExceptionHandler(ObjectNotFoundException.class)
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
