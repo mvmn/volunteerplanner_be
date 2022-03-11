@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 @Builder
-@JsonPropertyOrder({"id", "name", "address", "contactPerson", "note"})
+@JsonPropertyOrder({"id", "name", "address", "recipientAddress", "contactPerson", "note"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class StoreDtoV1 {
     private Integer id;
