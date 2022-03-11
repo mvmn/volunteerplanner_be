@@ -1,15 +1,11 @@
 package com.volunteer.api.data.user.mapping;
 
 import java.util.Collection;
-
-import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
 import com.volunteer.api.data.user.model.api.UserV1;
 import com.volunteer.api.data.user.model.dto.RoleDto;
 import com.volunteer.api.data.user.model.dto.UserDto;
 
-@Mapper(componentModel = "spring")
 public abstract class UserV1Mapper {
 
   @Mapping(target = "role", source = "role.name")
