@@ -11,6 +11,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Version;
+import com.volunteer.api.data.user.model.TaskStatus;
 import lombok.Data;
 
 @Data
@@ -24,6 +26,10 @@ public class Task implements Serializable {
   @SequenceGenerator(name = "task_generator", sequenceName = "task_id_seq", allocationSize = 1)
   @Column(name = "id", nullable = false)
   private Integer id;
+
+  @Version
+  @Column(name = "version_num")
+  private Integer version;
 
   @Column(name = "customer", length = 255, nullable = false)
   private String customer;
@@ -55,8 +61,8 @@ public class Task implements Serializable {
   @Column(name = "note", nullable = true, length = 2000)
   private String note;
 
-  @Column(name = "status_id", columnDefinition = "NUMERIC", nullable = false)
-  private Integer statusId;
+  @Column(name = "status_id", nullable = false)
+  private TaskStatus status;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "created_by")

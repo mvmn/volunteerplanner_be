@@ -28,7 +28,6 @@ public class UserControllerV1 {
 
   @PreAuthorize("hasAuthority('root')")
   @GetMapping
-
   @ResponseStatus(HttpStatus.OK)
   public Collection<UserDtoV1> getAll() {
     return userV1Mapper.map(service.getAll());
