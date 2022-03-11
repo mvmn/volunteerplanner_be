@@ -1,39 +1,16 @@
 package com.volunteer.api.data.user.mapping;
 
+import java.util.Collection;
+import org.mapstruct.Mapper;
 import com.volunteer.api.data.user.model.api.CategoryDtoV1;
 import com.volunteer.api.data.user.model.dto.Category;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
+@Mapper(componentModel = "spring")
+public interface CategoryDtoMapper {
 
-public class CategoryDtoMapper {
+  public Collection<CategoryDtoV1> map(Collection<Category> categories);
 
-    public static Collection<CategoryDtoV1> map(Collection<Category> categories) {
-        return categories.stream().map(CategoryDtoMapper::map).collect(Collectors.toList());
-    }
+  CategoryDtoV1 map(Category category);
 
-    public static CategoryDtoV1 map(Category category) {
-        return CategoryDtoV1.builder()
-                .id(category.getId())
-                .name(category.getName())
-                .note(category.getNote())
-                .path(category.getPath())
-                .parentCategory(Optional.ofNullable(category.getParentCategory())
-                        .map(CategoryDtoMapper::map)
-                        .orElse(null))
-                .build();
-    }
-
-    public static Category map(CategoryDtoV1 categoryDto) {
-        return Category.builder()
-                .id(categoryDto.getId())
-                .name(categoryDto.getName())
-                .note(categoryDto.getNote())
-                .path(categoryDto.getPath())
-                .parentCategory(Optional.ofNullable(categoryDto.getParentCategory())
-                        .map(CategoryDtoMapper::map)
-                        .orElse(null))
-                .build();
-    }
+  Category map(CategoryDtoV1 categoryDto);
 }
