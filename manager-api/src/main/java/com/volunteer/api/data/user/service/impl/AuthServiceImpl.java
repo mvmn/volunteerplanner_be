@@ -16,10 +16,11 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public VPUser getCurrentUser() {
-    String currentUserName =
-        SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-    VPUser currentUser = userService.get(currentUserName)
-        .orElseThrow(() -> new ObjectNotFoundException("Missing user " + currentUserName));
-    return currentUser;
+    Object currentUserName = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    if (currentUserName != null) {
+      return userService.get(currentUserName.toString())
+          .orElseThrow(() -> new ObjectNotFoundException("Missing user " + currentUserName));
+    }
+    return null;
   }
 }
