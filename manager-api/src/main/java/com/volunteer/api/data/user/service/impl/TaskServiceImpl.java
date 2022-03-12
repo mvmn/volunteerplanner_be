@@ -1,8 +1,12 @@
 package com.volunteer.api.data.user.service.impl;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,6 +14,7 @@ import com.volunteer.api.data.user.mapping.TaskV1Mapper;
 import com.volunteer.api.data.user.model.TaskStatus;
 import com.volunteer.api.data.user.model.domain.TaskDetalization;
 import com.volunteer.api.data.user.model.persistence.Task;
+import com.volunteer.api.data.user.model.persistence.VPUser;
 import com.volunteer.api.data.user.repository.ProductRepository;
 import com.volunteer.api.data.user.repository.TaskRepository;
 import com.volunteer.api.data.user.service.AuthService;
@@ -66,6 +71,64 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public List<Task> getTasksByIds(List<Integer> taskIds) {
     return taskRepository.findAllById(taskIds);
+  }
+
+  @Override
+  @Transactional
+  public int batchStatusChange(Collection<Integer> taskIds, TaskStatus status) {
+    if (status == TaskStatus.NEW) {
+      throw new IllegalArgumentException("Changing task status to new is not allowed");
+    }
+    List<Task> tasks = taskRepository.findAllById(taskIds);
+    Set<Integer> unfitTasksIds = Collections.emptySet();
+    Consumer<Task> taskProcessor = task -> {
+    };
+    ZonedDateTime now = ZonedDateTime.now();
+    VPUser currentUser = authService.getCurrentUser();
+    switch (status) {
+      case VERIFIED:
+        // If task is not new or already verified - we can't verify it
+        unfitTasksIds = tasks.stream().filter(
+            task -> task.getStatus() != TaskStatus.NEW && task.getStatus() != TaskStatus.VERIFIED)
+            .map(Task::getId).collect(Collectors.toSet());
+        taskProcessor = task -> {
+          task.setVerifiedBy(currentUser);
+          task.setVerifiedAt(now);
+        };
+        break;
+      case COMPLETED:
+        // If task is not verified or already completed - we can't complete it
+        unfitTasksIds = tasks.stream()
+            .filter(task -> task.getStatus() != TaskStatus.VERIFIED
+                && task.getStatus() != TaskStatus.COMPLETED)
+            .map(Task::getId).collect(Collectors.toSet());
+        taskProcessor = task -> {
+          task.setClosedAt(now);
+          task.setClosedBy(currentUser);
+        };
+        break;
+      case REJECTED:
+        // If task is already completed - we can't reject it
+        unfitTasksIds = tasks.stream().filter(task -> task.getStatus() == TaskStatus.COMPLETED)
+            .map(Task::getId).collect(Collectors.toSet());
+        taskProcessor = task -> {
+          task.setClosedAt(now);
+          task.setClosedBy(currentUser);
+        };
+        break;
+      default:
+    }
+    if (!unfitTasksIds.isEmpty()) {
+      throw new IllegalStateException("Not allowed to change task(s) "
+          + (unfitTasksIds.stream().map(v -> v.toString()).collect(Collectors.joining(", ")))
+          + " state to " + status);
+    }
+    List<Task> tasksToUpdate = tasks.stream().filter(task -> task.getStatus() != status)
+        .peek(task -> task.setStatus(status)).peek(taskProcessor).collect(Collectors.toList());
+    if (!tasksToUpdate.isEmpty()) {
+      return taskRepository.saveAll(tasksToUpdate).size();
+    }
+    return 0;
   }
 
   @Override

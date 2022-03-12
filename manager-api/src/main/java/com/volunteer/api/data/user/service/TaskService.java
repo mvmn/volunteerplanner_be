@@ -1,7 +1,9 @@
 package com.volunteer.api.data.user.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import com.volunteer.api.data.user.model.TaskStatus;
 import com.volunteer.api.data.user.model.domain.TaskDetalization;
 import com.volunteer.api.data.user.model.persistence.Task;
 
@@ -20,4 +22,6 @@ public interface TaskService {
   void reject(int taskId);
 
   void complete(int taskId);
+
+  int batchStatusChange(Collection<Integer> taskIds, TaskStatus status);
 }
