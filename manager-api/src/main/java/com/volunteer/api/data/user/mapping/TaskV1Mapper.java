@@ -26,6 +26,8 @@ public interface TaskV1Mapper {
   @Mapping(source = "closedByUserId", target = "closedBy")
   @Mapping(target = "version", ignore = true)
   Task map(TaskDtoV1 dto);
-  
+
   TaskDetalization map(TaskDetalizationDtoV1 dto);
+
+  Task clone(Task task);
 }

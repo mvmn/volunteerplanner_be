@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.volunteer.api.data.user.mapping.TaskV1Mapper;
 import com.volunteer.api.data.user.model.TaskStatus;
 import com.volunteer.api.data.user.model.domain.TaskDetalization;
 import com.volunteer.api.data.user.model.persistence.Task;
@@ -22,11 +23,16 @@ public class TaskServiceImpl implements TaskService {
 
   private final TaskRepository taskRepository;
   private final ProductRepository productRepository;
+  private final TaskV1Mapper mapper; // TODO: consider having separate mapper for domain objects to
+                                     // keep web layer separated
   private final AuthService authService; // TODO: consider moving this to controller to keep web
                                          // layer separated from business layer
 
   @Override
   public Task createTask(Task task) {
+    if (task.getDeadlineDate().isBefore(ZonedDateTime.now())) {
+      throw new IllegalArgumentException("Deadline date cannot be in the past");
+    }
     task.setId(null);
     task.setStatus(TaskStatus.NEW);
     task.setQuantityLeft(task.getQuantity());
@@ -39,10 +45,12 @@ public class TaskServiceImpl implements TaskService {
   @Transactional
   public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
     return details.stream().map(detail -> {
-      blueprint.setProduct(productRepository.getById(detail.getProductId()));
-      blueprint.setQuantity(detail.getQuantity());
-      blueprint.setProductMeasure(detail.getUnitOfMeasure());
-      return blueprint;
+      Task taskBlueprint = mapper.clone(blueprint);
+
+      taskBlueprint.setProduct(productRepository.getById(detail.getProductId()));
+      taskBlueprint.setQuantity(detail.getQuantity());
+      taskBlueprint.setProductMeasure(detail.getUnitOfMeasure());
+      return taskBlueprint;
     }).map(this::createTask).collect(Collectors.toList());
   }
 
