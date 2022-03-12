@@ -1,10 +1,15 @@
 package com.volunteer.api.data.user.service.impl;
 
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.volunteer.api.data.user.model.TaskStatus;
+import com.volunteer.api.data.user.model.domain.TaskDetalization;
 import com.volunteer.api.data.user.model.persistence.Task;
+import com.volunteer.api.data.user.repository.ProductRepository;
 import com.volunteer.api.data.user.repository.TaskRepository;
 import com.volunteer.api.data.user.service.AuthService;
 import com.volunteer.api.data.user.service.TaskService;
@@ -16,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class TaskServiceImpl implements TaskService {
 
   private final TaskRepository taskRepository;
+  private final ProductRepository productRepository;
   private final AuthService authService; // TODO: consider moving this to controller to keep web
                                          // layer separated from business layer
 
@@ -27,6 +33,17 @@ public class TaskServiceImpl implements TaskService {
     task.setCreatedAt(ZonedDateTime.now());
     task.setCreatedBy(authService.getCurrentUser());
     return taskRepository.save(task);
+  }
+
+  @Override
+  @Transactional
+  public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
+    return details.stream().map(detail -> {
+      blueprint.setProduct(productRepository.getById(detail.getProductId()));
+      blueprint.setQuantity(detail.getQuantity());
+      blueprint.setProductMeasure(detail.getUnitOfMeasure());
+      return blueprint;
+    }).map(this::createTask).collect(Collectors.toList());
   }
 
   @Override

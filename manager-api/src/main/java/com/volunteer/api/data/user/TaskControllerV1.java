@@ -1,5 +1,8 @@
 package com.volunteer.api.data.user;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -10,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.volunteer.api.data.user.mapping.TaskV1Mapper;
+import com.volunteer.api.data.user.model.api.TaskBatchDtoV1;
 import com.volunteer.api.data.user.model.api.TaskDtoV1;
+import com.volunteer.api.data.user.model.domain.TaskDetalization;
+import com.volunteer.api.data.user.model.persistence.Task;
 import com.volunteer.api.data.user.service.TaskService;
 import com.volunteer.api.error.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +33,16 @@ public class TaskControllerV1 {
   @PreAuthorize("hasAuthority('operator')")
   public TaskDtoV1 createTask(@RequestBody @Valid TaskDtoV1 dto) {
     return taskMapper.map(taskService.createTask(taskMapper.map(dto)));
+  }
+
+  @PostMapping("/batch")
+  @PreAuthorize("hasAuthority('operator')")
+  public Collection<TaskDtoV1> createTasks(@RequestBody @Valid TaskBatchDtoV1 dto) {
+    Task blueprint = taskMapper.map(dto.getBlueprint());
+    List<TaskDetalization> details =
+        dto.getDetails().stream().map(taskMapper::map).collect(Collectors.toList());
+    return taskService.batchCreate(blueprint, details).stream().map(taskMapper::map)
+        .collect(Collectors.toList());
   }
 
   @GetMapping("{taskId}")
