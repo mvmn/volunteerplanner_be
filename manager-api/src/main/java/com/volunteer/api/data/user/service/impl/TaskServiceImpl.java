@@ -30,6 +30,23 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   public Task createTask(Task task) {
+    return taskRepository.save(prepare(task));
+  }
+
+  @Override
+  @Transactional
+  public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
+    return taskRepository.saveAll(details.stream().map(detail -> {
+      Task taskBlueprint = mapper.clone(blueprint);
+
+      taskBlueprint.setProduct(productRepository.getById(detail.getProductId()));
+      taskBlueprint.setQuantity(detail.getQuantity());
+      taskBlueprint.setProductMeasure(detail.getUnitOfMeasure());
+      return taskBlueprint;
+    }).map(this::prepare).collect(Collectors.toList()));
+  }
+
+  protected Task prepare(Task task) {
     if (task.getDeadlineDate().isBefore(ZonedDateTime.now())) {
       throw new IllegalArgumentException("Deadline date cannot be in the past");
     }
@@ -38,20 +55,7 @@ public class TaskServiceImpl implements TaskService {
     task.setQuantityLeft(task.getQuantity());
     task.setCreatedAt(ZonedDateTime.now());
     task.setCreatedBy(authService.getCurrentUser());
-    return taskRepository.save(task);
-  }
-
-  @Override
-  @Transactional
-  public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
-    return details.stream().map(detail -> {
-      Task taskBlueprint = mapper.clone(blueprint);
-
-      taskBlueprint.setProduct(productRepository.getById(detail.getProductId()));
-      taskBlueprint.setQuantity(detail.getQuantity());
-      taskBlueprint.setProductMeasure(detail.getUnitOfMeasure());
-      return taskBlueprint;
-    }).map(this::createTask).collect(Collectors.toList());
+    return task;
   }
 
   @Override
