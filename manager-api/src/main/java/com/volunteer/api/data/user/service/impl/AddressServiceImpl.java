@@ -3,48 +3,48 @@ package com.volunteer.api.data.user.service.impl;
 import com.volunteer.api.data.user.model.persistence.Address;
 import com.volunteer.api.data.user.repository.AddressRepository;
 import com.volunteer.api.data.user.service.AddressService;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
-    private final AddressRepository addressRepository;
+  private final AddressRepository repository;
 
-    @Autowired
-    public AddressServiceImpl(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
-    }
+  @Override
+  public Collection<Address> getAll() {
+    return repository.findAll();
+  }
 
-    @Override
-    public Collection<Address> getAll() {
-        return addressRepository.findAll();
-    }
+  @Override
+  public Optional<Address> get(Integer id) {
+    return repository.findById(id);
+  }
 
-    @Override
-    public Optional<Address> get(Integer id) {
-        return addressRepository.findById(id);
-    }
+  @Override
+  public Address getOrCreate(Address address) {
+    // normalize address first
+    address.setRegion(StringUtils.trimToNull(address.getRegion()));
+    address.setCity(StringUtils.trimToNull(address.getCity()));
+    address.setAddress(StringUtils.trimToNull(address.getAddress()));
 
-    @Override
-    public Address save(Address address) {
-        Optional<Address> existing = addressRepository.findByRegionAndCityAndAddress(
-                address.getRegion(), address.getCity(), address.getAddress());
-        return existing.orElse(addressRepository.save(address));
-    }
+    return repository.findByRegionAndCityAndAddress(address.getRegion(), address.getCity(),
+        address.getAddress()).orElseGet(() -> repository.save(address));
+  }
 
-    @Override
-    public List<String> getDictinctRegions(String region) {
-        return addressRepository.findDistinctRegions(StringUtils.defaultIfBlank(region, ""));
-    }
+  @Override
+  public List<String> getRegions(String region) {
+    return repository.findDistinctRegions(StringUtils.defaultIfBlank(region, ""));
+  }
 
-    @Override
-    public List<String> getDictinctCities(String city) {
-        return addressRepository.findDistinctCities(StringUtils.defaultIfBlank(city, ""));
-    }
+  @Override
+  public List<String> getCities(String city) {
+    return repository.findDistinctCities(StringUtils.defaultIfBlank(city, ""));
+  }
+
 }

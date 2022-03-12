@@ -1,8 +1,8 @@
 package com.volunteer.api.data.user.service;
 
+import com.volunteer.api.data.user.model.persistence.VPUser;
 import java.util.List;
 import java.util.Optional;
-import com.volunteer.api.data.user.model.persistence.VPUser;
 
 public interface UserService {
 
@@ -16,6 +16,18 @@ public interface UserService {
 
   VPUser update(final VPUser user);
 
-  VPUser changePassword(final Integer id, final String oldPassword, final String newPassword);
+  VPUser verifyUser(final Integer id);
+
+  VPUser lock(final Integer id);
+
+  VPUser unlock(final Integer id);
+
+  void passwordChange(final String oldPassword, final String newPassword);
+
+  void passwordReset(final String username);
+
+  void verifyPhoneNumberStart();
+
+  VPUser verifyPhoneNumberComplete(final String code);
 
 }

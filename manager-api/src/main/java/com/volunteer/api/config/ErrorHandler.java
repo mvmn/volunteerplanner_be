@@ -1,16 +1,30 @@
 package com.volunteer.api.config;
 
+import com.volunteer.api.data.user.model.api.ErrorResponse;
+import com.volunteer.api.error.ObjectNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.volunteer.api.data.user.model.api.ErrorResponse;
-import com.volunteer.api.error.ObjectNotFoundException;
 
 @RestControllerAdvice
 public class ErrorHandler {
+
+  private static final Map<String, String> CONSTRAINS_I18N_MAP = new HashMap<>();
+
+  static {
+    CONSTRAINS_I18N_MAP.put("un_user_user_name", "user.userName");
+    CONSTRAINS_I18N_MAP.put("un_user_phone_number", "user.phoneNumber");
+    CONSTRAINS_I18N_MAP.put("un_category", "category.name");
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException exception) {
@@ -27,10 +41,33 @@ public class ErrorHandler {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 
+  @ExceptionHandler(DataIntegrityViolationException.class)
+  @ResponseStatus(value = HttpStatus.CONFLICT)
+  public ErrorResponse handleException(DataIntegrityViolationException exception) {
+    if (exception.getCause() instanceof ConstraintViolationException) {
+      return handleException((ConstraintViolationException) exception.getCause());
+    }
+
+    return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
+  }
+
+  @ExceptionHandler(ConstraintViolationException.class)
+  @ResponseStatus(value = HttpStatus.CONFLICT)
+  public ErrorResponse handleException(final ConstraintViolationException exception) {
+    final String mappedName = CONSTRAINS_I18N_MAP.get(exception.getConstraintName());
+    if (StringUtils.isNotEmpty(mappedName)) {
+      return ErrorResponse.builder().errorMessage(mappedName + " is not unique").build();
+    }
+
+    return ErrorResponse.builder().errorMessage(exception.getConstraintName() + " violated")
+        .build();
+  }
 
   @ExceptionHandler(ObjectNotFoundException.class)
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
+
+
 }
