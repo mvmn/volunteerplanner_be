@@ -79,22 +79,21 @@ public class TaskServiceImpl implements TaskService {
     if (status == TaskStatus.NEW) {
       throw new IllegalArgumentException("Changing task status to new is not allowed");
     }
+
     List<Task> tasks = taskRepository.findAllById(taskIds);
+    VPUser currentUser = authService.getCurrentUser();
+    ZonedDateTime now = ZonedDateTime.now();
+
     Set<Integer> unfitTasksIds = Collections.emptySet();
     Consumer<Task> taskProcessor = task -> {
     };
-    ZonedDateTime now = ZonedDateTime.now();
-    VPUser currentUser = authService.getCurrentUser();
     switch (status) {
       case VERIFIED:
         // If task is not new or already verified - we can't verify it
         unfitTasksIds = tasks.stream().filter(
             task -> task.getStatus() != TaskStatus.NEW && task.getStatus() != TaskStatus.VERIFIED)
             .map(Task::getId).collect(Collectors.toSet());
-        taskProcessor = task -> {
-          task.setVerifiedBy(currentUser);
-          task.setVerifiedAt(now);
-        };
+        taskProcessor = taskProcessorSetVerifyData(currentUser, now);
         break;
       case COMPLETED:
         // If task is not verified or already completed - we can't complete it
@@ -102,33 +101,45 @@ public class TaskServiceImpl implements TaskService {
             .filter(task -> task.getStatus() != TaskStatus.VERIFIED
                 && task.getStatus() != TaskStatus.COMPLETED)
             .map(Task::getId).collect(Collectors.toSet());
-        taskProcessor = task -> {
-          task.setClosedAt(now);
-          task.setClosedBy(currentUser);
-        };
+        taskProcessor = taskProcessorSetCloseData(currentUser, now);
         break;
       case REJECTED:
         // If task is already completed - we can't reject it
         unfitTasksIds = tasks.stream().filter(task -> task.getStatus() == TaskStatus.COMPLETED)
             .map(Task::getId).collect(Collectors.toSet());
-        taskProcessor = task -> {
-          task.setClosedAt(now);
-          task.setClosedBy(currentUser);
-        };
+        taskProcessor = taskProcessorSetCloseData(currentUser, now);
         break;
       default:
     }
+
     if (!unfitTasksIds.isEmpty()) {
       throw new IllegalStateException("Not allowed to change task(s) "
           + (unfitTasksIds.stream().map(v -> v.toString()).collect(Collectors.joining(", ")))
           + " state to " + status);
     }
+
     List<Task> tasksToUpdate = tasks.stream().filter(task -> task.getStatus() != status)
         .peek(task -> task.setStatus(status)).peek(taskProcessor).collect(Collectors.toList());
-    if (!tasksToUpdate.isEmpty()) {
-      return taskRepository.saveAll(tasksToUpdate).size();
+
+    if (tasksToUpdate.isEmpty()) { // Nothing to do - all tasks already in desired state
+      return 0;
     }
-    return 0;
+
+    return taskRepository.saveAll(tasksToUpdate).size();
+  }
+
+  protected Consumer<Task> taskProcessorSetVerifyData(VPUser currentUser, ZonedDateTime now) {
+    return task -> {
+      task.setVerifiedBy(currentUser);
+      task.setVerifiedAt(now);
+    };
+  }
+
+  protected Consumer<Task> taskProcessorSetCloseData(VPUser currentUser, ZonedDateTime now) {
+    return task -> {
+      task.setClosedBy(currentUser);
+      task.setClosedAt(now);
+    };
   }
 
   @Override
