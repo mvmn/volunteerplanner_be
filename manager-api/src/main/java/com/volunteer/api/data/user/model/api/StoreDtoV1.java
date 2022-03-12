@@ -13,7 +13,6 @@ public class StoreDtoV1 {
   private Integer id;
   private String name;
   private AddressDtoV1 address;
-  private AddressDtoV1 recipientAddress;
   private String contactPerson;
   private String note;
 }

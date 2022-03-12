@@ -2,11 +2,11 @@ package com.volunteer.api.data.user;
 
 import com.volunteer.api.data.user.mapping.StoreDtoMapper;
 import com.volunteer.api.data.user.model.api.StoreDtoV1;
+import com.volunteer.api.data.user.model.persistence.Store;
 import com.volunteer.api.data.user.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
@@ -25,10 +25,8 @@ public class StoreControllerV1 {
   }
 
   @GetMapping(path = "/{id}")
-  public ResponseEntity<StoreDtoV1> getById(@PathVariable("id") final Integer id) {
-    return storeService.getById(id)
-        .map(s -> ResponseEntity.ok(storeDtoMapper.map(s)))
-        .orElse(ResponseEntity.notFound().build());
+  public StoreDtoV1 getById(@PathVariable("id") final Integer id) {
+    return storeDtoMapper.map(storeService.getById(id));
   }
 
   @GetMapping(path = "/search/{name}")
@@ -43,9 +41,12 @@ public class StoreControllerV1 {
     return storeDtoMapper.map(storeService.create(storeDtoMapper.map(store)));
   }
 
-  @PutMapping
+  @PutMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.OK)
-  public StoreDtoV1 update(@RequestBody final StoreDtoV1 store) {
-    return storeDtoMapper.map(storeService.update(storeDtoMapper.map(store)));
+  public StoreDtoV1 update(@PathVariable("id") final Integer id,
+                           @RequestBody final StoreDtoV1 store) {
+    Store entity = storeDtoMapper.map(store);
+    entity.setId(id);
+    return storeDtoMapper.map(storeService.update(entity));
   }
 }

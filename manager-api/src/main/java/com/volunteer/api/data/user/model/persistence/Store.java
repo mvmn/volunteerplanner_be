@@ -1,4 +1,4 @@
-package com.volunteer.api.data.user.model.dto;
+package com.volunteer.api.data.user.model.persistence;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,10 +26,6 @@ public class Store {
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "address_id")
   private Address address;
-
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "recipient_address_id")
-  private Address recipientAddress;
 
   @Column(name = "contact_person")
   private String contactPerson;

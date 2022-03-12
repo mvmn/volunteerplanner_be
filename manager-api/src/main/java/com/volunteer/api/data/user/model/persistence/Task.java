@@ -35,12 +35,12 @@ public class Task implements Serializable {
   private String customer;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "store_address_id")
-  private Address storeAddress;
+  @JoinColumn(name = "volunteer_store_id")
+  private Store volunteerStore;
 
   @ManyToOne(optional = false)
-  @JoinColumn(name = "customer_address_id")
-  private Address customerAddress;
+  @JoinColumn(name = "customer_store_id")
+  private Store customerStore;
 
   @ManyToOne(optional = false)
   @JoinColumn(name = "product_id")

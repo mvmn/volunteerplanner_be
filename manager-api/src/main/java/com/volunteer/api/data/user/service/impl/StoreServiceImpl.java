@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.service.impl;
 
-import com.volunteer.api.data.user.model.dto.Store;
+import com.volunteer.api.data.user.model.persistence.Store;
 import com.volunteer.api.data.user.repository.AddressRepository;
 import com.volunteer.api.data.user.repository.StoreRepository;
 import com.volunteer.api.data.user.service.StoreService;
@@ -9,7 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +22,8 @@ public class StoreServiceImpl implements StoreService {
   }
 
   @Override
-  public Optional<Store> getById(Integer id) {
-    return storeRepository.findById(id);
+  public Store getById(Integer id) {
+    return storeRepository.getById(id);
   }
 
   @Override
@@ -35,7 +34,7 @@ public class StoreServiceImpl implements StoreService {
   @Override
   public Store create(Store store) {
     store.setId(null);
-    updateAddresses(store);
+    updateAddress(store);
     return storeRepository.save(store);
   }
 
@@ -44,20 +43,16 @@ public class StoreServiceImpl implements StoreService {
     Store current = storeRepository.getById(store.getId());
 
     current.setAddress(store.getAddress());
-    current.setRecipientAddress(store.getRecipientAddress());
     current.setName(store.getName());
     current.setNote(store.getNote());
     current.setContactPerson(store.getContactPerson());
 
-    updateAddresses(current);
+    updateAddress(current);
 
     return storeRepository.save(current);
   }
 
-  private void updateAddresses(Store store) {
+  private void updateAddress(Store store) {
     store.setAddress(addressRepository.getById(store.getAddress().getId()));
-    if (store.getRecipientAddress() != null) {
-      store.setRecipientAddress(addressRepository.getById(store.getRecipientAddress().getId()));
-    }
   }
 }

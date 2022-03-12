@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.repository;
 
-import com.volunteer.api.data.user.model.dto.Store;
+import com.volunteer.api.data.user.model.persistence.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
