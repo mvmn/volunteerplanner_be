@@ -1,10 +1,10 @@
 package com.volunteer.api.data.user.repository;
 
-import com.volunteer.api.data.user.model.dto.RoleDto;
 import org.springframework.data.jpa.repository.JpaRepository;
+import com.volunteer.api.data.user.model.persistence.Role;
 
-public interface RoleRepository extends JpaRepository<RoleDto, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
 
-  RoleDto findByName(final String name);
+  Role findByName(final String name);
 
 }

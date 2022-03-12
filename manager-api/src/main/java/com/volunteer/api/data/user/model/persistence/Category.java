@@ -1,4 +1,4 @@
-package com.volunteer.api.data.user.model.dto;
+package com.volunteer.api.data.user.model.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

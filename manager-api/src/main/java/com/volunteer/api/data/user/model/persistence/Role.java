@@ -1,4 +1,4 @@
-package com.volunteer.api.data.user.model.dto;
+package com.volunteer.api.data.user.model.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "user_role")
-public class RoleDto implements Serializable {
+public class Role implements Serializable {
 
   private static final long serialVersionUID = 8854898984097615669L;
 

@@ -2,7 +2,7 @@ package com.volunteer.api.data.user;
 
 import com.volunteer.api.data.user.mapping.CategoryDtoMapper;
 import com.volunteer.api.data.user.model.api.CategoryDtoV1;
-import com.volunteer.api.data.user.model.dto.Category;
+import com.volunteer.api.data.user.model.persistence.Category;
 import com.volunteer.api.data.user.service.CategoryService;
 import java.util.Collection;
 import lombok.RequiredArgsConstructor;

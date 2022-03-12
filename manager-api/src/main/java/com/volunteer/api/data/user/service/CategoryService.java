@@ -1,8 +1,8 @@
 package com.volunteer.api.data.user.service;
 
-import com.volunteer.api.data.user.model.dto.Category;
 import java.util.Collection;
 import java.util.List;
+import com.volunteer.api.data.user.model.persistence.Category;
 
 public interface CategoryService {
 

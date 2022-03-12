@@ -1,13 +1,14 @@
 package com.volunteer.api.data.user.service;
 
-import com.volunteer.api.data.user.model.dto.RoleDto;
-import java.util.Collection;
 import java.util.List;
+import com.volunteer.api.data.user.model.persistence.Role;
 
 public interface RoleService {
 
-  List<RoleDto> getAll();
+  List<Role> getAll();
 
-  RoleDto get(final String name);
+  Role get(final String name);
+
+  Role save(final Role role);
 
 }

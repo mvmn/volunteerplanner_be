@@ -2,9 +2,6 @@ package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import com.volunteer.api.data.user.model.dto.Category;
-import com.volunteer.api.data.user.service.CategoryService;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.volunteer.api.data.user.model.persistence.Category;
+import com.volunteer.api.data.user.service.CategoryService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Testcontainers

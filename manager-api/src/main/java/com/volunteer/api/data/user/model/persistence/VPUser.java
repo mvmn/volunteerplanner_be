@@ -1,4 +1,4 @@
-package com.volunteer.api.data.user.model.dto;
+package com.volunteer.api.data.user.model.persistence;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "\"user\"")
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto implements Serializable {
+public class VPUser implements Serializable {
 
   private static final long serialVersionUID = 6222614224950722720L;
 
@@ -41,7 +41,7 @@ public class UserDto implements Serializable {
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "role_id")
-  private RoleDto role;
+  private Role role;
 
   @Column(name = "full_name")
   private String fullName;

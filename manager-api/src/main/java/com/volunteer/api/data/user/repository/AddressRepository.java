@@ -1,9 +1,8 @@
 package com.volunteer.api.data.user.repository;
 
-import com.volunteer.api.data.user.model.dto.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
+import com.volunteer.api.data.user.model.persistence.Address;
 import java.util.List;
 import java.util.Optional;
 

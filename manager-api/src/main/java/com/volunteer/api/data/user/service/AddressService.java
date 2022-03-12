@@ -1,10 +1,9 @@
 package com.volunteer.api.data.user.service;
 
-import com.volunteer.api.data.user.model.dto.Address;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import com.volunteer.api.data.user.model.persistence.Address;
 
 public interface AddressService {
     Collection<Address> getAll();
