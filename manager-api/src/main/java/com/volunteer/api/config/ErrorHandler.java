@@ -23,7 +23,7 @@ public class ErrorHandler {
 
   @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-  public ErrorResponse handleIllegalStateException(IllegalStateException exception) {
+  public ErrorResponse handle(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 
