@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.volunteer.api.data.user.model.api.ErrorResponse;
 import com.volunteer.api.error.ObjectNotFoundException;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class ErrorHandler {
   @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -28,7 +30,7 @@ public class ErrorHandler {
   }
 
 
-  @ExceptionHandler(ObjectNotFoundException.class)
+  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
