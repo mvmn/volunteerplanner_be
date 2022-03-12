@@ -64,6 +64,11 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public List<Task> getTasksByIds(List<Integer> taskIds) {
+    return taskRepository.findAllById(taskIds);
+  }
+
+  @Override
   public void verify(int taskId) {
     Task task = getById(taskId);
     if (task.getStatus() == TaskStatus.NEW) {

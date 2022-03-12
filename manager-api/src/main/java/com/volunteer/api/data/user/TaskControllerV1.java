@@ -45,6 +45,12 @@ public class TaskControllerV1 {
         .collect(Collectors.toList());
   }
 
+  @GetMapping("/batch/{taskIds}")
+  public List<TaskDtoV1> getTasksByIds(@PathVariable("taskIds") List<Integer> taskIds) {
+    return taskService.getTasksByIds(taskIds).stream().map(taskMapper::map)
+        .collect(Collectors.toList());
+  }
+
   @GetMapping("{taskId}")
   public TaskDtoV1 getTaskById(@PathVariable("taskId") Integer taskId) {
     return taskService.getTaskById(taskId).map(taskMapper::map)

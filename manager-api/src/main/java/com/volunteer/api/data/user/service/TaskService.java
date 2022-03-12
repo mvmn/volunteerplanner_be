@@ -7,16 +7,17 @@ import com.volunteer.api.data.user.model.persistence.Task;
 
 public interface TaskService {
 
+  Optional<Task> getTaskById(int taskId);
+
+  List<Task> getTasksByIds(List<Integer> taskIds);
+
   Task createTask(Task task);
 
-  Optional<Task> getTaskById(int taskId);
+  List<Task> batchCreate(Task blueprint, List<TaskDetalization> details);
 
   void verify(int taskId);
 
   void reject(int taskId);
 
   void complete(int taskId);
-
-  List<Task> batchCreate(Task blueprint, List<TaskDetalization> details);
-
 }
