@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @JsonPropertyOrder({"id", "userName", "phoneNumber", "password", "role", "fullName", "email"})
 @JsonInclude(Include.NON_NULL)
-public class UserV1 {
+public class UserDtoV1 {
 
   @JsonProperty("id")
   private Integer id;

@@ -2,7 +2,7 @@ package com.volunteer.api.data.user;
 
 import com.volunteer.api.data.user.mapping.AddressDtoMapper;
 import com.volunteer.api.data.user.model.api.AddressDtoV1;
-import com.volunteer.api.data.user.model.dto.Address;
+import com.volunteer.api.data.user.model.persistence.Address;
 import com.volunteer.api.data.user.service.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

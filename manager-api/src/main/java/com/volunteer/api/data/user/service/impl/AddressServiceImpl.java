@@ -1,6 +1,6 @@
 package com.volunteer.api.data.user.service.impl;
 
-import com.volunteer.api.data.user.model.dto.Address;
+import com.volunteer.api.data.user.model.persistence.Address;
 import com.volunteer.api.data.user.repository.AddressRepository;
 import com.volunteer.api.data.user.service.AddressService;
 import org.apache.commons.lang3.StringUtils;
