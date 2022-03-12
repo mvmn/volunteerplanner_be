@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,15 +35,15 @@ public class Task implements Serializable {
   @Column(name = "customer", length = 255, nullable = false)
   private String customer;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "store_address_id")
   private Address storeAddress;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "customer_address_id")
   private Address customerAddress;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "product_id")
   private Product product;
 
@@ -64,21 +65,21 @@ public class Task implements Serializable {
   @Column(name = "status_id", nullable = false)
   private TaskStatus status;
 
-  @ManyToOne(optional = false)
+  @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by")
   private VPUser createdBy;
 
   @Column(name = "created_at", nullable = false)
   private ZonedDateTime createdAt;
 
-  @ManyToOne(optional = true)
+  @ManyToOne(optional = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "verified_by")
   private VPUser verifiedBy;
 
   @Column(name = "verified_at", nullable = true)
   private ZonedDateTime verifiedAt;
 
-  @ManyToOne(optional = true)
+  @ManyToOne(optional = true, fetch = FetchType.LAZY)
   @JoinColumn(name = "closed_by")
   private VPUser closedBy;
 
