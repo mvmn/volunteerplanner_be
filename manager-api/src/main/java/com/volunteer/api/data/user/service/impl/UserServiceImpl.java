@@ -3,11 +3,9 @@ package com.volunteer.api.data.user.service.impl;
 import com.volunteer.api.data.user.model.persistence.VPUser;
 import com.volunteer.api.data.user.repository.UserRepository;
 import com.volunteer.api.data.user.service.AddressService;
-import com.volunteer.api.data.user.service.AuthService;
 import com.volunteer.api.data.user.service.RoleService;
 import com.volunteer.api.data.user.service.UserService;
 import com.volunteer.api.error.InvalidPasswordException;
-import com.volunteer.api.error.ObjectAlreadyExistsException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -86,11 +84,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   @Override
   @Transactional
   public VPUser create(final VPUser user) {
-    final Optional<VPUser> current = get(user.getUserName());
-    if (current.isPresent()) {
-      throw new ObjectAlreadyExistsException(String.format(
-          "User with '%s' username already exists", user.getUserName()));
-    }
+    // userName uniqueness detection moved on DB layer
+    // proper exception handling is implemented
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRole(roleService.get(user.getRole().getName()));
