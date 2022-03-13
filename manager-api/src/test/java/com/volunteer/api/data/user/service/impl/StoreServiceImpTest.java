@@ -2,16 +2,15 @@ package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import com.volunteer.api.data.user.model.persistence.Address;
-import com.volunteer.api.data.user.model.persistence.Store;
-import com.volunteer.api.data.user.service.AddressService;
-import com.volunteer.api.data.user.service.StoreService;
+import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Collection;
+import com.volunteer.api.data.model.persistence.Address;
+import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.data.service.StoreService;
+import com.volunteer.api.service.AddressService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers

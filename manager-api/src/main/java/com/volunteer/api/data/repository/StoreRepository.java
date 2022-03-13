@@ -1,4 +1,4 @@
-package com.volunteer.api.data.user.repository;
+package com.volunteer.api.data.repository;
 
 import java.util.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
