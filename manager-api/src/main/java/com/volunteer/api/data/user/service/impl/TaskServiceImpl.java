@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,30 +88,29 @@ public class TaskServiceImpl implements TaskService {
     Set<Integer> unfitTasksIds = Collections.emptySet();
     Consumer<Task> taskProcessor = task -> {
     };
+    Predicate<Task> unfitTasksCondition = task -> false;
     switch (status) {
       case VERIFIED:
         // If task is not new or already verified - we can't verify it
-        unfitTasksIds = tasks.stream().filter(
-            task -> task.getStatus() != TaskStatus.NEW && task.getStatus() != TaskStatus.VERIFIED)
-            .map(Task::getId).collect(Collectors.toSet());
+        unfitTasksCondition =
+            task -> task.getStatus() != TaskStatus.NEW && task.getStatus() != TaskStatus.VERIFIED;
         taskProcessor = taskProcessorSetVerifyData(currentUser, now);
         break;
       case COMPLETED:
         // If task is not verified or already completed - we can't complete it
-        unfitTasksIds = tasks.stream()
-            .filter(task -> task.getStatus() != TaskStatus.VERIFIED
-                && task.getStatus() != TaskStatus.COMPLETED)
-            .map(Task::getId).collect(Collectors.toSet());
+        unfitTasksCondition = task -> task.getStatus() != TaskStatus.VERIFIED
+            && task.getStatus() != TaskStatus.COMPLETED;
         taskProcessor = taskProcessorSetCloseData(currentUser, now);
         break;
       case REJECTED:
         // If task is already completed - we can't reject it
-        unfitTasksIds = tasks.stream().filter(task -> task.getStatus() == TaskStatus.COMPLETED)
-            .map(Task::getId).collect(Collectors.toSet());
+        unfitTasksCondition = task -> task.getStatus() == TaskStatus.COMPLETED;
         taskProcessor = taskProcessorSetCloseData(currentUser, now);
         break;
       default:
     }
+    unfitTasksIds =
+        tasks.stream().filter(unfitTasksCondition).map(Task::getId).collect(Collectors.toSet());
 
     if (!unfitTasksIds.isEmpty()) {
       throw new IllegalStateException("Not allowed to change task(s) "
