@@ -6,13 +6,14 @@ import java.util.Optional;
 import com.volunteer.api.data.user.model.persistence.Address;
 
 public interface AddressService {
-    Collection<Address> getAll();
 
-    Optional<Address> get(final Integer id);
+  Collection<Address> getAll();
 
-    Address save(final Address address);
+  Optional<Address> get(final Integer id);
 
-    List<String> getDictinctRegions(String region);
+  Address getOrCreate(final Address address);
 
-    List<String> getDictinctCities(String city);
+  List<String> getRegions(String region);
+
+  List<String> getCities(String city);
 }

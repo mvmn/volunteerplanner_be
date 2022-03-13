@@ -10,8 +10,10 @@ import lombok.Data;
 @JsonPropertyOrder({"id", "region", "city", "address"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class AddressDtoV1 {
-    private Integer id;
-    private String region;
-    private String city;
-    private String address;
+
+  private Integer id;
+  private String region;
+  private String city;
+  private String address;
+
 }
