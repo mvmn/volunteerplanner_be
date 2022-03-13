@@ -2,7 +2,8 @@ spring:
   application:
     name: "manager-api"
   datasource:
-    url: jdbc:tc:postgresql:13.6:///test_database
+    url: 'jdbc:tc:postgresql:13.6:///test_database'
+    driverClassName: 'org.testcontainers.jdbc.ContainerDatabaseDriver'
     username: user
     password: password
   jpa:
