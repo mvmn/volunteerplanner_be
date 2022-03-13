@@ -1,6 +1,6 @@
 package com.volunteer.api.config;
 
-import com.volunteer.api.data.user.model.api.ErrorResponse;
+import com.volunteer.api.data.model.api.ErrorResponse;
 import com.volunteer.api.error.ObjectNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
