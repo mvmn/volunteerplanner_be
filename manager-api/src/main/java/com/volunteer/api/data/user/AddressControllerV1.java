@@ -34,27 +34,27 @@ public class AddressControllerV1 {
 
     @PostMapping
     public ResponseEntity<AddressDtoV1> create(@RequestBody final AddressDtoV1 address) {
-        AddressDtoV1 result = AddressDtoMapper.map(addressService.save(AddressDtoMapper.map(address)));
+        AddressDtoV1 result = AddressDtoMapper.map(addressService.getOrCreate(AddressDtoMapper.map(address)));
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @GetMapping(path = "/regions")
     public ResponseEntity<List<String>> getRegions() {
-        return ResponseEntity.ok(addressService.getDictinctRegions(null));
+        return ResponseEntity.ok(addressService.getRegions(null));
     }
 
     @GetMapping(path = "/regions/{region}")
     public ResponseEntity<List<String>> getRegions(@PathVariable("region") final String region) {
-        return ResponseEntity.ok(addressService.getDictinctRegions(region));
+        return ResponseEntity.ok(addressService.getRegions(region));
     }
 
     @GetMapping(path = "/cities")
     public ResponseEntity<List<String>> getAllCities() {
-        return ResponseEntity.ok(addressService.getDictinctCities(null));
+        return ResponseEntity.ok(addressService.getCities(null));
     }
 
     @GetMapping(path = "/cities/{city}")
     public ResponseEntity<List<String>> getCities(@PathVariable("city") final String city) {
-        return ResponseEntity.ok(addressService.getDictinctCities(city));
+        return ResponseEntity.ok(addressService.getCities(city));
     }
 }

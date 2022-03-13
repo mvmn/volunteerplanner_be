@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<Address, Integer> {
+
     Optional<Address> findByRegionAndCityAndAddress(String region, String city, String address);
 
     @Query("select distinct a.region from Address a where a.region like ?1% order by a.region")

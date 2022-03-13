@@ -2,7 +2,9 @@ package com.volunteer.api.data.user.mapping;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import com.volunteer.api.data.user.model.api.TaskDetalizationDtoV1;
 import com.volunteer.api.data.user.model.api.TaskDtoV1;
+import com.volunteer.api.data.user.model.domain.TaskDetalization;
 import com.volunteer.api.data.user.model.persistence.Task;
 
 @Mapper(componentModel = "spring", uses = GenericMapper.class)
@@ -24,4 +26,8 @@ public interface TaskV1Mapper {
   @Mapping(source = "closedByUserId", target = "closedBy")
   @Mapping(target = "version", ignore = true)
   Task map(TaskDtoV1 dto);
+
+  TaskDetalization map(TaskDetalizationDtoV1 dto);
+
+  Task clone(Task task);
 }
