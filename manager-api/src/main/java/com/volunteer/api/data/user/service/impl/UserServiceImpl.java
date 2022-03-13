@@ -32,7 +32,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService, UserDetailsService, AuthService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
   private final UserRepository repository;
 
@@ -96,11 +96,7 @@ public class UserServiceImpl implements UserService, UserDetailsService, AuthSer
     user.setRole(roleService.get(user.getRole().getName()));
     user.setAddress(addressService.getOrCreate(user.getAddress()));
 
-    try {
-      return repository.save(user);
-    } catch (final Exception exception) {
-      throw exception;
-    }
+    return repository.save(user);
   }
 
   @Override

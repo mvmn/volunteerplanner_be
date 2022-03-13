@@ -32,6 +32,20 @@ public class UserControllerV1 {
   private final UserService service;
   private final UserV1Mapper userV1Mapper;
 
+  // access for anybody
+  @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
+  public UserDtoV1 create(@Valid @RequestBody final UserDtoV1 source) {
+    return userV1Mapper.map(service.create(userV1Mapper.map(source)));
+  }
+
+  @PutMapping("/password/reset")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void passwordReset(@NotBlank @RequestParam(name = "userName") final String username) {
+    service.passwordReset(username);
+  }
+
+  // access for root & operator only
   @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
@@ -39,24 +53,11 @@ public class UserControllerV1 {
     return userV1Mapper.map(service.getAll());
   }
 
+  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 getById(@PathVariable("id") final Integer userId) {
     return userV1Mapper.map(service.get(userId));
-  }
-
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  // permits access for not authorized users
-  public UserDtoV1 create(@Valid @RequestBody final UserDtoV1 source) {
-    return userV1Mapper.map(service.create(userV1Mapper.map(source)));
-  }
-
-  @PutMapping
-  @ResponseStatus(HttpStatus.OK)
-  // permits access for authorized users. profile update is allowed by oneself ONLY
-  public UserDtoV1 update(@Valid @RequestBody final UserDtoV1 source) {
-    return userV1Mapper.map(service.update(userV1Mapper.map(source)));
   }
 
   @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
@@ -80,29 +81,33 @@ public class UserControllerV1 {
     return userV1Mapper.map(service.unlock(userId));
   }
 
-  @PutMapping("/password/change")
+  // access for current user ONLY
+  @GetMapping("/current")
+  @ResponseStatus(HttpStatus.OK)
+  public UserDtoV1 getCurrent() {
+    return userV1Mapper.map(service.getCurrentUser());
+  }
+
+  @PutMapping("/current")
+  @ResponseStatus(HttpStatus.OK)
+  public UserDtoV1 update(@Valid @RequestBody final UserDtoV1 source) {
+    return userV1Mapper.map(service.update(userV1Mapper.map(source)));
+  }
+
+  @PutMapping("/current/password/change")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  // for logged in user only
   public void passwordChange(@Valid @RequestBody final PasswordChangeDtoV1 source) {
     service.passwordChange(source.getOldPassword(), source.getNewPassword());
   }
 
-  @PutMapping("/password/reset")
+  @GetMapping("/current/sms")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void passwordReset(@NotBlank @RequestParam(name = "userName") final String username) {
-    service.passwordReset(username);
-  }
-
-  @GetMapping("/sms")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  // for logged in user only
   public void verifyPhoneNumberStart() {
     service.verifyPhoneNumberStart();
   }
 
-  @PostMapping("/sms")
+  @PostMapping("/current/sms")
   @ResponseStatus(HttpStatus.OK)
-  // for logged in user only
   public UserDtoV1 verifyPhoneNumberComplete(
       @Valid @RequestBody final PhoneVerificationDtoV1 source) {
     return userV1Mapper.map(service.verifyPhoneNumberComplete(source.getCode()));

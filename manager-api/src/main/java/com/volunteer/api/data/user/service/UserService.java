@@ -4,7 +4,7 @@ import com.volunteer.api.data.user.model.persistence.VPUser;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService {
+public interface UserService extends AuthService {
 
   List<VPUser> getAll();
 
