@@ -24,7 +24,7 @@ public class StoreServiceImpTest {
   public void crudOperationsTest() {
     // Create
     Address address = Address.builder().city("c1").region("r1").address("a1").build();
-    address = addressService.save(address);
+    address = addressService.getOrCreate(address);
 
     Store store =
         Store.builder()
