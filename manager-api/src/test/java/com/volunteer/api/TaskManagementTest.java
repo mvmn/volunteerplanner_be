@@ -1,6 +1,8 @@
 package com.volunteer.api;
 
 import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -12,7 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.TaskBatchDtoV1;
+import com.volunteer.api.data.model.api.TaskDetalizationDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Category;
@@ -40,6 +46,9 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   @Autowired
   private TaskService taskService;
 
+  @Autowired
+  private TaskRepository taskRepository;
+
   @BeforeAll
   public static void initTestData(@Autowired StoreService storeService,
       @Autowired AddressService addressService, @Autowired ProductRepository productRepository,
@@ -55,6 +64,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
   @Test
   public void testTaskCrud() throws Exception {
+    Assert.assertEquals(0, taskRepository.count());
     String token = loginAsOperator().getRefreshToken();
 
     // Test get and batch get of non-existing tasks
@@ -73,6 +83,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     TaskDtoV1 response = createTask(token);
     Assert.assertNotNull(response.getId());
     Assert.assertEquals(TaskStatus.NEW, response.getStatus());
+    Assert.assertEquals(1, taskRepository.count());
 
     // Get existing task
     int taskId = response.getId();
@@ -89,8 +100,12 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         (getResponse.getCreatedAt().longValue() - ZonedDateTime.now().toEpochSecond()) < 180L);
 
     // Create more and bulk get
-    int taskId2 = createTask(token).getId();
-    int taskId3 = createTask(token).getId();
+    List<TaskDtoV1> batchCreatedTasks =
+        batchCreateTasks(token).stream().collect(Collectors.toList());
+    Assert.assertEquals(2, batchCreatedTasks.size());
+    Assert.assertEquals(3, taskRepository.count());
+    int taskId2 = batchCreatedTasks.get(0).getId();
+    int taskId3 = batchCreatedTasks.get(1).getId();
 
     mockMvc
         .perform(MockMvcRequestBuilders.get("/tasks/batch/" + Stream.of(taskId, taskId2, taskId3)
@@ -99,6 +114,26 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.isA(List.class)))
         .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.hasSize(3)));
+
+    // Complete on new unverified task should be rejected
+    mockMvc
+        .perform(MockMvcRequestBuilders.post("/tasks/" + taskId + "/complete")
+            .header("Authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
+    Assert.assertEquals(TaskStatus.NEW, taskService.getTaskById(taskId).get().getStatus());
+
+    // Verify task
+    mockMvc.perform(MockMvcRequestBuilders.post("/tasks/" + taskId + "/verify")
+        .header("Authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+    Assert.assertEquals(TaskStatus.VERIFIED, taskService.getTaskById(taskId).get().getStatus());
+
+    // Complete task
+    mockMvc
+        .perform(MockMvcRequestBuilders.post("/tasks/" + taskId + "/complete")
+            .header("Authorization", "Bearer " + token))
+        .andExpect(MockMvcResultMatchers.status().isOk());
+    Assert.assertEquals(TaskStatus.COMPLETED, taskService.getTaskById(taskId).get().getStatus());
 
     // Complete on new unverified task should be rejected
     mockMvc
@@ -135,5 +170,31 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .getContentAsByteArray();
     TaskDtoV1 response = objectMapper.readValue(responseBody, TaskDtoV1.class);
     return response;
+  }
+
+  protected Collection<TaskDtoV1> batchCreateTasks(String token) throws Exception {
+    TaskDtoV1 blueprint = TaskDtoV1.builder().customer("test")
+        .customerStoreId(storeService.getByName("Test").iterator().next().getId())
+        .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
+        .productMeasure("units").quantity(10).priority(1)
+        .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond()).productId(0).build();
+
+    int productId = productRepository.findAll().iterator().next().getId();
+    byte[] responseBody = mockMvc
+        .perform(MockMvcRequestBuilders.post("/tasks/batch")
+            .header("Authorization", "Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(objectMapper.writeValueAsBytes(TaskBatchDtoV1.builder().blueprint(blueprint)
+                .details(Arrays.asList(
+                    TaskDetalizationDtoV1.builder().productId(productId).quantity(20)
+                        .unitOfMeasure("units").build(),
+                    TaskDetalizationDtoV1.builder().productId(productId).quantity(30)
+                        .unitOfMeasure("units").build()))
+                .build())))
+        .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse()
+        .getContentAsByteArray();
+    GenericCollectionDtoV1<TaskDtoV1> response = objectMapper.readValue(responseBody,
+        new TypeReference<GenericCollectionDtoV1<TaskDtoV1>>() {});
+    return response.getItems();
   }
 }
