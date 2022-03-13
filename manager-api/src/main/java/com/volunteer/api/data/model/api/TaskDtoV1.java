@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
 @Data
-@JsonPropertyOrder({"id", "customer", "storeAddressId", "customerAddressId", "productId",
+@JsonPropertyOrder({"id", "customer", "volunteerStoreId", "customerStoreId", "productId",
     "quantity", "productMeasure", "priority", "deadlineDate", "note", "statusId", "createdByUserId",
     "createdAt", "verifiedByUserId", "verifiedAt", "closedByUserId", "closedAt", "quantityLeft"})
 @JsonInclude(Include.NON_NULL)
@@ -21,11 +21,11 @@ public class TaskDtoV1 {
   @JsonProperty("customer")
   private String customer;
   @NotNull(message = "cannot be empty")
-  @JsonProperty("storeAddressId")
-  private Integer storeAddressId;
+  @JsonProperty("volunteerStoreId")
+  private Integer volunteerStoreId;
   @NotNull(message = "cannot be empty")
-  @JsonProperty("customerAddressId")
-  private Integer customerAddressId;
+  @JsonProperty("customerStoreId")
+  private Integer customerStoreId;
   @NotNull(message = "cannot be empty")
   @JsonProperty("productId")
   private Integer productId;
