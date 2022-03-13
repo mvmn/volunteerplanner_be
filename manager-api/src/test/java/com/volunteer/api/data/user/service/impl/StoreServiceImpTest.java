@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Store;
@@ -14,6 +15,7 @@ import com.volunteer.api.service.AddressService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
+@ActiveProfiles("test")
 public class StoreServiceImpTest {
 
   @Autowired private StoreService storeService;
