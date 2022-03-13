@@ -1,5 +1,6 @@
 package com.volunteer.api.data.user.model.api;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -29,6 +30,7 @@ public class TaskDtoV1 {
   @JsonProperty("productId")
   private Integer productId;
   @NotNull(message = "cannot be empty")
+  @Min(value = 1, message = "cannot be less than one")
   @JsonProperty("quantity")
   private Integer quantity;
   @NotNull(message = "cannot be empty")
