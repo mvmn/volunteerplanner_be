@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.persistence.EntityNotFoundException;
+
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -63,7 +65,7 @@ public class ErrorHandler {
         .build();
   }
 
-  @ExceptionHandler(ObjectNotFoundException.class)
+  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();

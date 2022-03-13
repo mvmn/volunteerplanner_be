@@ -69,6 +69,7 @@ public class CategoryServiceImpl implements CategoryService {
 
   @Override
   public List<Category> getByName(String name) {
+    name = name.replace("*", "%");
     return repository.findAllByNameLike(StringUtils.defaultString(name) + "%");
   }
 

@@ -18,7 +18,7 @@ public final class JwtUtils {
   private static final Algorithm ALGORITHM = Algorithm.HMAC256(
       SECRET.getBytes(StandardCharsets.UTF_8));
 
-  private static final long ACCESS_TOKEN_TTL = TimeUnit.MINUTES.toMillis(10);
+  private static final long ACCESS_TOKEN_TTL = TimeUnit.MINUTES.toMillis(60);
   private static final long REFRESH_TOKEN_TTL = TimeUnit.HOURS.toMillis(12);
 
   private static final String CLAIM_ROLE = "role";

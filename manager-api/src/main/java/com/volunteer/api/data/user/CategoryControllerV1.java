@@ -45,7 +45,7 @@ public class CategoryControllerV1 {
   }
 
   @PutMapping(path = "/{id}")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   public CategoryDtoV1 update(@PathVariable("id") final Integer categoryId,
       @RequestBody final CategoryDtoV1 category) {
     final Category entity = categoryDtoMapper.map(category);

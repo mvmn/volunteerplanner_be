@@ -39,12 +39,11 @@ public class AddressServiceImpl implements AddressService {
 
   @Override
   public List<String> getRegions(String region) {
-    return repository.findDistinctRegions(StringUtils.defaultIfBlank(region, ""));
+    return repository.findDistinctRegions(StringUtils.defaultIfBlank(region, "").replace("*", "%"));
   }
 
   @Override
   public List<String> getCities(String city) {
-    return repository.findDistinctCities(StringUtils.defaultIfBlank(city, ""));
+    return repository.findDistinctCities(StringUtils.defaultIfBlank(city, "").replace("*", "%"));
   }
-
 }
