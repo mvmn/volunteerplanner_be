@@ -82,7 +82,7 @@ public class SubtaskServiceImpl implements SubtaskService {
 
   @Override
   public void complete(Integer subtaskId) {
-    Subtask subtask = subtaskRepository.getById(subtaskId);
+    Subtask subtask = findBySubtaskId(subtaskId);
     if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
       throw new InvalidStatusException("Subtask has invalid status: " + subtask.getStatus());
     }
@@ -95,7 +95,7 @@ public class SubtaskServiceImpl implements SubtaskService {
   @Transactional
   public void reject(Integer subtaskId) {
     // Update subtask
-    Subtask subtask = subtaskRepository.getById(subtaskId);
+    Subtask subtask = findBySubtaskId(subtaskId);
     if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
       throw new InvalidStatusException("Subtask has invalid status: " + subtask.getStatus());
     }
