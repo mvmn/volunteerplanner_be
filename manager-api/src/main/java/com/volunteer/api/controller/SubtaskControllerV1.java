@@ -7,6 +7,7 @@ import com.volunteer.api.service.SubtaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,6 +38,11 @@ public class SubtaskControllerV1 {
     @GetMapping("volunteer/{volunteerId}")
     public Collection<SubtaskGetDtoV1> getSubtaskByVolunteerId(@PathVariable("volunteerId") Integer volunteerId) {
         return subtaskDtoMapper.mapGet(subtaskService.findByVolunteerId(volunteerId));
+    }
+
+    @GetMapping("volunteer/me")
+    public Collection<SubtaskGetDtoV1> getMySubtask(Authentication authentication) {
+        return subtaskDtoMapper.mapGet(subtaskService.findByVolunteerPrincipal(authentication.getName()));
     }
 
     @PostMapping

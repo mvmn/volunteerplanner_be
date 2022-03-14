@@ -14,6 +14,8 @@ public interface SubtaskService {
 
     Collection<Subtask> findByVolunteerId(Integer volunteerId);
 
+    Collection<Subtask> findByVolunteerPrincipal(String principal);
+
     Subtask createSubtask(Subtask subtask);
 
     void complete(Integer subtaskId);
