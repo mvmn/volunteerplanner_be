@@ -1,6 +1,7 @@
 package com.volunteer.api.config;
 
 import com.volunteer.api.data.model.api.ErrorResponse;
+import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,6 +69,12 @@ public class ErrorHandler {
   @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
+    return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
+  }
+
+  @ExceptionHandler({InvalidStatusException.class})
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponse handleBadRequestException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 

@@ -2,7 +2,7 @@ ALTER TABLE "user"
 DROP COLUMN IF EXISTS verified;
 
 ALTER TABLE "user"
-ADD COLUMN version_num integer NOT NULL,
+ADD COLUMN version_num integer NOT NULL DEFAULT 0,
 ADD COLUMN phone_number_verified bool NOT NULL DEFAULT false,
 ADD COLUMN user_verified bool NOT NULL DEFAULT false,
 ADD COLUMN user_verified_by integer NULL,
