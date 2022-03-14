@@ -1,4 +1,4 @@
-package com.volunteer.api.data.service.impl;
+package com.volunteer.api.service.impl;
 
 import java.util.Collection;
 import org.apache.commons.lang3.StringUtils;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.AddressRepository;
 import com.volunteer.api.data.repository.StoreRepository;
-import com.volunteer.api.data.service.StoreService;
+import com.volunteer.api.service.StoreService;
 import com.volunteer.api.error.ObjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 

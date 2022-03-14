@@ -27,7 +27,7 @@ import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.data.repository.UserRepository;
-import com.volunteer.api.data.service.StoreService;
+import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.CategoryService;
 import com.volunteer.api.service.TaskService;
