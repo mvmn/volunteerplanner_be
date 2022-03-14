@@ -2,6 +2,7 @@ package com.volunteer.api.controller;
 
 import com.volunteer.api.data.mapping.SubtaskDtoMapper;
 import com.volunteer.api.data.model.api.SubtaskDtoV1;
+import com.volunteer.api.data.model.api.SubtaskGetDtoV1;
 import com.volunteer.api.service.SubtaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,23 +20,23 @@ public class SubtaskControllerV1 {
     private final SubtaskDtoMapper subtaskDtoMapper;
 
     @GetMapping("{subtaskId}")
-    public SubtaskDtoV1 getSubtaskById(@PathVariable("subtaskId") Integer subtaskId) {
-        return subtaskDtoMapper.map(subtaskService.findBySubtaskId(subtaskId));
+    public SubtaskGetDtoV1 getSubtaskById(@PathVariable("subtaskId") Integer subtaskId) {
+        return subtaskDtoMapper.mapGet(subtaskService.findBySubtaskId(subtaskId));
     }
 
     @GetMapping("task/{taskId}")
-    public Collection<SubtaskDtoV1> getSubtaskByTaskId(@PathVariable("taskId") Integer taskId) {
-        return subtaskDtoMapper.map(subtaskService.findByTaskId(taskId));
+    public Collection<SubtaskGetDtoV1> getSubtaskByTaskId(@PathVariable("taskId") Integer taskId) {
+        return subtaskDtoMapper.mapGet(subtaskService.findByTaskId(taskId));
     }
 
     @GetMapping("product/{productId}")
-    public Collection<SubtaskDtoV1> getSubtaskByProductId(@PathVariable("productId") Integer productId) {
-        return subtaskDtoMapper.map(subtaskService.findByProductId(productId));
+    public Collection<SubtaskGetDtoV1> getSubtaskByProductId(@PathVariable("productId") Integer productId) {
+        return subtaskDtoMapper.mapGet(subtaskService.findByProductId(productId));
     }
 
     @GetMapping("volunteer/{volunteerId}")
-    public Collection<SubtaskDtoV1> getSubtaskByVolunteerId(@PathVariable("volunteerId") Integer volunteerId) {
-        return subtaskDtoMapper.map(subtaskService.findByVolunteerId(volunteerId));
+    public Collection<SubtaskGetDtoV1> getSubtaskByVolunteerId(@PathVariable("volunteerId") Integer volunteerId) {
+        return subtaskDtoMapper.mapGet(subtaskService.findByVolunteerId(volunteerId));
     }
 
     @PostMapping
