@@ -21,7 +21,6 @@ public class SubtaskDtoV1 {
   @NotNull(message = "cannot be empty")
   private Integer quantity;
 
-  @NotNull(message = "cannot be empty")
   private SubtaskStatus status;
 
   private String note;
