@@ -112,6 +112,10 @@ public class TaskServiceImpl implements TaskService {
     task.setQuantityLeft(task.getQuantity());
     task.setCreatedAt(ZonedDateTime.now());
     task.setCreatedBy(authService.getCurrentUser());
+    task.setVerifiedBy(null);
+    task.setVerifiedAt(null);
+    task.setClosedBy(null);
+    task.setClosedAt(null);
     return task;
   }
 
