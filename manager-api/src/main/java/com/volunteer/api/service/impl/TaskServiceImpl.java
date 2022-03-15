@@ -9,12 +9,16 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.volunteer.api.data.mapping.TaskV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.domain.TaskDetalization;
 import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.data.model.persistence.TaskSearchSpecifications;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
@@ -33,6 +37,53 @@ public class TaskServiceImpl implements TaskService {
                                      // keep web layer separated
   private final AuthService authService; // TODO: consider moving this to controller to keep web
                                          // layer separated from business layer
+
+  @Override
+  public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
+      Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
+      Integer remainingQuantityMoreThan, boolean zeroQuantity, boolean excludeExpired,
+      Pageable pagingAndSorting) {
+    Specification<Task> searchSpec = null;
+
+    if (customer != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCustomer(customer));
+    }
+    if (productId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byProductId(productId));
+    }
+    if (volunteerStoreId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byVolunteerStoreId(volunteerStoreId));
+    }
+    if (customerStoreId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCustomerStoreId(customerStoreId));
+    }
+    if (statuses != null && !statuses.isEmpty()) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byStatuses(statuses));
+    }
+    if (categoryIds != null && !categoryIds.isEmpty()) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCategories(categoryIds));
+    }
+    if (zeroQuantity) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byRemainingQuantityZero());
+    } else if (remainingQuantityMoreThan != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byRemainingQuantityGreaterThan(remainingQuantityMoreThan));
+    }
+    if (excludeExpired) {
+      searchSpec =
+          TaskSearchSpecifications.addSpec(searchSpec, TaskSearchSpecifications.byNonExpired());
+    }
+
+    return searchSpec != null ? taskRepository.findAll(searchSpec, pagingAndSorting)
+        : Page.empty(pagingAndSorting);
+  }
 
   @Override
   public Task createTask(Task task) {
