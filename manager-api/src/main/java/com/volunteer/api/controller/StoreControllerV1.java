@@ -1,4 +1,4 @@
-package com.volunteer.api.data;
+package com.volunteer.api.controller;
 
 import java.util.Collection;
 import org.springframework.http.HttpStatus;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.volunteer.api.data.mapping.StoreDtoMapper;
 import com.volunteer.api.data.model.api.StoreDtoV1;
 import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.data.service.StoreService;
+import com.volunteer.api.service.StoreService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
