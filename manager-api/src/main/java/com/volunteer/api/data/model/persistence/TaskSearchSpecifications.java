@@ -50,7 +50,7 @@ public class TaskSearchSpecifications {
 
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.in(root.get("product").get("category").get("id")).in(categoryId);
+        return root.get("product").get("category").get("id").in(categoryId);
       }
     };
   }
@@ -83,7 +83,7 @@ public class TaskSearchSpecifications {
 
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.in(root.get("status")).in(statuses);
+        return root.get("status").in(statuses);
       }
     };
   }
@@ -127,7 +127,7 @@ public class TaskSearchSpecifications {
 
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return cb.lessThanOrEqualTo(root.get("deadlineDate"), ZonedDateTime.now().toEpochSecond());
+        return cb.greaterThanOrEqualTo(root.get("deadlineDate"), ZonedDateTime.now());
       }
     };
   }

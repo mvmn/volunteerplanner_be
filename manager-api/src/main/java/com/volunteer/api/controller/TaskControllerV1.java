@@ -120,7 +120,7 @@ public class TaskControllerV1 {
             : false,
         searchRequest.getExcludeExpired() != null ? searchRequest.getExcludeExpired().booleanValue()
             : false,
-        PageRequest.of(pageSize != null ? pageSize : 10, pageNumber != null ? pageNumber : 0,
+        PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize != null ? pageSize : 10,
             order));
     return searchResult.map(taskMapper::map);
   }
