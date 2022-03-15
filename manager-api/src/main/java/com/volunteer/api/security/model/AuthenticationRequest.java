@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AuthenticationRequest {
 
-  @JsonProperty("username")
+  @JsonProperty("userName")
   private String userName;
   @JsonProperty("password")
   private String password;

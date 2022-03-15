@@ -1,10 +1,12 @@
 package com.volunteer.api.config;
 
 import com.volunteer.api.data.model.api.ErrorResponse;
+import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -13,8 +15,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.persistence.EntityNotFoundException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -41,6 +41,12 @@ public class ErrorHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse handle(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
+  }
+
+  @ExceptionHandler({InvalidPasswordException.class})
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponse handle(InvalidPasswordException exception) {
+    return ErrorResponse.builder().errorMessage("Old password does not match current one").build();
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)
