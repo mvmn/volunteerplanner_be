@@ -82,7 +82,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     return searchSpec != null ? taskRepository.findAll(searchSpec, pagingAndSorting)
-        : Page.empty(pagingAndSorting);
+        : taskRepository.findAll(pagingAndSorting);
   }
 
   @Override
