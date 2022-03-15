@@ -102,7 +102,7 @@ public class TaskControllerV1 {
   }
 
   @PreAuthorize("hasAuthority('operator') or hasAuthority('volunteer')")
-  @PostMapping
+  @PostMapping("search")
   public Page<TaskDtoV1> search(@RequestBody @Valid TaskSearchDtoV1 searchRequest) {
     Integer pageSize = searchRequest.getPageSize();
     Integer pageNumber = searchRequest.getPageNumber();
