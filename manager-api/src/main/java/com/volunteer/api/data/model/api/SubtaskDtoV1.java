@@ -6,6 +6,8 @@ import com.volunteer.api.data.model.SubtaskStatus;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @JsonPropertyOrder({"id", "productId", "quantity", "status", "note", "transportRequired", "volunteerId", "taskId"})
@@ -13,16 +15,20 @@ import lombok.Data;
 public class SubtaskDtoV1 {
   private Integer id;
 
+  @NotNull(message = "cannot be empty")
   private Integer productId;
 
+  @NotNull(message = "cannot be empty")
   private Integer quantity;
 
+  @NotNull(message = "cannot be empty")
   private SubtaskStatus status;
 
   private String note;
 
   private boolean transportRequired;
 
+  @NotNull(message = "cannot be empty")
   private Integer volunteerId;
 
   private Integer taskId;

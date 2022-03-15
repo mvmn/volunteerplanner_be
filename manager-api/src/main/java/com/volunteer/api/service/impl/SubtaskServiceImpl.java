@@ -8,6 +8,7 @@ import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.SubtaskRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.SubtaskService;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +66,7 @@ public class SubtaskServiceImpl implements SubtaskService {
     Task task = taskRepository.getById(subtask.getTask().getId());
     task.setQuantityLeft(task.getQuantityLeft() - subtask.getQuantity());
     if (task.getQuantityLeft() < 0) {
-      throw new InvalidStatusException("Quantity left should not be less than 0");
+      throw new InvalidQuantityException("Remaining quantity left should not be less than 0");
     }
     task = taskRepository.save(task);
 
@@ -83,8 +83,8 @@ public class SubtaskServiceImpl implements SubtaskService {
   @Override
   public void complete(Integer subtaskId) {
     Subtask subtask = findBySubtaskId(subtaskId);
-    if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
-      throw new InvalidStatusException("Subtask has invalid status: " + subtask.getStatus());
+    if (subtask.getStatus() == SubtaskStatus.REJECTED) {
+      throw new InvalidQuantityException("Subtask has invalid status: " + subtask.getStatus());
     }
     subtask.setStatus(SubtaskStatus.COMPLETED);
 
@@ -96,7 +96,7 @@ public class SubtaskServiceImpl implements SubtaskService {
   public void reject(Integer subtaskId) {
     // Update subtask
     Subtask subtask = findBySubtaskId(subtaskId);
-    if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
+    if (subtask.getStatus() == SubtaskStatus.COMPLETED) {
       throw new InvalidStatusException("Subtask has invalid status: " + subtask.getStatus());
     }
     subtask.setStatus(SubtaskStatus.REJECTED);

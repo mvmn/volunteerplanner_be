@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.volunteer.api.data.model.SubtaskStatus;
 import com.volunteer.api.data.model.persistence.*;
 import com.volunteer.api.data.repository.ProductRepository;
+import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.service.*;
 import org.junit.jupiter.api.Test;
@@ -103,7 +104,7 @@ public class SubtaskServiceImplTest {
     assertThat(updatedTask.get().getQuantityLeft()).isEqualTo(7);
 
     assertThrows(
-        InvalidStatusException.class, () -> subtaskService.complete(completedSubtask.getId()));
+        InvalidStatusException.class, () -> subtaskService.reject(completedSubtask.getId()));
 
     // Reject
     Subtask subtask2 =
@@ -125,7 +126,7 @@ public class SubtaskServiceImplTest {
     assertThat(updatedTask.get().getQuantityLeft()).isEqualTo(7);
 
     assertThrows(
-        InvalidStatusException.class, () -> subtaskService.reject(rejectedSubtask.getId()));
+        InvalidQuantityException.class, () -> subtaskService.complete(rejectedSubtask.getId()));
 
     // Find
     Collection<Subtask> foundSubtasks = subtaskService.findByProductId(product.getId());
