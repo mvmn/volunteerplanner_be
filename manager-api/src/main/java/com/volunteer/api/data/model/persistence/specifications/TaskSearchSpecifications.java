@@ -1,5 +1,6 @@
-package com.volunteer.api.data.model.persistence;
+package com.volunteer.api.data.model.persistence.specifications;
 
+import com.volunteer.api.data.model.persistence.Task;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import javax.persistence.criteria.CriteriaBuilder;

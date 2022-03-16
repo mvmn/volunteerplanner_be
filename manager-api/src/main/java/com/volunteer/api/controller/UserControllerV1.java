@@ -4,11 +4,16 @@ import com.volunteer.api.data.mapping.UserV1Mapper;
 import com.volunteer.api.data.model.api.PasswordChangeDtoV1;
 import com.volunteer.api.data.model.api.PhoneVerificationDtoV1;
 import com.volunteer.api.data.model.api.UserDtoV1;
+import com.volunteer.api.data.model.api.search.SearchDto;
+import com.volunteer.api.data.model.api.search.filter.FilterDto;
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.repository.search.impl.UserQueryBuilder;
 import com.volunteer.api.service.UserService;
-import java.util.Collection;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,10 +52,17 @@ public class UserControllerV1 {
 
   // access for root & operator only
   @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
-  @GetMapping
+  @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public Collection<UserDtoV1> getAll() {
-    return userV1Mapper.map(service.getAll());
+  public Page<UserDtoV1> getAll(@RequestBody @Valid final SearchDto<FilterDto> body) {
+    final Page<VPUser> result = service.getAll(new UserQueryBuilder()
+        .withPageNum(body.getPage())
+        .withPageSize(body.getPageSize())
+        .withFilter(body.getFilter())
+        .withSort(body.getSort())
+    );
+
+    return result.map(userV1Mapper::map);
   }
 
   @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
