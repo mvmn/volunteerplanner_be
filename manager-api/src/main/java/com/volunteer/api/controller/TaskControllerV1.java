@@ -3,6 +3,9 @@ package com.volunteer.api.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +19,7 @@ import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.TaskBatchDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
+import com.volunteer.api.data.model.api.TaskSearchDtoV1;
 import com.volunteer.api.data.model.domain.TaskDetalization;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.error.ObjectNotFoundException;
@@ -95,5 +99,29 @@ public class TaskControllerV1 {
   @PostMapping("batch/reject")
   public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
     taskService.batchStatusChange(taskIds.getItems(), TaskStatus.REJECTED);
+  }
+
+  @PreAuthorize("hasAuthority('operator') or hasAuthority('volunteer')")
+  @PostMapping("search")
+  public Page<TaskDtoV1> search(@RequestBody @Valid TaskSearchDtoV1 searchRequest) {
+    Integer pageSize = searchRequest.getPageSize();
+    Integer pageNumber = searchRequest.getPageNumber();
+
+    Sort order = Sort.by("deadlineDate").ascending();
+    if (searchRequest.getSortOrder() == TaskSearchDtoV1.SortOrder.PRIORITY) {
+      order = Sort.by("priority").descending();
+    }
+
+    Page<Task> searchResult = taskService.search(searchRequest.getCustomer(),
+        searchRequest.getProductId(), searchRequest.getVolunteerStoreId(),
+        searchRequest.getCustomerStoreId(), searchRequest.getStatuses(),
+        searchRequest.getCategoryIds(), searchRequest.getRemainingQuantityMoreThan(),
+        searchRequest.getZeroQuantity() != null ? searchRequest.getZeroQuantity().booleanValue()
+            : false,
+        searchRequest.getExcludeExpired() != null ? searchRequest.getExcludeExpired().booleanValue()
+            : false,
+        PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize != null ? pageSize : 10,
+            order));
+    return searchResult.map(taskMapper::map);
   }
 }
