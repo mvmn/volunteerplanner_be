@@ -1,4 +1,4 @@
-package com.volunteer.api.data.service;
+package com.volunteer.api.service;
 
 
 import java.util.Collection;

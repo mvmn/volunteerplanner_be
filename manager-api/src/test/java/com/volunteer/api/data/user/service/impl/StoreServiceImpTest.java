@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.data.service.StoreService;
+import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.AddressService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
