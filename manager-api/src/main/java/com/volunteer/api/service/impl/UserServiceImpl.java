@@ -167,6 +167,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     source.setLocked(false);
     source.setLockedBy(null);
+    source.setLockedByUserId(null);
     source.setLockedAt(null);
 
     return repository.save(source);
@@ -175,11 +176,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   @Override
   public void passwordChange(final String oldPassword, final String newPassword) {
     final VPUser user = getCurrentUser();
-    if (!user.getPassword().equals(passwordEncoder.encode(oldPassword))) {
+    if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
       throw new InvalidPasswordException();
     }
 
     user.setPassword(passwordEncoder.encode(newPassword));
+    repository.save(user);
   }
 
   @Override

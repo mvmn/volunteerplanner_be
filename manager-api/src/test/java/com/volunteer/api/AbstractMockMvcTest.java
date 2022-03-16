@@ -33,8 +33,15 @@ public class AbstractMockMvcTest {
   @BeforeAll
   public static void init(@Autowired UserService userService, @Autowired RoleService roleService,
       @Autowired AddressService addressService) {
+    // executes for each test suite
+    // create only if user does not exist
+    final String userName = "op";
+    if (userService.get(userName).isPresent()) {
+      return;
+    }
+
     VPUser user = new VPUser();
-    user.setUserName("op");
+    user.setUserName(userName);
     user.setFullName("op");
     user.setPhoneNumber("12345");
     user.setUserVerified(true);
