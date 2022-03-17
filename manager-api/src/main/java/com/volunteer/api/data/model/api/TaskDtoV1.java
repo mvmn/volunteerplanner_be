@@ -1,12 +1,13 @@
 package com.volunteer.api.data.model.api;
 
+import java.math.BigDecimal;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.volunteer.api.data.model.TaskStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.volunteer.api.data.model.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,7 +39,7 @@ public class TaskDtoV1 {
   @NotNull(message = "cannot be empty")
   @Min(value = 1, message = "cannot be less than one")
   @JsonProperty("quantity")
-  private Integer quantity;
+  private BigDecimal quantity;
   @NotNull(message = "cannot be empty")
   @JsonProperty("productMeasure")
   private String productMeasure;
@@ -65,5 +66,5 @@ public class TaskDtoV1 {
   @JsonProperty("closedAt")
   private Long closedAt;
   @JsonProperty("quantityLeft")
-  private Integer quantityLeft;
+  private BigDecimal quantityLeft;
 }

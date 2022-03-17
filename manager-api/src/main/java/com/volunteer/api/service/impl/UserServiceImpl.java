@@ -2,6 +2,8 @@ package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.data.repository.search.Query;
+import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
@@ -16,6 +18,7 @@ import java.util.function.Supplier;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -38,9 +41,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final RoleService roleService;
   private final AddressService addressService;
 
-  // TODO: add pagination and order / filter support
-  public List<VPUser> getAll() {
-    return repository.findAll(Sort.by(Order.asc("userName")));
+  public Page<VPUser> getAll(final QueryBuilder<VPUser> queryBuilder) {
+    final Query<VPUser> query = queryBuilder.build();
+    return repository.findAll(query.getSpecification(), query.getPageable());
   }
 
   @Override

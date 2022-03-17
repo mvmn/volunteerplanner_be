@@ -1,12 +1,12 @@
 package com.volunteer.api.data.model.api;
 
+import java.math.BigDecimal;
+import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.volunteer.api.data.model.SubtaskStatus;
 import lombok.Builder;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 @Builder
@@ -19,7 +19,7 @@ public class SubtaskDtoV1 {
   private Integer productId;
 
   @NotNull(message = "cannot be empty")
-  private Integer quantity;
+  private BigDecimal quantity;
 
   private SubtaskStatus status;
 

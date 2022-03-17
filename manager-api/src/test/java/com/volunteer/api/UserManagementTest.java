@@ -36,7 +36,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
-public class UserManagementTest {
+public class UserManagementTest extends AbstractTestWithPersistence {
 
   private static final ParameterizedTypeReference<JsonNode> JSON_NODE_TYPE_REFERENCE =
       new ParameterizedTypeReference<>() {

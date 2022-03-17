@@ -1,9 +1,7 @@
 package com.volunteer.api.service;
 
-import com.volunteer.api.data.model.persistence.Subtask;
-
 import java.util.Collection;
-import java.util.Optional;
+import com.volunteer.api.data.model.persistence.Subtask;
 
 public interface SubtaskService {
     Subtask findBySubtaskId(Integer subtaskId);

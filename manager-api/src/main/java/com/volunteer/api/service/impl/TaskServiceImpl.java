@@ -18,7 +18,7 @@ import com.volunteer.api.data.mapping.TaskV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.domain.TaskDetalization;
 import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.data.model.persistence.TaskSearchSpecifications;
+import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;

@@ -1,12 +1,13 @@
 package com.volunteer.api.service;
 
-import java.util.List;
-import java.util.Optional;
 import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.repository.search.QueryBuilder;
+import java.util.Optional;
+import org.springframework.data.domain.Page;
 
 public interface UserService extends AuthService {
 
-  List<VPUser> getAll();
+  Page<VPUser> getAll(final QueryBuilder<VPUser> queryBuilder);
 
   VPUser get(final Integer id);
 

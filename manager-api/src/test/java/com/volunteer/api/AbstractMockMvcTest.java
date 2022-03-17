@@ -23,7 +23,7 @@ import com.volunteer.api.service.UserService;
 @Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-public class AbstractMockMvcTest {
+public class AbstractMockMvcTest extends AbstractTestWithPersistence {
 
   @Autowired
   protected MockMvc mockMvc;

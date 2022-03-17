@@ -2,7 +2,7 @@ package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-
+import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
 import com.volunteer.api.data.model.persistence.*;
 import com.volunteer.api.data.repository.ProductRepository;
@@ -16,7 +16,7 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-public class SubtaskServiceImplTest {
+public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
   @Autowired private SubtaskService subtaskService;
   @Autowired private AddressService addressService;
   @Autowired private StoreService storeService;
@@ -61,7 +61,7 @@ public class SubtaskServiceImplTest {
     Task task = new Task();
     task.setCustomer("cust 1");
     task.setProduct(product);
-    task.setQuantity(10);
+    task.setQuantity(BigDecimal.TEN);
     task.setPriority(1);
     task.setProductMeasure("kg");
     task.setDeadlineDate(ZonedDateTime.now().plusDays(1));
@@ -77,7 +77,7 @@ public class SubtaskServiceImplTest {
     Subtask subtask1 =
         Subtask.builder()
             .product(product)
-            .quantity(3)
+            .quantity(BigDecimal.valueOf(3L))
             .note("st note")
             .volunteer(user)
             .task(task)
@@ -92,7 +92,7 @@ public class SubtaskServiceImplTest {
 
     Optional<Task> updatedTask = taskService.getTaskById(task.getId());
     assertTrue(updatedTask.isPresent());
-    assertThat(updatedTask.get().getQuantityLeft()).isEqualTo(7);
+    assertThat(updatedTask.get().getQuantityLeft().longValue()).isEqualTo(7L);
 
     // Complete
     subtaskService.complete(subtask1.getId());
@@ -101,7 +101,7 @@ public class SubtaskServiceImplTest {
 
     updatedTask = taskService.getTaskById(task.getId());
     assertTrue(updatedTask.isPresent());
-    assertThat(updatedTask.get().getQuantityLeft()).isEqualTo(7);
+    assertThat(updatedTask.get().getQuantityLeft().longValue()).isEqualTo(7L);
 
     assertThrows(
         InvalidStatusException.class, () -> subtaskService.reject(completedSubtask.getId()));
@@ -110,7 +110,7 @@ public class SubtaskServiceImplTest {
     Subtask subtask2 =
         Subtask.builder()
             .product(product)
-            .quantity(4)
+            .quantity(BigDecimal.valueOf(4L))
             .note("st note 2")
             .volunteer(user)
             .task(task)
@@ -123,7 +123,7 @@ public class SubtaskServiceImplTest {
     assertThat(rejectedSubtask.getStatus()).isEqualTo(SubtaskStatus.REJECTED);
     updatedTask = taskService.getTaskById(task.getId());
     assertTrue(updatedTask.isPresent());
-    assertThat(updatedTask.get().getQuantityLeft()).isEqualTo(7);
+    assertThat(updatedTask.get().getQuantityLeft().longValue()).isEqualTo(7L);
 
     assertThrows(
         InvalidQuantityException.class, () -> subtaskService.complete(rejectedSubtask.getId()));

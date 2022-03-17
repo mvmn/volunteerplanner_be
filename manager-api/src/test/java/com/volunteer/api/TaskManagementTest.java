@@ -1,5 +1,6 @@
 package com.volunteer.api;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,9 +28,9 @@ import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.data.repository.UserRepository;
-import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.CategoryService;
+import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.TaskService;
 
 public class TaskManagementTest extends AbstractMockMvcTest {
@@ -211,7 +212,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
             .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder().customer("test")
                 .customerStoreId(storeService.getByName("Test").iterator().next().getId())
                 .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
-                .productMeasure("units").quantity(10).priority(1)
+                .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
                 .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
                 .productId(productRepository.findAll().iterator().next().getId()).build())))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse()
@@ -224,7 +225,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     TaskDtoV1 blueprint = TaskDtoV1.builder().customer("test")
         .customerStoreId(storeService.getByName("Test").iterator().next().getId())
         .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
-        .productMeasure("units").quantity(10).priority(1)
+        .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
         .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond()).productId(0).build();
 
     int productId = productRepository.findAll().iterator().next().getId();

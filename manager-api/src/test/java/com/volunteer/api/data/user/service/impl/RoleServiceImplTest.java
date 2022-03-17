@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.persistence.Role;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.RoleService;
@@ -19,7 +20,7 @@ import com.volunteer.api.service.RoleService;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-public class RoleServiceImplTest {
+public class RoleServiceImplTest extends AbstractTestWithPersistence {
 
   @Autowired
   private RoleService service;
