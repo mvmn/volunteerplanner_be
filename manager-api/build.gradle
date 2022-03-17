@@ -51,6 +51,11 @@ dependencies {
     // common
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    
+    // logging
+    implementation 'ch.qos.logback:logback-classic'
+    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
 
     // test
     testImplementation "org.testcontainers:junit-jupiter:1.16.3"
