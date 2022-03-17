@@ -1,6 +1,7 @@
 package com.volunteer.api.data.model.persistence;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,7 +49,7 @@ public class Task implements Serializable {
   private Product product;
 
   @Column(name = "quantity", columnDefinition = "NUMERIC", nullable = false)
-  private Integer quantity;
+  private BigDecimal quantity;
 
   @Column(name = "product_measure", nullable = false, length = 100)
   private String productMeasure;
@@ -87,5 +88,5 @@ public class Task implements Serializable {
   private ZonedDateTime closedAt;
 
   @Column(name = "quantity_left", columnDefinition = "NUMERIC", nullable = false)
-  private Integer quantityLeft;
+  private BigDecimal quantityLeft;
 }
