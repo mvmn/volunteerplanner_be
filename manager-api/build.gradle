@@ -54,8 +54,9 @@ dependencies {
     
     // logging
     implementation 'ch.qos.logback:logback-classic'
-    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
-    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
+//    implementation 'ch.qos.logback.contrib:logback-json-classic:0.1.5'
+//    implementation 'ch.qos.logback.contrib:logback-jackson:0.1.5'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     // test
     testImplementation "org.testcontainers:junit-jupiter:1.16.3"
