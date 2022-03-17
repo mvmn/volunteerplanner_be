@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import java.math.BigDecimal;
 import java.util.Collection;
 
 @Service
@@ -64,8 +64,8 @@ public class SubtaskServiceImpl implements SubtaskService {
   public Subtask createSubtask(Subtask subtask) {
     // Update task.QuantityLeft
     Task task = taskRepository.getById(subtask.getTask().getId());
-    task.setQuantityLeft(task.getQuantityLeft() - subtask.getQuantity());
-    if (task.getQuantityLeft() < 0) {
+    task.setQuantityLeft(task.getQuantityLeft().subtract(subtask.getQuantity()));
+    if (task.getQuantityLeft().compareTo(BigDecimal.ZERO) <= 0) {
       throw new InvalidQuantityException("Remaining quantity left should not be less than 0");
     }
     task = taskRepository.save(task);
@@ -105,7 +105,7 @@ public class SubtaskServiceImpl implements SubtaskService {
 
     // Update task.QuantityLeft
     Task task = taskRepository.getById(result.getTask().getId());
-    task.setQuantityLeft(task.getQuantityLeft() + subtask.getQuantity());
+    task.setQuantityLeft(task.getQuantityLeft().add(subtask.getQuantity()));
     taskRepository.save(task);
   }
 }

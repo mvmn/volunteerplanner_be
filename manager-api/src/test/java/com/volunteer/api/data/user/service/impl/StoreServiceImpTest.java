@@ -8,15 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.StoreService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-public class StoreServiceImpTest {
+public class StoreServiceImpTest extends AbstractTestWithPersistence {
 
   @Autowired private StoreService storeService;
   @Autowired private AddressService addressService;

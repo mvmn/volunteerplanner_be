@@ -1,12 +1,21 @@
 package com.volunteer.api.data.model.persistence;
 
+import java.math.BigDecimal;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import com.volunteer.api.data.model.SubtaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -26,7 +35,7 @@ public class Subtask {
   private Product product;
 
   @Column(name = "quantity", columnDefinition = "NUMERIC", nullable = false)
-  private Integer quantity;
+  private BigDecimal quantity;
 
   @Column(name = "status_id", nullable = false)
   private SubtaskStatus status;
