@@ -87,14 +87,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-    final VPUser user = get(username).orElseThrow(() -> new UsernameNotFoundException(
-        String.format("User with name '%s' does not exist", username)));
+    final VPUser user = get(username).orElseThrow(
+        () -> new UsernameNotFoundException(String.format(
+            "User with name '%s' does not exist", username)));
 
-    final Collection<SimpleGrantedAuthority> authorities =
-        List.of(new SimpleGrantedAuthority(user.getRole().getName()));
+    final Collection<SimpleGrantedAuthority> authorities = List.of(
+        new SimpleGrantedAuthority(user.getRole().getName()));
 
-    return new User(user.getUserName(), user.getPassword(), true, true, true, !user.isLocked(),
-        authorities);
+    return new User(user.getUserName(), user.getPassword(), true, true,
+        true, !user.isLocked(), authorities);
   }
 
   @Override
