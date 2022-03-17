@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.volunteer.api.data.mapping.TaskV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
 import com.volunteer.api.data.model.api.TaskBatchDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
@@ -51,10 +52,10 @@ public class TaskControllerV1 {
     return GenericCollectionDtoV1.<TaskDtoV1>builder().items(createdTasks).build();
   }
 
-  @GetMapping("batch/{taskIds}")
+  @PostMapping("batchget")
   public GenericCollectionDtoV1<TaskDtoV1> getTasksByIds(
-      @PathVariable("taskIds") List<Integer> taskIds) {
-    List<TaskDtoV1> tasks = taskService.getTasksByIds(taskIds).stream().map(taskMapper::map)
+      @RequestBody @Valid IntegerIdsDtoV1 idsDto) {
+    List<TaskDtoV1> tasks = taskService.getTasksByIds(idsDto.getIds()).stream().map(taskMapper::map)
         .collect(Collectors.toList());
     return GenericCollectionDtoV1.<TaskDtoV1>builder().items(tasks).build();
   }
@@ -85,20 +86,20 @@ public class TaskControllerV1 {
 
   @PreAuthorize("hasAuthority('operator')")
   @PostMapping("batch/verify")
-  public void batchVerify(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.batchStatusChange(taskIds.getItems(), TaskStatus.VERIFIED);
+  public void batchVerify(@RequestBody IntegerIdsDtoV1 taskIds) {
+    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.VERIFIED);
   }
 
   @PreAuthorize("hasAuthority('operator')")
   @PostMapping("batch/complete")
-  public void batchComplete(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.batchStatusChange(taskIds.getItems(), TaskStatus.COMPLETED);
+  public void batchComplete(@RequestBody IntegerIdsDtoV1 taskIds) {
+    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.COMPLETED);
   }
 
   @PreAuthorize("hasAuthority('operator')")
   @PostMapping("batch/reject")
-  public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.batchStatusChange(taskIds.getItems(), TaskStatus.REJECTED);
+  public void batchReject(@RequestBody IntegerIdsDtoV1 taskIds) {
+    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.REJECTED);
   }
 
   @PreAuthorize("hasAuthority('operator') or hasAuthority('volunteer')")
