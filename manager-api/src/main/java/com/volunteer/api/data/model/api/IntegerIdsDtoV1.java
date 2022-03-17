@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class IntegerIdsDtoV1 {
   @JsonProperty("ids")
   @NotEmpty(message = "cannot be empty")
-  @Size(min = 1, max = 100, message = "allowed number of items is between 1 and 100")
+  @Size(max = 100, message = "maximum 100 IDs allowed")
   private List<Integer> ids;
 }
