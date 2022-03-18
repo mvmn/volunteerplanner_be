@@ -1,5 +1,6 @@
 package com.volunteer.api.audit;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ public class AuditInterceptor implements HandlerInterceptor {
     String queryString = request.getQueryString();
     String path =
         request.getRequestURI() + (StringUtils.isNotBlank(queryString) ? "?" + queryString : "");
+    MDC.put("REQUEST_ID", UUID.randomUUID().toString());
     MDC.put("REQUEST_ADDRESS", request.getRemoteAddr());
     MDC.put("REQUEST_METHOD", request.getMethod());
     MDC.put("REQUEST_PATH", path);
