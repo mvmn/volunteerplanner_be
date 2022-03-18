@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -18,9 +19,11 @@ import javax.validation.constraints.NotNull;
 public class ProductDtoV1 {
   private Integer id;
 
+  @NotBlank(message = "cannot be blank")
   @NotNull(message = "cannot be empty")
   private CategoryDtoV1 category;
 
+  @NotBlank(message = "cannot be blank")
   @NotNull(message = "cannot be empty")
   private String name;
 
