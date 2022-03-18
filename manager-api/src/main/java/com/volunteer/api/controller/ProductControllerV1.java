@@ -8,6 +8,7 @@ import com.volunteer.api.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class ProductControllerV1 {
 
   @PutMapping("{id}")
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
   public ProductDtoV1 update(
       @PathVariable("id") final Integer id, @RequestBody @Valid final ProductDtoV1 product) {
     Product entity = productDtoMapper.map(product);
@@ -38,6 +40,7 @@ public class ProductControllerV1 {
 
   @DeleteMapping("{id}")
   @ResponseStatus(HttpStatus.OK)
+  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
   public void delete(@PathVariable("id") final Integer id) {
     productService.delete(id);
   }
