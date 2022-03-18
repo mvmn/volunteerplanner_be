@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 public class ProductDtoV1 {
   private Integer id;
 
-  @NotBlank(message = "cannot be blank")
   @NotNull(message = "cannot be empty")
   private CategoryDtoV1 category;
 
