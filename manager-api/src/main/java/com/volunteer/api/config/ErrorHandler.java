@@ -12,6 +12,7 @@ import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -73,7 +74,7 @@ public class ErrorHandler {
         .build();
   }
 
-  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class})
+  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class, EmptyResultDataAccessException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
