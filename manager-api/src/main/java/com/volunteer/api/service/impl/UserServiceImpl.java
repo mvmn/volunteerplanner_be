@@ -1,5 +1,29 @@
 package com.volunteer.api.service.impl;
 
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.UserRepository;
 import com.volunteer.api.data.repository.search.Query;
@@ -9,27 +33,7 @@ import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.UserService;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Order;
-import org.springframework.security.access.AuthorizationServiceException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +52,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public VPUser get(final Integer id) {
-    return get(() -> repository.getById(id))
-        .orElseThrow(() -> new ObjectNotFoundException(String.format(
-            "User with ID '%d' does not exist", id)));
+    return get(() -> repository.getById(id)).orElseThrow(
+        () -> new ObjectNotFoundException(String.format("User with ID '%d' does not exist", id)));
   }
 
   @Override
@@ -59,16 +62,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
+  public String getCurrentUserName() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return auth != null ? (String) auth.getPrincipal() : null;
+  }
+
+  @Override
+  public Set<String> getCurrentUserRoles() {
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    return auth != null ? auth.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+        .collect(Collectors.toCollection(TreeSet::new)) : Collections.emptySet();
+  }
+
+  @Override
   // moved here to avoid circular dependencies
   public VPUser getCurrentUser() {
-    final String userName = (String) SecurityContextHolder.getContext().getAuthentication()
-        .getPrincipal();
+    String userName = getCurrentUserName();
     if (StringUtils.isEmpty(userName)) {
       throw new IllegalStateException("Username is missed in security context");
     }
 
-    return get(userName)
-        .orElseThrow(() -> new ObjectNotFoundException("Missing user " + userName));
+    return get(userName).orElseThrow(() -> new ObjectNotFoundException("Missing user " + userName));
   }
 
   @Override
@@ -189,8 +203,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public void passwordReset(final String username) {
-    final VPUser source = get(username).orElseThrow(() -> new ObjectNotFoundException(
-        String.format("User '%s' does not exist yet")));
+    // final VPUser source = get(username).orElseThrow(() -> new ObjectNotFoundException(
+    // String.format("User '%s' does not exist yet")));
 
     // generate random password & change it
     // use sms to supply it to user

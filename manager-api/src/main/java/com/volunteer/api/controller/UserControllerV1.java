@@ -11,7 +11,6 @@ import com.volunteer.api.data.repository.search.impl.UserQueryBuilder;
 import com.volunteer.api.service.UserService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
