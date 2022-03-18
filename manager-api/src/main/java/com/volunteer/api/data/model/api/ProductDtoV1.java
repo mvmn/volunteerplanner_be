@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -15,7 +17,12 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDtoV1 {
   private Integer id;
+
+  @NotNull(message = "cannot be empty")
   private CategoryDtoV1 category;
+
+  @NotNull(message = "cannot be empty")
   private String name;
+
   private String note;
 }

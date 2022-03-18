@@ -29,7 +29,7 @@ public class ProductControllerV1 {
   @PutMapping("{id}")
   @ResponseStatus(HttpStatus.OK)
   public ProductDtoV1 update(
-      @PathVariable("id") final Integer id, @RequestBody final ProductDtoV1 product) {
+      @PathVariable("id") final Integer id, @RequestBody @Valid final ProductDtoV1 product) {
     Product entity = productDtoMapper.map(product);
     entity.setId(id);
 
