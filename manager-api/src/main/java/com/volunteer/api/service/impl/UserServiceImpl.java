@@ -91,6 +91,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         () -> new UsernameNotFoundException(String.format(
             "User with name '%s' does not exist", username)));
 
+    // !!!! wrong implementation !!!!
+    // we have roles. we must define authorities like USER_GET, USER_LIST, USER_LOCK, USER_VERIFY, ...
+    // and map role to authority
+    // then use hasAuthority() with authority, not role
+    // so then
+    // - on each method we could set the right authority, not list of roles
+    // - if user not verified he / she won't have any authority so will be able to operate with own profile only
+    // thus permissions will be more granular and logically obvious
+
     final Collection<SimpleGrantedAuthority> authorities = List.of(
         new SimpleGrantedAuthority(user.getRole().getName()));
 
@@ -106,7 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRole(roleService.get(user.getRole().getName()));
-    user.setAddress(addressService.getOrCreate(user.getAddress()));
+    user.setCity(addressService.getCityById(user.getCity().getId()));
 
     return repository.save(user);
   }
@@ -127,7 +136,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     current.setFullName(user.getFullName());
     current.setEmail(user.getEmail());
-    current.setAddress(addressService.getOrCreate(user.getAddress()));
+    current.setCity(addressService.getCityById(user.getCity().getId()));
 
     return repository.save(current);
   }
@@ -227,6 +236,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // get code from cache & compare
     return current;
+  }
+
+  private boolean isVerified(final VPUser user) {
+    return user.isPhoneNumberVerified() && user.isUserVerified();
   }
 
   private Optional<VPUser> get(final Supplier<VPUser> supplier) {

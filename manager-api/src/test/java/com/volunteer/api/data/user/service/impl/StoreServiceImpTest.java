@@ -2,30 +2,36 @@ package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.volunteer.api.AbstractTestWithPersistence;
+import com.volunteer.api.data.model.persistence.Address;
+import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.StoreService;
 import java.util.Collection;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.volunteer.api.AbstractTestWithPersistence;
-import com.volunteer.api.data.model.persistence.Address;
-import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.StoreService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
 public class StoreServiceImpTest extends AbstractTestWithPersistence {
 
-  @Autowired private StoreService storeService;
-  @Autowired private AddressService addressService;
+  @Autowired
+  private StoreService storeService;
+  @Autowired
+  private AddressService addressService;
 
   @Test
   public void crudOperationsTest() {
     // Create
-    Address address = Address.builder().city("c1").region("r1").address("a1").build();
+    Address address = Address.builder()
+        .city(addressService.getCityById(12))
+        .address("a1")
+        .build();
     address = addressService.getOrCreate(address);
 
     Store store =

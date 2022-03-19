@@ -1,18 +1,17 @@
 package com.volunteer.api.data.mapping;
 
-import java.util.Collection;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import com.volunteer.api.data.model.api.UserDtoV1;
 import com.volunteer.api.data.model.persistence.Role;
 import com.volunteer.api.data.model.persistence.VPUser;
+import java.util.Collection;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public abstract class UserV1Mapper {
 
   @Mapping(target = "role", source = "role.name")
   @Mapping(target = "password", constant = "******")
-
   public abstract UserDtoV1 map(VPUser dto);
 
 

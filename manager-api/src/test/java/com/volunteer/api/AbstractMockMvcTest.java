@@ -1,5 +1,12 @@
 package com.volunteer.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.security.model.AuthenticationRequest;
+import com.volunteer.api.security.model.AuthenticationResponse;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,14 +17,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volunteer.api.data.model.persistence.Address;
-import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.security.model.AuthenticationRequest;
-import com.volunteer.api.security.model.AuthenticationResponse;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.RoleService;
-import com.volunteer.api.service.UserService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Testcontainers
@@ -47,7 +46,7 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
     user.setUserVerified(true);
     user.setPassword("pass");
     user.setRole(roleService.get("operator"));
-    user.setAddress(addressService.getOrCreate(new Address(null, "test", "test", "test")));
+    user.setCity(addressService.getCityById(10));
     userService.create(user);
   }
 

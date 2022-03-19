@@ -1,5 +1,6 @@
 package com.volunteer.api;
 
+import com.volunteer.api.data.model.persistence.City;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -56,8 +57,15 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   public static void initTestData(@Autowired StoreService storeService,
       @Autowired AddressService addressService, @Autowired ProductRepository productRepository,
       @Autowired CategoryService categoryService, @Autowired TaskRepository taskRepository) {
-    storeService.create(Store.builder().contactPerson("Test").name("Test")
-        .address(addressService.getOrCreate(new Address(null, "test", "test", "test"))).build());
+
+    storeService.create(Store.builder().name("Test")
+        .contactPerson("Test")
+        .address(addressService.getOrCreate(Address.builder()
+            .city(addressService.getCityById(10))
+            .address("test")
+            .build()))
+        .build());
+
     Product product = new Product();
     product.setName("Test");
     product.setCategory(categoryService.create(Category.builder().name("Test").build()));
@@ -110,9 +118,9 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     post(token, "/tasks/batchget",
         IntegerIdsDtoV1.builder().ids(Arrays.asList(taskId, taskId2, taskId3)).build())
-            .andExpect(MockMvcResultMatchers.status().isOk())
-            .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.isA(List.class)))
-            .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.hasSize(3)));
+        .andExpect(MockMvcResultMatchers.status().isOk())
+        .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.isA(List.class)))
+        .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.hasSize(3)));
 
     // Complete on new unverified task should be rejected
     post(token, "/tasks/" + taskId + "/complete", null)
@@ -139,21 +147,21 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     // Batch complete on new unverified task should be rejected
     post(token, "/tasks/batch/complete",
         IntegerIdsDtoV1.builder().ids(List.of(taskId2, taskId3)).build())
-            .andExpect(MockMvcResultMatchers.status().isBadRequest());
+        .andExpect(MockMvcResultMatchers.status().isBadRequest());
     Assert.assertEquals(TaskStatus.NEW, taskService.getTaskById(taskId2).get().getStatus());
     Assert.assertEquals(TaskStatus.NEW, taskService.getTaskById(taskId3).get().getStatus());
 
     // Batch verify tasks
     post(token, "/tasks/batch/verify",
         IntegerIdsDtoV1.builder().ids(List.of(taskId2, taskId3)).build())
-            .andExpect(MockMvcResultMatchers.status().isOk());
+        .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.getTaskById(taskId2).get().getStatus());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.getTaskById(taskId3).get().getStatus());
 
     // Batch complete tasks
     post(token, "/tasks/batch/complete",
         IntegerIdsDtoV1.builder().ids(List.of(taskId2, taskId3)).build())
-            .andExpect(MockMvcResultMatchers.status().isOk());
+        .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.getTaskById(taskId2).get().getStatus());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.getTaskById(taskId3).get().getStatus());
 
@@ -223,7 +231,8 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse()
         .getContentAsByteArray();
     GenericCollectionDtoV1<TaskDtoV1> response = objectMapper.readValue(responseBody,
-        new TypeReference<GenericCollectionDtoV1<TaskDtoV1>>() {});
+        new TypeReference<GenericCollectionDtoV1<TaskDtoV1>>() {
+        });
     return response.getItems();
   }
 }
