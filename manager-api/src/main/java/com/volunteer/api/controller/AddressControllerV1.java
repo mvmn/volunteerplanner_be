@@ -1,60 +1,57 @@
 package com.volunteer.api.controller;
 
-import com.volunteer.api.data.mapping.AddressDtoMapper;
-import com.volunteer.api.data.model.api.AddressDtoV1;
-import com.volunteer.api.data.model.persistence.Address;
+import com.volunteer.api.data.mapping.CityDtoMapper;
+import com.volunteer.api.data.mapping.RegionDtoMapper;
+import com.volunteer.api.data.model.api.CityDtoV1;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.RegionDtoV1;
 import com.volunteer.api.service.AddressService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(path = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AddressControllerV1 {
 
-    private final AddressService addressService;
+  private final AddressService addressService;
 
-    @Autowired
-    public AddressControllerV1(AddressService addressService) {
-        this.addressService = addressService;
-    }
+  private final RegionDtoMapper regionDtoMapper;
+  private final CityDtoMapper cityDtoMapper;
 
-    @GetMapping(path = "/{address-id}")
-    public ResponseEntity<AddressDtoV1> getById(@PathVariable("address-id") final Integer addressId) {
-        Optional<Address> address = addressService.get(addressId);
-        return address
-                .map(a -> ResponseEntity.ok(AddressDtoMapper.map(a)))
-                .orElse(ResponseEntity.notFound().build());
-    }
+  @GetMapping(path = "/regions")
+  @ResponseStatus(HttpStatus.OK)
+  public GenericCollectionDtoV1<RegionDtoV1> getRegions() {
+    return GenericCollectionDtoV1.<RegionDtoV1>builder()
+        .items(regionDtoMapper.map(addressService.getAllRegions()))
+        .build();
+  }
 
-    @PostMapping
-    public ResponseEntity<AddressDtoV1> create(@RequestBody final AddressDtoV1 address) {
-        AddressDtoV1 result = AddressDtoMapper.map(addressService.getOrCreate(AddressDtoMapper.map(address)));
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
+  @GetMapping(path = "/regions/{region-id}")
+  @ResponseStatus(HttpStatus.OK)
+  public RegionDtoV1 getRegion(@PathVariable("region-id") final Integer regionId) {
+    return regionDtoMapper.map(addressService.getRegionById(regionId));
+  }
 
-    @GetMapping(path = "/regions")
-    public ResponseEntity<List<String>> getRegions() {
-        return ResponseEntity.ok(addressService.getRegions(null));
-    }
+  @GetMapping(path = "/regions/{region-id}/cities")
+  @ResponseStatus(HttpStatus.OK)
+  public GenericCollectionDtoV1<CityDtoV1> getRegionCities(
+      @PathVariable("region-id") final Integer regionId) {
+    return GenericCollectionDtoV1.<CityDtoV1>builder()
+        .items(cityDtoMapper.map(addressService.getAllRegionCities(regionId)))
+        .build();
+  }
 
-    @GetMapping(path = "/regions/{region}")
-    public ResponseEntity<List<String>> getRegions(@PathVariable("region") final String region) {
-        return ResponseEntity.ok(addressService.getRegions(region));
-    }
+  @GetMapping(path = "/cities/{city-id}")
+  @ResponseStatus(HttpStatus.OK)
+  public CityDtoV1 getCity(@PathVariable("city-id") final Integer cityId) {
+    return cityDtoMapper.map(addressService.getCityById(cityId));
+  }
 
-    @GetMapping(path = "/cities")
-    public ResponseEntity<List<String>> getAllCities() {
-        return ResponseEntity.ok(addressService.getCities(null));
-    }
-
-    @GetMapping(path = "/cities/{city}")
-    public ResponseEntity<List<String>> getCities(@PathVariable("city") final String city) {
-        return ResponseEntity.ok(addressService.getCities(city));
-    }
 }

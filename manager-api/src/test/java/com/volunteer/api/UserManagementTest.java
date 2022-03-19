@@ -6,15 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.service.UserService;
 import com.volunteer.api.utils.JsonTestUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -43,7 +40,6 @@ public class UserManagementTest extends AbstractTestWithPersistence {
       };
 
   private static final String TEST_CASES_FILE_PATH = "data/user-mgmt-e2e-tests.json";
-  private static final Pattern URI_USERNAME_PATTERN = Pattern.compile("\\{(.*?)\\}");
 
   @Autowired
   private TestRestTemplate restTemplate;
@@ -64,7 +60,7 @@ public class UserManagementTest extends AbstractTestWithPersistence {
       assertNull(actual.getBody(), String.format("[%s] response body", testName));
     } else {
       Assertions.assertTrue(JsonTestUtils.equals(expectedBody, actual.getBody(),
-              Set.of("id", "userVerifiedByUserId", "userVerifiedAt", "lockedByUserId", "lockedAt")),
+              Set.of("userVerifiedAt", "lockedAt")),
           String.format("[%s] response body. \nExpected: '%s' \nActual:   '%s'", testName,
               JsonTestUtils.toJsonString(expectedBody),
               JsonTestUtils.toJsonString(actual.getBody())));
@@ -75,30 +71,8 @@ public class UserManagementTest extends AbstractTestWithPersistence {
     final Optional<String> token = authenticate(given.path("auth"));
 
     final JsonNode request = given.get("request");
-    return executeRequest(parseEndpointUri(request.get("endpoint").asText()),
+    return executeRequest(request.get("endpoint").asText(),
         request.get("method").asText(), token, request.path("body"));
-  }
-
-  private String parseEndpointUri(final String source) {
-    final StringBuilder result = new StringBuilder();
-    final Matcher matcher = URI_USERNAME_PATTERN.matcher(source);
-
-    int lastIndex = 0;
-    while (matcher.find()) {
-      final String userName = matcher.group(1);
-      final VPUser user = userService.get(userName)
-          .orElseThrow(() -> new RuntimeException(String.format(
-              "'%s' username is missed", userName)));
-
-      result.append(source, lastIndex, matcher.start()).append(user.getId());
-      lastIndex = matcher.end();
-    }
-
-    if (lastIndex < source.length()) {
-      result.append(source, lastIndex, source.length());
-    }
-
-    return result.toString();
   }
 
   private Optional<String> authenticate(final JsonNode request) {

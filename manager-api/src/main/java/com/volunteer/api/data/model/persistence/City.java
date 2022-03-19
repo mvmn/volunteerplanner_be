@@ -20,19 +20,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "address")
-public class Address {
+@Table(name = "city")
+public class City {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_generator")
-  @SequenceGenerator(name = "address_generator", sequenceName = "address_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_generator")
+  @SequenceGenerator(name = "city_generator", sequenceName = "city_id_seq", allocationSize = 1)
   @Column(name = "id")
   private Integer id;
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "city_id")
-  private City city;
+  @JoinColumn(name = "region_id")
+  private Region region;
 
-  @Column(name = "address")
-  private String address;
+  @Column(name = "name", nullable = false)
+  private String name;
+
 }

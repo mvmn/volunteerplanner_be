@@ -8,11 +8,7 @@ import java.util.Optional;
 
 public interface AddressRepository extends JpaRepository<Address, Integer> {
 
-    Optional<Address> findByRegionAndCityAndAddress(String region, String city, String address);
+    @Query("select a from Address a where a.city.id = ?1 and a.address = ?2")
+    Optional<Address> findByCityAndAddress(final Integer cityId, final String address);
 
-    @Query("select distinct a.region from Address a where a.region like ?1% order by a.region")
-    List<String> findDistinctRegions(String region);
-
-    @Query("select distinct a.city from Address a where a.city like ?1% order by a.city")
-    List<String> findDistinctCities(String city);
 }

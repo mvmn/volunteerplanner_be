@@ -15,4 +15,5 @@ public interface CategoryDtoMapper {
 
   @Mapping(target = "path", ignore = true)
   Category map(CategoryDtoV1 categoryDto);
+
 }
