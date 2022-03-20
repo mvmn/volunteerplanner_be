@@ -7,11 +7,11 @@ import org.springframework.data.domain.Page;
 
 public final class GenericPageDtoMapper {
 
-  public static <T, R> GenericPageDtoV1<R> map(final int page, final int pageSize,
+  public static <T, R> GenericPageDtoV1<R> map(final Integer page, final Integer pageSize,
       final Page<T> data, final Function<T, R> converter) {
     return GenericPageDtoV1.<R>builder()
-        .page(page)
-        .pageSize(pageSize)
+        .page(page != null ? page.intValue() : 0)
+        .pageSize(pageSize != null ? pageSize.intValue() : 100)
         .totalCount(data.getTotalElements())
         .items(data.stream()
             .map(converter::apply)
