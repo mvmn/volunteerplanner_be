@@ -1,39 +1,35 @@
 package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import java.util.Collection;
+
+import com.volunteer.api.AbstractTestWithPersistence;
+import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.StoreService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.volunteer.api.AbstractTestWithPersistence;
-import com.volunteer.api.data.model.persistence.Address;
-import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.StoreService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
 public class StoreServiceImpTest extends AbstractTestWithPersistence {
 
-  @Autowired private StoreService storeService;
-  @Autowired private AddressService addressService;
+  @Autowired
+  private StoreService storeService;
+  @Autowired
+  private AddressService addressService;
 
   @Test
   public void crudOperationsTest() {
-    // Create
-    Address address = Address.builder().city("c1").region("r1").address("a1").build();
-    address = addressService.getOrCreate(address);
-
     Store store =
         Store.builder()
             .name("st name")
-            .address(address)
+            .city(addressService.getCityById(12))
+            .address("address")
             .note("st note")
-            .contactPerson("c pers")
             .build();
 
     Store created = storeService.create(store);
@@ -43,31 +39,18 @@ public class StoreServiceImpTest extends AbstractTestWithPersistence {
     // Update
     created.setName(created.getName() + " u1");
     created.setNote(created.getNote() + " u1");
-    created.setContactPerson(created.getContactPerson() + " u1");
-    created.setAddress(Address.builder().id(address.getId()).build());
+    created.setAddress(created.getAddress() + " u1");
 
     Store updated = storeService.update(created);
     assertProperties(store, updated);
 
-    Store byId = storeService.getById(updated.getId());
+    Store byId = storeService.getById(updated.getId(), true);
     assertProperties(updated, byId);
-
-    Collection<Store> byName = storeService.getByName(updated.getName());
-    assertThat(byName.size()).isEqualTo(1);
-    assertProperties(updated, byName.iterator().next());
-
-    byName = storeService.getByName(updated.getName() + "absent");
-    assertTrue(byName.isEmpty());
-
-    Collection<Store> all = storeService.getAll();
-    assertThat(all.size()).isEqualTo(1);
-    assertProperties(updated, all.iterator().next());
   }
 
   private void assertProperties(Store expected, Store actual) {
     assertThat(actual.getName()).isEqualTo(expected.getName());
     assertThat(actual.getNote()).isEqualTo(expected.getNote());
-    assertThat(actual.getContactPerson()).isEqualTo(expected.getContactPerson());
-    assertThat(actual.getAddress().getId()).isEqualTo(expected.getAddress().getId());
+    assertThat(actual.getAddress()).isEqualTo(expected.getAddress());
   }
 }

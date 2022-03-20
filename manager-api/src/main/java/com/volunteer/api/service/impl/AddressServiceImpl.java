@@ -1,49 +1,44 @@
 package com.volunteer.api.service.impl;
 
-import com.volunteer.api.data.model.persistence.Address;
-import com.volunteer.api.data.repository.AddressRepository;
+import com.volunteer.api.data.model.persistence.City;
+import com.volunteer.api.data.model.persistence.Region;
+import com.volunteer.api.data.repository.CityRepository;
+import com.volunteer.api.data.repository.RegionRepository;
+import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class AddressServiceImpl implements AddressService {
 
-  private final AddressRepository repository;
+  private final RegionRepository regionRepository;
+  private final CityRepository cityRepository;
 
   @Override
-  public Collection<Address> getAll() {
-    return repository.findAll();
+  public List<Region> getAllRegions() {
+    return regionRepository.findAll(Sort.by(Order.asc("name")));
   }
 
   @Override
-  public Optional<Address> get(Integer id) {
-    return repository.findById(id);
+  public Region getRegionById(final Integer regionId) {
+    return regionRepository.findById(regionId).orElseThrow(() -> new ObjectNotFoundException(
+        String.format("Region with ID '%d' does not exist", regionId)));
   }
 
   @Override
-  public Address getOrCreate(Address address) {
-    // normalize address first
-    address.setRegion(StringUtils.trimToNull(address.getRegion()));
-    address.setCity(StringUtils.trimToNull(address.getCity()));
-    address.setAddress(StringUtils.trimToNull(address.getAddress()));
-
-    return repository.findByRegionAndCityAndAddress(address.getRegion(), address.getCity(),
-        address.getAddress()).orElseGet(() -> repository.save(address));
+  public List<City> getAllRegionCities(final Integer regionId) {
+    return cityRepository.findAllByRegion(regionId);
   }
 
   @Override
-  public List<String> getRegions(String region) {
-    return repository.findDistinctRegions(StringUtils.defaultIfBlank(region, "").replace("*", "%"));
+  public City getCityById(final Integer cityId) {
+    return cityRepository.findById(cityId).orElseThrow(() -> new ObjectNotFoundException(
+        String.format("City with ID '%d' does not exist", cityId)));
   }
 
-  @Override
-  public List<String> getCities(String city) {
-    return repository.findDistinctCities(StringUtils.defaultIfBlank(city, "").replace("*", "%"));
-  }
 }

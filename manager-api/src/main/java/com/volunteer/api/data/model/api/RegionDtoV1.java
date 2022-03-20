@@ -1,7 +1,9 @@
 package com.volunteer.api.data.model.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +13,15 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonPropertyOrder({"id", "category", "name", "note"})
+@JsonPropertyOrder({"id", "name"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class ProductSearchDtoV1 {
+public class RegionDtoV1 {
+
+  @NotNull
+  @JsonProperty("id")
+  private Integer id;
+
+  @JsonProperty("name")
   private String name;
-  private Integer catcgoryId;
+
 }

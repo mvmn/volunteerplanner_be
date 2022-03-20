@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.security.model.AuthenticationRequest;
 import com.volunteer.api.security.model.AuthenticationResponse;
@@ -63,7 +62,7 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
     user.setUserVerified(true);
     user.setPassword(password);
     user.setRole(roleService.get(role));
-    user.setAddress(addressService.getOrCreate(new Address(null, "test", "test", "test")));
+    user.setCity(addressService.getCityById(10));
     return userService.create(user);
   }
 

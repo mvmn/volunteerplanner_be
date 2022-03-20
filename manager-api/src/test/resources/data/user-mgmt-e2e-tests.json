@@ -11,10 +11,8 @@
           "password": "root",
           "role": "root",
           "fullName": "FN root",
-          "address": {
-            "region": "Львівський",
-            "city": "Львів",
-            "address": "A root"
+          "city": {
+            "id": 20
           }
         }
       }
@@ -28,14 +26,18 @@
         "password": "******",
         "role": "root",
         "fullName": "FN root",
-        "address": {
-          "id": 1,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A root"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -52,10 +54,8 @@
           "password": "operator",
           "role": "operator",
           "fullName": "FN operator",
-          "address": {
-            "region": "Львівський",
-            "city": "Львів",
-            "address": "A operator & volunteer"
+          "city": {
+            "id": 20
           }
         }
       }
@@ -69,14 +69,106 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
         "phoneNumberVerified": false,
         "userVerified": false,
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "operator: verify himself",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 403
+    }
+  },
+  {
+    "name": "verify user: operator",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "userName": "operator",
+        "phoneNumber": "222",
+        "password": "******",
+        "role": "operator",
+        "fullName": "FN operator",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": false,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "verify phone: operator",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/phone",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "userName": "operator",
+        "phoneNumber": "222",
+        "password": "******",
+        "role": "operator",
+        "fullName": "FN operator",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -93,10 +185,8 @@
           "password": "volunteer",
           "role": "volunteer",
           "fullName": "FN volunteer",
-          "address": {
-            "region": "Львівський",
-            "city": "Львів",
-            "address": "A operator & volunteer"
+          "city": {
+            "id": 20
           }
         }
       }
@@ -110,14 +200,90 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
         "phoneNumberVerified": false,
         "userVerified": false,
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "verify user: volunteer",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/users/3/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 3,
+        "userName": "volunteer",
+        "phoneNumber": "333",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": false,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "verify phone: volunteer",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/3/verify/phone",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 3,
+        "userName": "volunteer",
+        "phoneNumber": "333",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -143,14 +309,18 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -210,10 +380,8 @@
           "password": "root",
           "role": "volunteer",
           "fullName": "FN duplicate",
-          "address": {
-            "region": "Львівський",
-            "city": "Львів",
-            "address": "A root"
+          "city": {
+            "id": 20
           }
         }
       }
@@ -237,10 +405,8 @@
           "password": "vivo",
           "role": "volunteer",
           "fullName": "FN duplicate",
-          "address": {
-            "region": "Львівський",
-            "city": "Львів",
-            "address": "A root"
+          "city": {
+            "id": 20
           }
         }
       }
@@ -260,7 +426,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/users/{root}",
+        "endpoint": "/users/1",
         "method": "GET"
       }
     },
@@ -273,14 +439,18 @@
         "password": "******",
         "role": "root",
         "fullName": "FN root",
-        "address": {
-          "id": 1,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A root"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any string",
         "locked": false
       }
     }
@@ -293,63 +463,12 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/users/{root}",
+        "endpoint": "/users/1",
         "method": "GET"
       }
     },
     "expected": {
       "status": 403
-    }
-  },
-  {
-    "name": "operator: verify himself",
-    "given": {
-      "auth": {
-        "userName": "operator",
-        "password": "operator"
-      },
-      "request": {
-        "endpoint": "/users/{operator}/verify",
-        "method": "PUT"
-      }
-    },
-    "expected": {
-      "status": 403
-    }
-  },
-  {
-    "name": "root: verify",
-    "given": {
-      "auth": {
-        "userName": "root",
-        "password": "root"
-      },
-      "request": {
-        "endpoint": "/users/{operator}/verify",
-        "method": "PUT"
-      }
-    },
-    "expected": {
-      "status": 200,
-      "body": {
-        "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
-        "password": "******",
-        "role": "operator",
-        "fullName": "FN operator",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
-        },
-        "phoneNumberVerified": false,
-        "userVerified": true,
-        "userVerifiedByUserId": 1,
-        "userVerifiedAt": "2022-03-14T23:26:22.5220533+02:00",
-        "locked": false
-      }
     }
   },
   {
@@ -360,7 +479,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/{operator}/lock",
+        "endpoint": "/users/2/lock",
         "method": "PUT"
       }
     },
@@ -373,13 +492,15 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
-        "phoneNumberVerified": false,
+        "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",
@@ -397,7 +518,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/{operator}/unlock",
+        "endpoint": "/users/2/unlock",
         "method": "PUT"
       }
     },
@@ -410,13 +531,15 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "address": {
-          "id": 2,
-          "region": "Львівський",
-          "city": "Львів",
-          "address": "A operator & volunteer"
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
         },
-        "phoneNumberVerified": false,
+        "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",

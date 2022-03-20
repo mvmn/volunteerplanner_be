@@ -1,5 +1,7 @@
 package com.volunteer.api.controller;
 
+import com.volunteer.api.data.mapping.GenericPageDtoMapper;
+import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
@@ -36,13 +38,13 @@ public class TaskControllerV1 {
   private final TaskV1Mapper taskMapper;
 
   @PostMapping
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
   public TaskDtoV1 createTask(@RequestBody @Valid TaskDtoV1 dto) {
     return taskMapper.map(taskService.createTask(taskMapper.map(dto)));
   }
 
   @PostMapping("batch")
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
   public GenericCollectionDtoV1<TaskDtoV1> createTasks(@RequestBody @Valid TaskBatchDtoV1 dto) {
     Task blueprint = taskMapper.map(dto.getBlueprint());
     List<TaskDetalization> details =
@@ -52,6 +54,7 @@ public class TaskControllerV1 {
     return GenericCollectionDtoV1.<TaskDtoV1>builder().items(createdTasks).build();
   }
 
+  @PreAuthorize("hasAuthority('TASKS_VIEW')")
   @PostMapping("batchget")
   public GenericCollectionDtoV1<TaskDtoV1> getTasksByIds(
       @RequestBody @Valid IntegerIdsDtoV1 idsDto) {
@@ -60,51 +63,52 @@ public class TaskControllerV1 {
     return GenericCollectionDtoV1.<TaskDtoV1>builder().items(tasks).build();
   }
 
+  @PreAuthorize("hasAuthority('TASKS_VIEW')")
   @GetMapping("{taskId}")
   public TaskDtoV1 getTaskById(@PathVariable("taskId") Integer taskId) {
     return taskService.getTaskById(taskId).map(taskMapper::map)
         .orElseThrow(() -> new ObjectNotFoundException("Task not found by ID " + taskId));
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_VERIFY')")
   @PostMapping("{taskId}/verify")
   public void verify(@PathVariable("taskId") Integer taskId) {
     taskService.verify(taskId);
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
   @PostMapping("{taskId}/complete")
   public void complete(@PathVariable("taskId") Integer taskId) {
     taskService.complete(taskId);
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_REJECT')")
   @PostMapping("{taskId}/reject")
   public void reject(@PathVariable("taskId") Integer taskId) {
     taskService.reject(taskId);
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_VERIFY')")
   @PostMapping("batch/verify")
   public void batchVerify(@RequestBody IntegerIdsDtoV1 taskIds) {
     taskService.batchStatusChange(taskIds.getIds(), TaskStatus.VERIFIED);
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
   @PostMapping("batch/complete")
   public void batchComplete(@RequestBody IntegerIdsDtoV1 taskIds) {
     taskService.batchStatusChange(taskIds.getIds(), TaskStatus.COMPLETED);
   }
 
-  @PreAuthorize("hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('TASKS_REJECT')")
   @PostMapping("batch/reject")
   public void batchReject(@RequestBody IntegerIdsDtoV1 taskIds) {
     taskService.batchStatusChange(taskIds.getIds(), TaskStatus.REJECTED);
   }
 
-  @PreAuthorize("hasAuthority('operator') or hasAuthority('volunteer')")
+  @PreAuthorize("hasAuthority('TASKS_VIEW')")
   @PostMapping("search")
-  public Page<TaskDtoV1> search(@RequestBody @Valid TaskSearchDtoV1 searchRequest) {
+  public GenericPageDtoV1<TaskDtoV1> search(@RequestBody @Valid TaskSearchDtoV1 searchRequest) {
     Integer pageSize = searchRequest.getPageSize();
     Integer pageNumber = searchRequest.getPageNumber();
 
@@ -124,6 +128,8 @@ public class TaskControllerV1 {
         searchRequest.getCreatedByUserId(), searchRequest.getVerifiedByUserId(),
         searchRequest.getClosedByUserId(), PageRequest.of(pageNumber != null ? pageNumber : 0,
             pageSize != null ? pageSize : 10, order));
-    return searchResult.map(taskMapper::map);
+
+    return GenericPageDtoMapper.map(searchRequest.getPageNumber(), searchRequest.getPageSize(),
+        searchResult, taskMapper::map);
   }
 }

@@ -1,14 +1,32 @@
 package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
-import com.volunteer.api.data.model.persistence.*;
+import com.volunteer.api.data.model.persistence.Category;
+import com.volunteer.api.data.model.persistence.Product;
+import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.data.model.persistence.Subtask;
+import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
-import com.volunteer.api.service.*;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.CategoryService;
+import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.StoreService;
+import com.volunteer.api.service.SubtaskService;
+import com.volunteer.api.service.TaskService;
+import com.volunteer.api.service.UserService;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,34 +34,45 @@ import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import java.math.BigDecimal;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Optional;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
 public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
-  @Autowired private SubtaskService subtaskService;
-  @Autowired private AddressService addressService;
-  @Autowired private StoreService storeService;
-  @Autowired private CategoryService categoryService;
-  @Autowired private TaskService taskService;
-  @Autowired private UserService userService;
-  @Autowired private RoleService roleService;
-  @Autowired private ProductRepository productRepository;
+
+  @Autowired
+  private SubtaskService subtaskService;
+  @Autowired
+  private AddressService addressService;
+  @Autowired
+  private StoreService storeService;
+  @Autowired
+  private CategoryService categoryService;
+  @Autowired
+  private TaskService taskService;
+  @Autowired
+  private UserService userService;
+  @Autowired
+  private RoleService roleService;
+  @Autowired
+  private ProductRepository productRepository;
 
   @Test
   public void crudOperationsTest() {
     // Prepare
-    Address address =
-        addressService.getOrCreate(Address.builder().city("c1").region("r1").address("a1").build());
-    Store volunteerStore =
-        storeService.create(Store.builder().name("vol store").address(address).build());
-    Store customerStore =
-        storeService.create(Store.builder().name("cust name").address(address).build());
-    Category category = categoryService.create(Category.builder().name("cat1").build());
+    Store volunteerStore = storeService.create(Store.builder()
+        .name("vol store")
+        .city(addressService.getCityById(12))
+        .address("address")
+        .build());
+    Store customerStore = storeService.create(Store.builder()
+        .name("cust name")
+        .city(addressService.getCityById(20))
+        .address("address")
+        .build());
+    Category category = categoryService.create(Category.builder()
+        .name("cat1")
+        .build());
 
     Product product = new Product();
     product.setCategory(category);
@@ -53,7 +82,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     VPUser user = new VPUser();
     user.setPhoneNumber("1234567");
     user.setRole(roleService.get("operator"));
-    user.setAddress(address);
+    user.setCity(addressService.getCityById(12));
     user.setUserName("u1");
     user.setPassword("pwd");
     user = userService.create(user);

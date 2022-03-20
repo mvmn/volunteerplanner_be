@@ -11,4 +11,5 @@ public abstract class AbstractTestWithPersistence {
   public static void resetDb(@Autowired Flyway flyway) {
     DBUtil.recreateDb(flyway);
   }
+
 }

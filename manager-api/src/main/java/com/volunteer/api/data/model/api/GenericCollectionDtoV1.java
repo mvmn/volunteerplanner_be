@@ -1,7 +1,7 @@
 package com.volunteer.api.data.model.api;
 
-import java.util.Collection;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,5 +14,6 @@ import lombok.NoArgsConstructor;
 public class GenericCollectionDtoV1<T> {
 
   @JsonProperty("items")
-  protected Collection<T> items;
+  private Collection<T> items;
+
 }

@@ -18,7 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
+@Entity(name = "User")
 @Table(name = "\"user\"")
 @NoArgsConstructor
 @AllArgsConstructor
@@ -56,8 +56,8 @@ public class VPUser implements Serializable {
   private String email;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "address_id")
-  private Address address;
+  @JoinColumn(name = "city_id")
+  private City city;
 
   @Column(name = "phone_number_verified")
   private boolean phoneNumberVerified;

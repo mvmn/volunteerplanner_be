@@ -20,22 +20,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "product")
-public class Product {
+@Table(name = "city")
+public class City {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_generator")
-  @SequenceGenerator(name = "product_generator", sequenceName = "product_id_seq", allocationSize = 1)
-  @Column(name = "id", nullable = false)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_generator")
+  @SequenceGenerator(name = "city_generator", sequenceName = "city_id_seq", allocationSize = 1)
+  @Column(name = "id")
   private Integer id;
 
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
-  @JoinColumn(name = "category_id")
-  private Category category;
+  @JoinColumn(name = "region_id")
+  private Region region;
 
-  @Column(name = "name", length = 250, nullable = false)
+  @Column(name = "name", nullable = false)
   private String name;
 
-  @Column(name = "note", length = 2000)
-  private String note;
 }

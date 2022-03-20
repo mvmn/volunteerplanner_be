@@ -1,19 +1,17 @@
 package com.volunteer.api.service;
 
-import java.util.Collection;
+import com.volunteer.api.data.model.persistence.City;
+import com.volunteer.api.data.model.persistence.Region;
 import java.util.List;
-import java.util.Optional;
-import com.volunteer.api.data.model.persistence.Address;
 
 public interface AddressService {
 
-  Collection<Address> getAll();
+  List<Region> getAllRegions();
 
-  Optional<Address> get(final Integer id);
+  Region getRegionById(final Integer regionId);
 
-  Address getOrCreate(final Address address);
+  List<City> getAllRegionCities(final Integer regionId);
 
-  List<String> getRegions(String region);
+  City getCityById(final Integer cityId);
 
-  List<String> getCities(String city);
 }

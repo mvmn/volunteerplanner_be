@@ -1,6 +1,8 @@
 package com.volunteer.api.controller;
 
+import com.volunteer.api.data.mapping.GenericPageDtoMapper;
 import com.volunteer.api.data.mapping.UserV1Mapper;
+import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.PasswordChangeDtoV1;
 import com.volunteer.api.data.model.api.PhoneVerificationDtoV1;
 import com.volunteer.api.data.model.api.UserDtoV1;
@@ -49,11 +51,10 @@ public class UserControllerV1 {
     service.passwordReset(username);
   }
 
-  // access for root & operator only
-  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('USERS_VIEW')")
   @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public Page<UserDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body) {
+  public GenericPageDtoV1<UserDtoV1> getAll(@RequestBody @Valid final SearchDto<FilterDto> body) {
     final Page<VPUser> result = service.getAll(new UserQueryBuilder()
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
@@ -61,31 +62,38 @@ public class UserControllerV1 {
         .withSort(body.getSort())
     );
 
-    return result.map(userV1Mapper::map);
+    return GenericPageDtoMapper.map(body.getPage(), body.getPageSize(), result, userV1Mapper::map);
   }
 
-  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('USERS_VIEW')")
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 getById(@PathVariable("id") final Integer userId) {
     return userV1Mapper.map(service.get(userId));
   }
 
-  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
-  @PutMapping("/{id}/verify")
+  @PreAuthorize("hasAuthority('USERS_VERIFY')")
+  @PutMapping("/{id}/verify/phone")
+  @ResponseStatus(HttpStatus.OK)
+  public UserDtoV1 verifyPhone(@PathVariable("id") final Integer userId) {
+    return userV1Mapper.map(service.verifyPhoneNumber(userId));
+  }
+
+  @PreAuthorize("hasAuthority('USERS_VERIFY')")
+  @PutMapping("/{id}/verify/user")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 verifyUser(@PathVariable("id") final Integer userId) {
     return userV1Mapper.map(service.verifyUser(userId));
   }
 
-  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('USERS_LOCK')")
   @PutMapping("/{id}/lock")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 lock(@PathVariable("id") final Integer userId) {
     return userV1Mapper.map(service.lock(userId));
   }
 
-  @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
+  @PreAuthorize("hasAuthority('USERS_LOCK')")
   @PutMapping("/{id}/unlock")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 unlock(@PathVariable("id") final Integer userId) {

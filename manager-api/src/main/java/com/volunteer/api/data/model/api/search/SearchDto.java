@@ -5,15 +5,23 @@ import com.volunteer.api.data.model.api.search.sort.SortParameters;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class SearchDto<T> {
 
-  @Min(value = 0)
+  @Builder.Default
+  @Min(value = 1)
   @JsonProperty("page")
-  private Integer page = 0;
+  private int page = 1;
 
+  @Builder.Default
   @Min(value = 1)
   @Max(value = 100)
   @JsonProperty("pageSize")

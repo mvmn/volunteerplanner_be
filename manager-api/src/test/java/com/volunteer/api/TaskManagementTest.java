@@ -20,12 +20,12 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
 import com.volunteer.api.data.model.api.TaskBatchDtoV1;
 import com.volunteer.api.data.model.api.TaskDetalizationDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
-import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
@@ -36,12 +36,11 @@ import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.CategoryService;
 import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.TaskService;
-import com.volunteer.api.utils.RestResponsePage;
 
 public class TaskManagementTest extends AbstractMockMvcTest {
 
-  @Autowired
-  private StoreService storeService;
+  private static Store store;
+  private static Product product;
 
   @Autowired
   private ProductRepository productRepository;
@@ -59,12 +58,13 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   public static void initTestData(@Autowired StoreService storeService,
       @Autowired AddressService addressService, @Autowired ProductRepository productRepository,
       @Autowired CategoryService categoryService, @Autowired TaskRepository taskRepository) {
-    storeService.create(Store.builder().contactPerson("Test").name("Test")
-        .address(addressService.getOrCreate(new Address(null, "test", "test", "test"))).build());
-    Product product = new Product();
-    product.setName("Test");
-    product.setCategory(categoryService.create(Category.builder().name("Test").build()));
-    productRepository.save(product);
+
+    store = storeService.create(Store.builder().name("Test").city(addressService.getCityById(12))
+        .address("address").build());
+
+    product = productRepository.save(Product.builder().name("Test")
+        .category(categoryService.create(Category.builder().name("Test").build())).build());
+
     taskRepository.deleteAll();
   }
 
@@ -185,7 +185,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     // Test search by user ID
     {
       Set<Integer> tasksCreatedByOp2 =
-          search(token1, TaskSearchDtoV1.builder().createdByUserId(userIdOp2).build()).getContent()
+          search(token1, TaskSearchDtoV1.builder().createdByUserId(userIdOp2).build()).getItems()
               .stream().map(TaskDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(2, tasksCreatedByOp2.size());
       Assert.assertTrue(tasksCreatedByOp2.contains(taskId2));
@@ -194,7 +194,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     {
       Set<Integer> tasksVerifiedByOp3 =
-          search(token1, TaskSearchDtoV1.builder().verifiedByUserId(userIdOp3).build()).getContent()
+          search(token1, TaskSearchDtoV1.builder().verifiedByUserId(userIdOp3).build()).getItems()
               .stream().map(TaskDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(1, tasksVerifiedByOp3.size());
       Assert.assertTrue(tasksVerifiedByOp3.contains(taskId));
@@ -202,7 +202,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     {
       Set<Integer> tasksClosedByOp3 =
-          search(token1, TaskSearchDtoV1.builder().closedByUserId(userIdOp3).build()).getContent()
+          search(token1, TaskSearchDtoV1.builder().closedByUserId(userIdOp3).build()).getItems()
               .stream().map(TaskDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(2, tasksClosedByOp3.size());
       Assert.assertTrue(tasksClosedByOp3.contains(taskId2));
@@ -221,24 +221,20 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   }
 
   protected TaskDtoV1 createTask(String token) throws Exception {
-    return getResponseAs(mockMvc
-        .perform(MockMvcRequestBuilders.post("/tasks").header("Authorization", "Bearer " + token)
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder().customer("test")
-                .customerStoreId(storeService.getByName("Test").iterator().next().getId())
-                .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
-                .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
-                .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
-                .productId(productRepository.findAll().iterator().next().getId()).build())))
+    return getResponseAs(mockMvc.perform(MockMvcRequestBuilders.post("/tasks")
+        .header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON_VALUE)
+        .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder().customer("test")
+            .customerStoreId(1).volunteerStoreId(1).productMeasure("units").quantity(BigDecimal.TEN)
+            .priority(1).deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
+            .productId(product.getId()).build())))
         .andExpect(MockMvcResultMatchers.status().isOk()), TaskDtoV1.class);
   }
 
   protected Collection<TaskDtoV1> batchCreateTasks(String token) throws Exception {
-    TaskDtoV1 blueprint = TaskDtoV1.builder().customer("test")
-        .customerStoreId(storeService.getByName("Test").iterator().next().getId())
-        .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
-        .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
-        .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond()).productId(0).build();
+    TaskDtoV1 blueprint = TaskDtoV1.builder().customer("test").customerStoreId(store.getId())
+        .volunteerStoreId(store.getId()).productMeasure("units").quantity(BigDecimal.TEN)
+        .priority(1).deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond()).productId(0)
+        .build();
 
     int productId = productRepository.findAll().iterator().next().getId();
     return getResponseAs(
@@ -257,10 +253,10 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         new TypeReference<GenericCollectionDtoV1<TaskDtoV1>>() {}).getItems();
   }
 
-  protected RestResponsePage<TaskDtoV1> search(String token, TaskSearchDtoV1 query)
+  protected GenericPageDtoV1<TaskDtoV1> search(String token, TaskSearchDtoV1 query)
       throws Exception {
     return getResponseAs(
         post(token, "/tasks/search", query).andExpect(MockMvcResultMatchers.status().isOk()),
-        new TypeReference<RestResponsePage<TaskDtoV1>>() {});
+        new TypeReference<GenericPageDtoV1<TaskDtoV1>>() {});
   }
 }

@@ -1,10 +1,10 @@
 package com.volunteer.api.data.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.volunteer.api.data.model.persistence.Product;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.Collection;
+public interface ProductRepository extends JpaRepository<Product, Integer>,
+    JpaSpecificationExecutor<Product> {
 
-public interface ProductRepository extends JpaRepository<Product, Integer> {
-  Collection<Product> findByNameLikeAndCategoryId(String string, Integer categoryId);
 }
