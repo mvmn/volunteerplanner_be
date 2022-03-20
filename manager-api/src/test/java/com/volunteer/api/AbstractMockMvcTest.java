@@ -60,6 +60,7 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
     user.setFullName(userName);
     user.setPhoneNumber(String.format("%09d", PHONE_NUM.incrementAndGet()));
     user.setUserVerified(true);
+    user.setPhoneNumberVerified(true);
     user.setPassword(password);
     user.setRole(roleService.get(role));
     user.setCity(addressService.getCityById(10));
