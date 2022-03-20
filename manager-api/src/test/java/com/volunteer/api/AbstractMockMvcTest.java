@@ -43,6 +43,7 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
     user.setUserName(userName);
     user.setFullName("op");
     user.setPhoneNumber("12345");
+    user.setPhoneNumberVerified(true);
     user.setUserVerified(true);
     user.setPassword("pass");
     user.setRole(roleService.get("operator"));

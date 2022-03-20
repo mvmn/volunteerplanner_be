@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
-import com.volunteer.api.data.model.persistence.Address;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
@@ -61,17 +60,15 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
   @Test
   public void crudOperationsTest() {
     // Prepare
-    Address address = addressService.getOrCreate(Address.builder()
-        .city(addressService.getCityById(12))
-        .address("a1")
-        .build());
     Store volunteerStore = storeService.create(Store.builder()
         .name("vol store")
-        .address(address)
+        .city(addressService.getCityById(12))
+        .address("address")
         .build());
     Store customerStore = storeService.create(Store.builder()
         .name("cust name")
-        .address(address)
+        .city(addressService.getCityById(20))
+        .address("address")
         .build());
     Category category = categoryService.create(Category.builder()
         .name("cat1")

@@ -10,16 +10,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "product")
 public class Product {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "task_generator")
-  @SequenceGenerator(name = "task_generator", sequenceName = "task_id_seq", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "product_generator")
+  @SequenceGenerator(name = "product_generator", sequenceName = "product_id_seq", allocationSize = 1)
   @Column(name = "id", nullable = false)
   private Integer id;
 
@@ -30,6 +36,6 @@ public class Product {
   @Column(name = "name", length = 250, nullable = false)
   private String name;
 
-  @Column(name = "note", length = 2000, nullable = true)
+  @Column(name = "note", length = 2000)
   private String note;
 }

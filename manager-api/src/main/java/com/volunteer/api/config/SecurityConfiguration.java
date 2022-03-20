@@ -48,6 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     configureOpenApi(http.authorizeRequests()
         .antMatchers("/actuator/**").permitAll()
         .antMatchers("/authenticate").permitAll()
+        .antMatchers(HttpMethod.GET,"/address/**").permitAll()
         .antMatchers(HttpMethod.POST, "/users").permitAll()
         .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll())
         .anyRequest().authenticated();
