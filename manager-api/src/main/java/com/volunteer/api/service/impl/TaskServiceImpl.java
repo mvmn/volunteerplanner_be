@@ -42,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
   public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
       Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
       Integer remainingQuantityMoreThan, boolean zeroQuantity, boolean excludeExpired,
+      Integer createdByUserId, Integer verifiedByUserId, Integer closedByUserId,
       Pageable pagingAndSorting) {
     Specification<Task> searchSpec = null;
 
@@ -79,6 +80,18 @@ public class TaskServiceImpl implements TaskService {
     if (excludeExpired) {
       searchSpec =
           TaskSearchSpecifications.addSpec(searchSpec, TaskSearchSpecifications.byNonExpired());
+    }
+    if (createdByUserId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCreator(createdByUserId));
+    }
+    if (verifiedByUserId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byVerifier(verifiedByUserId));
+    }
+    if (closedByUserId != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCloser(closedByUserId));
     }
 
     return searchSpec != null ? taskRepository.findAll(searchSpec, pagingAndSorting)

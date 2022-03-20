@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.volunteer.api.data.mapping.CategoryDtoMapper;
-import com.volunteer.api.data.mapping.ProductDtoMapper;
 import com.volunteer.api.data.model.api.CategoryDtoV1;
 import com.volunteer.api.data.model.api.ProductDtoV1;
 import com.volunteer.api.data.model.api.ProductSearchDtoV1;
@@ -31,9 +30,6 @@ public class ProductManagementTest extends AbstractMockMvcTest {
     private CategoryService categoryService;
 
     @Autowired
-    private ProductDtoMapper productDtoMapper;
-
-    @Autowired
     private CategoryDtoMapper categoryDtoMapper;
 
     @BeforeAll
@@ -45,7 +41,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
     public void testProductCrud() throws Exception {
         assertTrue(productService.getAll().isEmpty());
 
-        String token = loginAsOperator().getRefreshToken();
+        String token = login("op", "pass").getRefreshToken();
 
         // Check if no products present
         mockMvc
@@ -166,7 +162,6 @@ public class ProductManagementTest extends AbstractMockMvcTest {
     }
 
     private Collection<ProductDtoV1> search(String token, ProductSearchDtoV1 productSearch) throws Exception {
-        Collection<ProductDtoV1> productsGot;
         byte[] responseBody;
         responseBody = mockMvc
                 .perform(MockMvcRequestBuilders.post("/products/search")

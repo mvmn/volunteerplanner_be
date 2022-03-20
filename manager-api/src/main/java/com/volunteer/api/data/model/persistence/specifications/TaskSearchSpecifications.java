@@ -132,4 +132,40 @@ public class TaskSearchSpecifications {
       }
     };
   }
+
+
+  public static Specification<Task> byCreator(Integer createdByUserId) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = -5516669171889765780L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return cb.equal(root.get("createdBy").get("id"), createdByUserId);
+      }
+    };
+  }
+
+
+  public static Specification<Task> byVerifier(Integer verifiedByUserId) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = -2845603886993572577L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return cb.equal(root.get("verifiedBy").get("id"), verifiedByUserId);
+      }
+    };
+  }
+
+
+  public static Specification<Task> byCloser(Integer closedByUserId) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = 8821494023479815206L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return cb.equal(root.get("closedBy").get("id"), closedByUserId);
+      }
+    };
+  }
 }

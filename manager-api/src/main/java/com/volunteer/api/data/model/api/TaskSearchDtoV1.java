@@ -5,9 +5,15 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.volunteer.api.data.model.TaskStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TaskSearchDtoV1 {
 
   public static enum SortOrder {
@@ -26,12 +32,22 @@ public class TaskSearchDtoV1 {
   private Set<TaskStatus> statuses;
   @JsonProperty("categoryIds")
   private Set<Integer> categoryIds;
+
   @JsonProperty("remainingQuantityMoreThan")
   private Integer remainingQuantityMoreThan;
   @JsonProperty("zeroQuantity")
   private Boolean zeroQuantity;
+
   @JsonProperty("excludeExpired")
   private Boolean excludeExpired;
+
+  @JsonProperty("createdByUserId")
+  private Integer createdByUserId;
+  @JsonProperty("verifiedByUserId")
+  private Integer verifiedByUserId;
+  @JsonProperty("closedByUserId")
+  private Integer closedByUserId;
+
   @Min(0)
   @JsonProperty("pageNumber")
   private Integer pageNumber;

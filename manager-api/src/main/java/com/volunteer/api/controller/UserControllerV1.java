@@ -53,7 +53,7 @@ public class UserControllerV1 {
   @PreAuthorize("hasAuthority('root') or hasAuthority('operator')")
   @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public Page<UserDtoV1> getAll(@RequestBody @Valid final SearchDto<FilterDto> body) {
+  public Page<UserDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body) {
     final Page<VPUser> result = service.getAll(new UserQueryBuilder()
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
