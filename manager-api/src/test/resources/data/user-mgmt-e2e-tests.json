@@ -34,8 +34,10 @@
           },
           "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -82,6 +84,96 @@
     }
   },
   {
+    "name": "operator: verify himself",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 403
+    }
+  },
+  {
+    "name": "verify user: operator",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "userName": "operator",
+        "phoneNumber": "222",
+        "password": "******",
+        "role": "operator",
+        "fullName": "FN operator",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": false,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "verify phone: operator",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/2/verify/phone",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "userName": "operator",
+        "phoneNumber": "222",
+        "password": "******",
+        "role": "operator",
+        "fullName": "FN operator",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
     "name": "create volunteer",
     "given": {
       "request": {
@@ -123,6 +215,80 @@
     }
   },
   {
+    "name": "verify user: volunteer",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/users/3/verify/user",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 3,
+        "userName": "volunteer",
+        "phoneNumber": "333",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": false,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "verify phone: volunteer",
+    "given": {
+      "auth": {
+        "userName": "root",
+        "password": "root"
+      },
+      "request": {
+        "endpoint": "/users/3/verify/phone",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 3,
+        "userName": "volunteer",
+        "phoneNumber": "333",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
+        "locked": false
+      }
+    }
+  },
+  {
     "name": "get myself",
     "given": {
       "auth": {
@@ -151,8 +317,10 @@
           },
           "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 2,
+        "userVerifiedAt": "any value",
         "locked": false
       }
     }
@@ -279,8 +447,10 @@
           },
           "name": "Уланов"
         },
-        "phoneNumberVerified": false,
-        "userVerified": false,
+        "phoneNumberVerified": true,
+        "userVerified": true,
+        "userVerifiedByUserId": 1,
+        "userVerifiedAt": "any string",
         "locked": false
       }
     }
@@ -299,59 +469,6 @@
     },
     "expected": {
       "status": 403
-    }
-  },
-  {
-    "name": "operator: verify himself",
-    "given": {
-      "auth": {
-        "userName": "operator",
-        "password": "operator"
-      },
-      "request": {
-        "endpoint": "/users/2/verify",
-        "method": "PUT"
-      }
-    },
-    "expected": {
-      "status": 403
-    }
-  },
-  {
-    "name": "root: verify",
-    "given": {
-      "auth": {
-        "userName": "root",
-        "password": "root"
-      },
-      "request": {
-        "endpoint": "/users/2/verify",
-        "method": "PUT"
-      }
-    },
-    "expected": {
-      "status": 200,
-      "body": {
-        "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
-        "password": "******",
-        "role": "operator",
-        "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
-        "phoneNumberVerified": false,
-        "userVerified": true,
-        "userVerifiedByUserId": 1,
-        "userVerifiedAt": "2022-03-14T23:26:22.5220533+02:00",
-        "locked": false
-      }
     }
   },
   {
@@ -383,7 +500,7 @@
           },
           "name": "Уланов"
         },
-        "phoneNumberVerified": false,
+        "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",
@@ -422,7 +539,7 @@
           },
           "name": "Уланов"
         },
-        "phoneNumberVerified": false,
+        "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",

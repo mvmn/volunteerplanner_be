@@ -1,6 +1,22 @@
 package com.volunteer.api;
 
-import com.volunteer.api.data.model.persistence.City;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
+import com.volunteer.api.data.model.api.TaskBatchDtoV1;
+import com.volunteer.api.data.model.api.TaskDetalizationDtoV1;
+import com.volunteer.api.data.model.api.TaskDtoV1;
+import com.volunteer.api.data.model.persistence.Category;
+import com.volunteer.api.data.model.persistence.Product;
+import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.data.repository.ProductRepository;
+import com.volunteer.api.data.repository.TaskRepository;
+import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.CategoryService;
+import com.volunteer.api.service.StoreService;
+import com.volunteer.api.service.TaskService;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
@@ -17,26 +33,11 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.volunteer.api.data.model.TaskStatus;
-import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
-import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
-import com.volunteer.api.data.model.api.TaskBatchDtoV1;
-import com.volunteer.api.data.model.api.TaskDetalizationDtoV1;
-import com.volunteer.api.data.model.api.TaskDtoV1;
-import com.volunteer.api.data.model.persistence.Address;
-import com.volunteer.api.data.model.persistence.Category;
-import com.volunteer.api.data.model.persistence.Product;
-import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.data.repository.ProductRepository;
-import com.volunteer.api.data.repository.TaskRepository;
-import com.volunteer.api.data.repository.UserRepository;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.CategoryService;
-import com.volunteer.api.service.StoreService;
-import com.volunteer.api.service.TaskService;
 
 public class TaskManagementTest extends AbstractMockMvcTest {
+
+  private static Store store;
+  private static Product product;
 
   @Autowired
   private StoreService storeService;
@@ -58,18 +59,16 @@ public class TaskManagementTest extends AbstractMockMvcTest {
       @Autowired AddressService addressService, @Autowired ProductRepository productRepository,
       @Autowired CategoryService categoryService, @Autowired TaskRepository taskRepository) {
 
-    storeService.create(Store.builder().name("Test")
-        .contactPerson("Test")
-        .address(addressService.getOrCreate(Address.builder()
-            .city(addressService.getCityById(10))
-            .address("test")
-            .build()))
+    store = storeService.create(Store.builder().name("Test")
+        .city(addressService.getCityById(12))
+        .address("address")
         .build());
 
-    Product product = new Product();
-    product.setName("Test");
-    product.setCategory(categoryService.create(Category.builder().name("Test").build()));
-    productRepository.save(product);
+    product = productRepository.save(Product.builder()
+        .name("Test")
+        .category(categoryService.create(Category.builder().name("Test").build()))
+        .build());
+
     taskRepository.deleteAll();
   }
 
@@ -198,11 +197,11 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .perform(MockMvcRequestBuilders.post("/tasks").header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder().customer("test")
-                .customerStoreId(storeService.getByName("Test").iterator().next().getId())
-                .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
+                .customerStoreId(1)
+                .volunteerStoreId(1)
                 .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
                 .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
-                .productId(productRepository.findAll().iterator().next().getId()).build())))
+                .productId(product.getId()).build())))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse()
         .getContentAsByteArray();
     TaskDtoV1 response = objectMapper.readValue(responseBody, TaskDtoV1.class);
@@ -211,12 +210,12 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
   protected Collection<TaskDtoV1> batchCreateTasks(String token) throws Exception {
     TaskDtoV1 blueprint = TaskDtoV1.builder().customer("test")
-        .customerStoreId(storeService.getByName("Test").iterator().next().getId())
-        .volunteerStoreId(storeService.getByName("Test").iterator().next().getId())
+        .customerStoreId(store.getId())
+        .volunteerStoreId(store.getId())
         .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
         .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond()).productId(0).build();
 
-    int productId = productRepository.findAll().iterator().next().getId();
+    int productId = product.getId();
     byte[] responseBody = mockMvc
         .perform(MockMvcRequestBuilders.post("/tasks/batch")
             .header("Authorization", "Bearer " + token)

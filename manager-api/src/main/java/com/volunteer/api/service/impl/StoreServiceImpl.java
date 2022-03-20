@@ -1,60 +1,61 @@
 package com.volunteer.api.service.impl;
 
-import java.util.Collection;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
 import com.volunteer.api.data.model.persistence.Store;
-import com.volunteer.api.data.repository.AddressRepository;
 import com.volunteer.api.data.repository.StoreRepository;
-import com.volunteer.api.service.StoreService;
+import com.volunteer.api.data.repository.search.Query;
+import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.ObjectNotFoundException;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.StoreService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.AuthorizationServiceException;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class StoreServiceImpl implements StoreService {
-  private final StoreRepository storeRepository;
-  private final AddressRepository addressRepository;
+
+  private final StoreRepository repository;
+  private final AddressService addressService;
 
   @Override
-  public Collection<Store> getAll() {
-    return storeRepository.findAll();
+  public Page<Store> getAll(final QueryBuilder<Store> queryBuilder) {
+    final Query<Store> query = queryBuilder.build();
+    return repository.findAll(query.getSpecification(), query.getPageable());
   }
 
   @Override
-  public Store getById(Integer id) {
-    return storeRepository.findById(id)
-            .orElseThrow(() -> new ObjectNotFoundException("Store with id " + id + " not found"));
+  public Store getById(final Integer id, final boolean showConfidential) {
+    final Store result = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
+        String.format("Store with id '%d' does not exist", id)));
+
+    if (result.isConfidential() && !showConfidential) {
+      throw new AuthorizationServiceException(String.format("Not allowed to view store '%d'", id));
+    }
+
+    return result;
   }
 
   @Override
-  public Collection<Store> getByName(String name) {
-    name = name.replace("*", "%");
-    return storeRepository.findAllByNameLikeIgnoreCase(StringUtils.defaultString(name) + "%");
-  }
-
-  @Override
-  public Store create(Store store) {
+  public Store create(final Store store) {
     store.setId(null);
-    updateAddress(store);
-    return storeRepository.save(store);
+    store.setCity(addressService.getCityById(store.getCity().getId()));
+
+    return repository.save(store);
   }
 
   @Override
-  public Store update(Store store) {
-    Store current = getById(store.getId());
+  public Store update(final Store store) {
+    final Store current = getById(store.getId(), true);
 
-    current.setAddress(store.getAddress());
     current.setName(store.getName());
+    current.setCity(addressService.getCityById(store.getCity().getId()));
+    current.setAddress(store.getAddress());
+    current.setConfidential(store.isConfidential());
     current.setNote(store.getNote());
-    current.setContactPerson(store.getContactPerson());
 
-    updateAddress(current);
-
-    return storeRepository.save(current);
+    return repository.save(current);
   }
 
-  private void updateAddress(Store store) {
-    store.setAddress(addressRepository.getById(store.getAddress().getId()));
-  }
 }

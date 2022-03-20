@@ -17,6 +17,8 @@ public interface UserService extends AuthService {
 
   VPUser update(final VPUser user);
 
+  VPUser verifyPhoneNumber(final Integer id);
+
   VPUser verifyUser(final Integer id);
 
   VPUser lock(final Integer id);

@@ -4,7 +4,6 @@ import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.repository.CategoryRepository;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.CategoryService;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
@@ -19,14 +18,25 @@ public class CategoryServiceImpl implements CategoryService {
   private final CategoryRepository repository;
 
   @Override
-  public Collection<Category> getAll() {
-    return repository.findAll();
+  public List<Category> getRoots() {
+    return repository.findAllByParentIdNull();
   }
 
   @Override
   public Category get(final Integer id) {
     return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
         String.format("Category with ID '%d' soes not exist", id)));
+  }
+
+  @Override
+  public List<Category> getByParentId(Integer parentId) {
+    return repository.findAllByParentId(parentId);
+  }
+
+  @Override
+  public List<Category> getByName(String name) {
+    name = name.replace("*", "%");
+    return repository.findAllByNameLike(StringUtils.defaultString(name) + "%");
   }
 
   @Override
@@ -57,20 +67,8 @@ public class CategoryServiceImpl implements CategoryService {
     return repository.save(current);
   }
 
-  @Override
-  public List<Category> getRoots() {
-    return repository.findAllByParentIdNull();
-  }
-
-  @Override
-  public List<Category> getByParentId(Integer parentId) {
-    return repository.findAllByParentId(parentId);
-  }
-
-  @Override
-  public List<Category> getByName(String name) {
-    name = name.replace("*", "%");
-    return repository.findAllByNameLike(StringUtils.defaultString(name) + "%");
+  public void delete(final Integer id) {
+    repository.deleteById(id);
   }
 
   private String buildPath(final Category category) {

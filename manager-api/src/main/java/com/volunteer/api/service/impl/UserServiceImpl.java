@@ -1,9 +1,18 @@
 package com.volunteer.api.service.impl;
 
+import com.volunteer.api.data.model.UserRole;
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.data.repository.search.Query;
+import com.volunteer.api.data.repository.search.QueryBuilder;
+import com.volunteer.api.error.InvalidPasswordException;
+import com.volunteer.api.error.ObjectNotFoundException;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.UserService;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -11,6 +20,7 @@ import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -24,16 +34,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.data.repository.UserRepository;
-import com.volunteer.api.data.repository.search.Query;
-import com.volunteer.api.data.repository.search.QueryBuilder;
-import com.volunteer.api.error.InvalidPasswordException;
-import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.RoleService;
-import com.volunteer.api.service.UserService;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -91,17 +91,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         () -> new UsernameNotFoundException(String.format(
             "User with name '%s' does not exist", username)));
 
-    // !!!! wrong implementation !!!!
-    // we have roles. we must define authorities like USER_GET, USER_LIST, USER_LOCK, USER_VERIFY, ...
-    // and map role to authority
-    // then use hasAuthority() with authority, not role
-    // so then
-    // - on each method we could set the right authority, not list of roles
-    // - if user not verified he / she won't have any authority so will be able to operate with own profile only
-    // thus permissions will be more granular and logically obvious
-
-    final Collection<SimpleGrantedAuthority> authorities = List.of(
-        new SimpleGrantedAuthority(user.getRole().getName()));
+    final Collection<SimpleGrantedAuthority> authorities;
+    if (isVerified(user)) {
+      final UserRole role = UserRole.forValue(user.getRole().getName());
+      authorities = role.getAuthorities().stream()
+          .map(authority -> new SimpleGrantedAuthority(authority.name()))
+          .collect(Collectors.toSet());
+    } else {
+      authorities = Collections.emptySet();
+    }
 
     return new User(user.getUserName(), user.getPassword(), true, true,
         true, !user.isLocked(), authorities);
@@ -113,11 +111,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // userName uniqueness detection moved on DB layer
     // proper exception handling is implemented
 
-    user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setRole(roleService.get(user.getRole().getName()));
+    final boolean isRootUser = user.getRole().getName().equalsIgnoreCase(UserRole.ROOT.getValue());
+
+    // it's allowed to create only one ROOT
+    if (isRootUser && repository.existsWithRole(UserRole.ROOT.getValue())) {
+      throw new IllegalArgumentException("It's not allowed to create user with root privileges");
+    }
+
+    user.setPassword(passwordEncoder.encode(user.getPassword()));
     user.setCity(addressService.getCityById(user.getCity().getId()));
 
-    return repository.save(user);
+    VPUser result = repository.save(user);
+    if (!isRootUser) {
+      return result;
+    }
+
+    result.setPhoneNumberVerified(true);
+    result.setUserVerified(true);
+    result.setUserVerifiedBy(result);
+    result.setUserVerifiedByUserId(result.getId());
+    result.setUserVerifiedAt(ZonedDateTime.now());
+
+    return repository.save(result);
   }
 
   @Override
@@ -139,6 +155,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     current.setCity(addressService.getCityById(user.getCity().getId()));
 
     return repository.save(current);
+  }
+
+  @Override
+  public VPUser verifyPhoneNumber(final Integer id) {
+    final VPUser source = get(id);
+    if (source.isPhoneNumberVerified()) {
+      return source;
+    }
+
+    source.setPhoneNumberVerified(true);
+    return repository.save(source);
   }
 
   @Override

@@ -143,7 +143,7 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T> {
   }
 
   private Pageable buildPageable() {
-    return PageRequest.of(pageNum, pageSize, buildSort(sort));
+    return PageRequest.of(pageNum - 1, pageSize, buildSort(sort));
   }
 
 }

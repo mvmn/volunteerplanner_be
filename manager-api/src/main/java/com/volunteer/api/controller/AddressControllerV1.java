@@ -25,6 +25,7 @@ public class AddressControllerV1 {
   private final RegionDtoMapper regionDtoMapper;
   private final CityDtoMapper cityDtoMapper;
 
+  // access for anybody
   @GetMapping(path = "/regions")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<RegionDtoV1> getRegions() {

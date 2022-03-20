@@ -1,19 +1,19 @@
 package com.volunteer.api.service;
 
 import com.volunteer.api.data.model.persistence.Product;
-
-import java.util.Collection;
+import com.volunteer.api.data.repository.search.QueryBuilder;
+import org.springframework.data.domain.Page;
 
 public interface ProductService {
-  Product create(Product product);
 
-  Product update(Product product);
+  Page<Product> getAll(final QueryBuilder<Product> queryBuilder);
 
-  void delete(Integer id);
+  Product getById(final Integer id);
 
-  Product getById(Integer id);
+  Product create(final Product product);
 
-  Collection<Product> getAll();
+  Product update(final Product product);
 
-  Collection<Product> findByNameAndCategory(String name, Integer categoryId);
+  void delete(final Integer id);
+
 }

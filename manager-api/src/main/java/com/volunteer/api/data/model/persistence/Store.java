@@ -1,11 +1,19 @@
 package com.volunteer.api.data.model.persistence;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
 
 @Data
 @NoArgsConstructor
@@ -14,6 +22,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "store")
 public class Store {
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "store_generator")
   @SequenceGenerator(name = "store_generator", sequenceName = "store_id_seq", allocationSize = 1)
@@ -24,12 +33,16 @@ public class Store {
   private String name;
 
   @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "address_id")
-  private Address address;
+  @JoinColumn(name = "city_id")
+  private City city;
 
-  @Column(name = "contact_person")
-  private String contactPerson;
+  @Column(name = "address")
+  private String address;
+
+  @Column(name = "confidential")
+  private boolean confidential;
 
   @Column(name = "note")
   private String note;
+
 }
