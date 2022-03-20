@@ -1,10 +1,9 @@
 package com.volunteer.api.service;
 
 
+import org.springframework.data.domain.Page;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.search.QueryBuilder;
-import java.util.Collection;
-import org.springframework.data.domain.Page;
 
 public interface StoreService {
 
