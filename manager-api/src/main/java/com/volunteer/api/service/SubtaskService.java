@@ -1,22 +1,23 @@
 package com.volunteer.api.service;
 
-import java.util.Collection;
 import com.volunteer.api.data.model.persistence.Subtask;
+import com.volunteer.api.data.repository.search.QueryBuilder;
+import java.util.Collection;
+import org.springframework.data.domain.Page;
 
 public interface SubtaskService {
-    Subtask findBySubtaskId(Integer subtaskId);
 
-    Collection<Subtask> findByTaskId(Integer taskId);
+  Page<Subtask> getAll(final QueryBuilder<Subtask> queryBuilder);
 
-    Collection<Subtask> findByProductId(Integer productId);
+  Subtask getById(final Integer subtaskId, final boolean onlyMine);
 
-    Collection<Subtask> findByVolunteerId(Integer volunteerId);
+  Collection<Subtask> getByTaskId(final Integer taskId, final boolean onlyMine);
 
-    Collection<Subtask> findByVolunteerPrincipal(String principal);
+  Subtask create(final Subtask subtask);
 
-    Subtask createSubtask(Subtask subtask);
+  Subtask update(final Subtask subtask);
 
-    void complete(Integer subtaskId);
+  Subtask complete(final Integer subtaskId);
 
-    void reject(Integer subtaskId);
+  Subtask reject(final Integer subtaskId);
 }

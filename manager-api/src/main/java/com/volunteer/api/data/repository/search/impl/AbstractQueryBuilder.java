@@ -73,7 +73,7 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T> {
 
   protected abstract Sort buildSort(final SortParameters sort);
 
-  private Specification<T> buildSpecification() {
+  protected Specification<T> buildSpecification() {
     if (Objects.isNull(filter)) {
       return null;
     }

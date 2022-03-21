@@ -49,8 +49,9 @@ public class StoreControllerV1 {
   @PreAuthorize("hasAuthority('STORES_VIEW_CONFIDENTIAL')")
   @PostMapping(path = "/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericPageDtoV1<StoreDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body) {
-    final Page<Store> result = service.getAll(new StoreQueryBuilder()
+  public GenericPageDtoV1<StoreDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body,
+      final StoreQueryBuilder queryBuilder) {
+    final Page<Store> result = service.getAll(queryBuilder
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
         .withFilter(body.getFilter())

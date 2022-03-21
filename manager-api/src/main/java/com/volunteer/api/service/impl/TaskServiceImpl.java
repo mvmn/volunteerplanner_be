@@ -1,31 +1,32 @@
 package com.volunteer.api.service.impl;
 
+import com.volunteer.api.data.mapping.TaskV1Mapper;
+import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.domain.TaskDetalization;
+import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
+import com.volunteer.api.data.repository.ProductRepository;
+import com.volunteer.api.data.repository.TaskRepository;
+import com.volunteer.api.error.InvalidStatusException;
+import com.volunteer.api.error.ObjectNotFoundException;
+import com.volunteer.api.service.AuthService;
+import com.volunteer.api.service.TaskService;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.volunteer.api.data.mapping.TaskV1Mapper;
-import com.volunteer.api.data.model.TaskStatus;
-import com.volunteer.api.data.model.domain.TaskDetalization;
-import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
-import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.data.repository.ProductRepository;
-import com.volunteer.api.data.repository.TaskRepository;
-import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.AuthService;
-import com.volunteer.api.service.TaskService;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -34,9 +35,9 @@ public class TaskServiceImpl implements TaskService {
   private final TaskRepository taskRepository;
   private final ProductRepository productRepository;
   private final TaskV1Mapper mapper; // TODO: consider having separate mapper for domain objects to
-                                     // keep web layer separated
+  // keep web layer separated
   private final AuthService authService; // TODO: consider moving this to controller to keep web
-                                         // layer separated from business layer
+  // layer separated from business layer
 
   @Override
   public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
@@ -105,6 +106,64 @@ public class TaskServiceImpl implements TaskService {
 
   @Override
   @Transactional
+  // bulkSubtract must be used for cases when we have to reject multiple subtasks at once
+  // as example when we do reject the task to avoid unnecessary multiple updates in DB
+  public BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta,
+      final boolean bulkSubtract) {
+    final int deltaSign = delta.compareTo(BigDecimal.ZERO);
+
+    // delta is zero
+    // nothing to do here
+    if (deltaSign == 0) {
+      return delta;
+    }
+
+    final BigDecimal result;
+    switch (task.getStatus()) {
+      case NEW:
+        throw new InvalidStatusException("Task is not verified yet");
+      case VERIFIED:
+        // reject handling
+        if (deltaSign < 0) {
+          task.setQuantityLeft(task.getQuantity().min(task.getQuantityLeft().subtract(delta)));
+          result = delta;
+        } else {
+          if (task.getQuantityLeft().compareTo(delta) >= 0) {
+            task.setQuantityLeft(task.getQuantityLeft().subtract(delta));
+            result = delta;
+          } else {
+            result = task.getQuantityLeft();
+            task.setQuantityLeft(BigDecimal.ZERO);
+          }
+        }
+
+        break;
+      case COMPLETED:
+        throw new InvalidStatusException("Task has been completed already");
+      case REJECTED:
+        // reject handling
+        if (deltaSign < 0) {
+          task.setQuantityLeft(task.getQuantity().min(task.getQuantityLeft().subtract(delta)));
+          result = delta;
+        } else {
+          throw new InvalidStatusException("Task has been rejected already");
+        }
+
+        break;
+      default:
+        throw new InvalidStatusException(String.format("Task status '%s' is not supported",
+            task.getStatus()));
+    }
+
+    if (!bulkSubtract) {
+      taskRepository.save(task);
+    }
+
+    return result;
+  }
+
+  @Override
+  @Transactional
   public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
     return taskRepository.saveAll(details.stream().map(detail -> {
       Task taskBlueprint = mapper.clone(blueprint);
@@ -133,8 +192,9 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Optional<Task> getTaskById(int taskId) {
-    return taskRepository.findById(taskId);
+  public Task getTaskById(int taskId) {
+    return taskRepository.findById(taskId).orElseThrow(() -> new ObjectNotFoundException(
+        String.format("task with ID '%d' does not exist", taskId)));
   }
 
   @Override
@@ -238,6 +298,9 @@ public class TaskServiceImpl implements TaskService {
       task.setClosedAt(ZonedDateTime.now());
       taskRepository.save(task);
     }
+
+    // consider to reject all subtasks which are in progress yet
+    // later we could add SMS notification like stop working on it, task has been rejected
   }
 
   @Override

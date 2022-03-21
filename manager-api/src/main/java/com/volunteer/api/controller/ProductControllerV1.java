@@ -44,9 +44,9 @@ public class ProductControllerV1 {
   // could be used for autosuggestion
   @PreAuthorize("hasAuthority('PRODUCTS_VIEW')")
   @PostMapping("/search")
-  public GenericPageDtoV1<ProductDtoV1> getAll(
-      @RequestBody @Valid final SearchDto<FilterDto> body) {
-    final Page<Product> result = service.getAll(new ProductQueryBuilder()
+  public GenericPageDtoV1<ProductDtoV1> getAll(@RequestBody @Valid final SearchDto<FilterDto> body,
+      final ProductQueryBuilder queryBuilder) {
+    final Page<Product> result = service.getAll(queryBuilder
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
         .withFilter(body.getFilter())

@@ -1,34 +1,50 @@
 package com.volunteer.api.data.model.api;
 
-import java.math.BigDecimal;
-import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.volunteer.api.data.model.SubtaskStatus;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-@JsonPropertyOrder({"id", "productId", "quantity", "status", "note", "transportRequired", "volunteerId", "taskId"})
+@JsonPropertyOrder({"id", "taskId", "quantity", "status", "note", "transportRequired",
+    "createdByUserId", "createdAt", "closedByUserId", "closedAt"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SubtaskDtoV1 {
+
+  @JsonProperty("id")
   private Integer id;
 
-  @NotNull(message = "cannot be empty")
-  private Integer productId;
+  @NotNull
+  @JsonProperty("taskId")
+  private Integer taskId;
 
-  @NotNull(message = "cannot be empty")
+  @NotNull
+  @JsonProperty("quantity")
   private BigDecimal quantity;
 
+  @JsonProperty("status")
   private SubtaskStatus status;
 
+  @JsonProperty("note")
   private String note;
 
-  private boolean transportRequired;
+  @JsonProperty("transportRequired")
+  private Boolean transportRequired;
 
-  @NotNull(message = "cannot be empty")
-  private Integer volunteerId;
+  @JsonProperty("createdByUserId")
+  private Integer createdByUserId;
+  @JsonProperty("createdAt")
+  private ZonedDateTime createdAt;
 
-  private Integer taskId;
+  @JsonProperty("closedByUserId")
+  private Integer closedByUserId;
+  @JsonProperty("closedAt")
+  private ZonedDateTime closedAt;
+
 }
