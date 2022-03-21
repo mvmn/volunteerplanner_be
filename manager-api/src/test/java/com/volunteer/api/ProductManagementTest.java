@@ -1,10 +1,15 @@
 package com.volunteer.api;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+import java.util.List;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.volunteer.api.data.mapping.CategoryDtoMapper;
-import com.volunteer.api.data.mapping.ProductDtoMapper;
 import com.volunteer.api.data.model.api.CategoryDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.ProductDtoV1;
@@ -16,25 +21,11 @@ import com.volunteer.api.data.model.api.search.filter.ValueNumericFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueTextFilterDto;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.service.CategoryService;
-import com.volunteer.api.service.ProductService;
-import java.util.List;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 public class ProductManagementTest extends AbstractMockMvcTest {
 
   @Autowired
-  private ProductService productService;
-
-  @Autowired
   private CategoryService categoryService;
-
-  @Autowired
-  private ProductDtoMapper productDtoMapper;
 
   @Autowired
   private CategoryDtoMapper categoryDtoMapper;
@@ -46,7 +37,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   @Test
   public void testProductCrud() throws Exception {
-    String token = loginAsOperator().getRefreshToken();
+    String token = login("op", "pass").getRefreshToken();
 
     mockMvc
         .perform(
@@ -84,7 +75,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
     assertThat(productUpd).isEqualTo(product);
 
     // Search
-    SearchDto searchRequest = SearchDto.<FilterDto>builder()
+    SearchDto<FilterDto> searchRequest = SearchDto.<FilterDto>builder()
         .filter(OperatorFilterDto.builder()
             .operator(Operator.AND)
             .operands(List.of(

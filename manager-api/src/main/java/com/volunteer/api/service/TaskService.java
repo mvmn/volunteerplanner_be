@@ -30,5 +30,6 @@ public interface TaskService {
   Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
       Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
       Integer remainingQuantityMoreThan, boolean zeroQuantity, boolean excludeExpired,
+      Integer createdByUserId, Integer verifiedByUserId, Integer closedByUserId,
       Pageable pagingAndSorting);
 }

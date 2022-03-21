@@ -3,11 +3,6 @@ package com.volunteer.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.volunteer.api.service.UserService;
-import com.volunteer.api.utils.JsonTestUtils;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -29,6 +24,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.volunteer.api.utils.JsonTestUtils;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
@@ -43,9 +41,6 @@ public class UserManagementTest extends AbstractTestWithPersistence {
 
   @Autowired
   private TestRestTemplate restTemplate;
-
-  @Autowired
-  private UserService userService;
 
   @ParameterizedTest()
   @MethodSource("loadClassPassTestCases")

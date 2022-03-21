@@ -125,8 +125,9 @@ public class TaskControllerV1 {
             : false,
         searchRequest.getExcludeExpired() != null ? searchRequest.getExcludeExpired().booleanValue()
             : false,
-        PageRequest.of(pageNumber != null ? pageNumber : 0, pageSize != null ? pageSize : 10,
-            order));
+        searchRequest.getCreatedByUserId(), searchRequest.getVerifiedByUserId(),
+        searchRequest.getClosedByUserId(), PageRequest.of(pageNumber != null ? pageNumber : 0,
+            pageSize != null ? pageSize : 10, order));
 
     return GenericPageDtoMapper.map(searchRequest.getPageNumber(), searchRequest.getPageSize(),
         searchResult, taskMapper::map);
