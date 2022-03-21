@@ -5,10 +5,12 @@ import com.volunteer.api.data.model.api.CategoryDtoV1;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.service.CategoryService;
+import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,9 +18,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping(path = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -35,7 +39,7 @@ public class CategoryControllerV1 {
   }
 
   @PreAuthorize("hasAuthority('CATEGORIES_VIEW')")
-  @GetMapping(path = "/root")
+  @GetMapping(path = "/roots")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<CategoryDtoV1> getRoots() {
     return GenericCollectionDtoV1.<CategoryDtoV1>builder()
@@ -44,7 +48,7 @@ public class CategoryControllerV1 {
   }
 
   @PreAuthorize("hasAuthority('CATEGORIES_VIEW')")
-  @GetMapping(path = "/children/{parent-id}")
+  @GetMapping(path = "/{parent-id}/children")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<CategoryDtoV1> getChildren(
       @PathVariable("parent-id") final Integer parentId) {
@@ -54,9 +58,10 @@ public class CategoryControllerV1 {
   }
 
   @PreAuthorize("hasAuthority('CATEGORIES_VIEW')")
-  @GetMapping(path = "/search/{name}")
+  @GetMapping(path = "/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericCollectionDtoV1<CategoryDtoV1> searchByName(@PathVariable("name") final String name) {
+  public GenericCollectionDtoV1<CategoryDtoV1> search(
+      @NotBlank @RequestParam("name") final String name) {
     return GenericCollectionDtoV1.<CategoryDtoV1>builder()
         .items(categoryDtoMapper.map(categoryService.getByName(name)))
         .build();
