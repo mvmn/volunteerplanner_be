@@ -1,10 +1,21 @@
 package com.volunteer.api.controller;
 
 import com.volunteer.api.data.mapping.GenericPageDtoMapper;
+import com.volunteer.api.data.mapping.TaskV1Mapper;
+import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
+import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
+import com.volunteer.api.data.model.api.TaskBatchDtoV1;
+import com.volunteer.api.data.model.api.TaskDtoV1;
+import com.volunteer.api.data.model.api.TaskSearchDtoV1;
+import com.volunteer.api.data.model.domain.TaskDetalization;
+import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.service.TaskService;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,18 +27,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.volunteer.api.data.mapping.TaskV1Mapper;
-import com.volunteer.api.data.model.TaskStatus;
-import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
-import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
-import com.volunteer.api.data.model.api.TaskBatchDtoV1;
-import com.volunteer.api.data.model.api.TaskDtoV1;
-import com.volunteer.api.data.model.api.TaskSearchDtoV1;
-import com.volunteer.api.data.model.domain.TaskDetalization;
-import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.TaskService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping(path = "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,8 +65,7 @@ public class TaskControllerV1 {
   @PreAuthorize("hasAuthority('TASKS_VIEW')")
   @GetMapping("{taskId}")
   public TaskDtoV1 getTaskById(@PathVariable("taskId") Integer taskId) {
-    return taskService.getTaskById(taskId).map(taskMapper::map)
-        .orElseThrow(() -> new ObjectNotFoundException("Task not found by ID " + taskId));
+    return taskMapper.map(taskService.getTaskById(taskId));
   }
 
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")

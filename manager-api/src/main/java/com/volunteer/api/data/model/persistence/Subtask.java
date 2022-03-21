@@ -1,6 +1,8 @@
 package com.volunteer.api.data.model.persistence;
 
+import com.volunteer.api.data.model.SubtaskStatus;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import com.volunteer.api.data.model.SubtaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,15 +25,19 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "subtask")
 public class Subtask {
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "subtask_generator")
   @SequenceGenerator(name = "subtask_generator", sequenceName = "subtask_id_seq", allocationSize = 1)
   @Column(name = "id")
   private Integer id;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "product_id", nullable = false)
-  private Product product;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "task_id")
+  private Task task;
+
+  @Column(name = "task_id", insertable = false, updatable = false)
+  private Integer taskId;
 
   @Column(name = "quantity", columnDefinition = "NUMERIC", nullable = false)
   private BigDecimal quantity;
@@ -46,11 +51,24 @@ public class Subtask {
   @Column(name = "transport_required")
   private boolean transportRequired;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "volunteer_id")
-  private VPUser volunteer;
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "created_by")
+  private VPUser createdBy;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "task_id")
-  private Task task;
+  @Column(name = "created_by", insertable = false, updatable = false)
+  private Integer createdByUserId;
+
+  @Column(name = "created_at", nullable = false)
+  private ZonedDateTime createdAt;
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "closed_by")
+  private VPUser closedBy;
+
+  @Column(name = "closed_by", insertable = false, updatable = false)
+  private Integer closedByUserId;
+
+  @Column(name = "closed_at")
+  private ZonedDateTime closedAt;
+
 }

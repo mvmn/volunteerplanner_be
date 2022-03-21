@@ -546,5 +546,58 @@
         "locked": false
       }
     }
+  },
+  {
+    "name": "search",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/users/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "text",
+            "field": "role.name",
+            "value": "volunteer"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 3,
+            "userName": "volunteer",
+            "phoneNumber": "333",
+            "password": "******",
+            "role": "volunteer",
+            "fullName": "FN volunteer",
+            "city": {
+              "id": 20,
+              "region": {
+                "id": 1,
+                "name": "Вінницька"
+              },
+              "name": "Уланов"
+            },
+            "phoneNumberVerified": true,
+            "userVerified": true,
+            "userVerifiedByUserId": 2,
+            "userVerifiedAt": "any value",
+            "locked": false
+          }
+        ]
+      }
+    }
   }
 ]

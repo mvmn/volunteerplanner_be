@@ -4,108 +4,168 @@ import com.volunteer.api.data.model.SubtaskStatus;
 import com.volunteer.api.data.model.persistence.Subtask;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.SubtaskRepository;
-import com.volunteer.api.data.repository.TaskRepository;
-import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.data.repository.search.Query;
+import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.SubtaskService;
+import com.volunteer.api.service.TaskService;
+import com.volunteer.api.service.UserService;
+import java.math.BigDecimal;
+import java.time.ZonedDateTime;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
-import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
 public class SubtaskServiceImpl implements SubtaskService {
-  private final SubtaskRepository subtaskRepository;
-  private final TaskRepository taskRepository;
-  private final ProductRepository productRepository;
-  private final UserRepository userRepository;
+
+  private final SubtaskRepository repository;
+
+  private final TaskService taskService;
+  private final UserService userService;
 
   @Override
-  public Subtask findBySubtaskId(Integer subtaskId) {
-    return subtaskRepository
-        .findById(subtaskId)
-        .orElseThrow(
-            () -> new ObjectNotFoundException("Subtask with id " + subtaskId + " not found"));
+  public Page<Subtask> getAll(final QueryBuilder<Subtask> queryBuilder) {
+    final Query<Subtask> query = queryBuilder.build();
+    return repository.findAll(query.getSpecification(), query.getPageable());
   }
 
   @Override
-  public Collection<Subtask> findByTaskId(Integer taskId) {
-    return subtaskRepository.findByTaskId(taskId);
-  }
+  public Subtask getById(final Integer subtaskId, final boolean onlyMine) {
+    final Subtask result = repository.findById(subtaskId).orElseThrow(
+        () -> new ObjectNotFoundException(String.format(
+            "Subtask with id '%d' not found", subtaskId)));
 
-  @Override
-  public Collection<Subtask> findByProductId(Integer productId) {
-    return subtaskRepository.findByProductId(productId);
-  }
-
-  @Override
-  public Collection<Subtask> findByVolunteerId(Integer volunteerId) {
-    return subtaskRepository.findByVolunteerId(volunteerId);
-  }
-
-  @Override
-  public Collection<Subtask> findByVolunteerPrincipal(String principal) {
-    VPUser user = userRepository.findByUserName(principal);
-    if (user == null) {
-      throw new UsernameNotFoundException("User not found");
+    if (onlyMine) {
+      final VPUser user = userService.getCurrentUser();
+      if (!result.getCreatedBy().getId().equals(user.getId())) {
+        throw new AuthorizationServiceException(String.format(
+            "You are not allowed to view subtask '%d'", subtaskId));
+      }
     }
-    return subtaskRepository.findByVolunteerId(user.getId());
+
+    return result;
+  }
+
+  @Override
+  public Collection<Subtask> getByTaskId(final Integer taskId, final boolean onlyMine) {
+    if (onlyMine) {
+      final VPUser user = userService.getCurrentUser();
+      return repository.findByTaskIdAndCreatedById(taskId, user.getId());
+    } else {
+      return repository.findByTaskId(taskId);
+    }
   }
 
   @Override
   @Transactional
-  public Subtask createSubtask(Subtask subtask) {
-    // Update task.QuantityLeft
-    Task task = taskRepository.getById(subtask.getTask().getId());
-    task.setQuantityLeft(task.getQuantityLeft().subtract(subtask.getQuantity()));
-    if (task.getQuantityLeft().compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidQuantityException("Remaining quantity left should not be less than 0");
+  public Subtask create(final Subtask subtask) {
+    if (subtask.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
+      throw new InvalidQuantityException("quantity must be greater then 0");
     }
-    task = taskRepository.save(task);
 
-    // Create subtask
-    subtask.setId(null);
-    subtask.setStatus(SubtaskStatus.IN_PROGRESS);
-    subtask.setProduct(productRepository.getById(subtask.getProduct().getId()));
+    final Task task = taskService.getTaskById(subtask.getTask().getId());
+    final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity(),
+        false);
+
+    if (delta.compareTo(BigDecimal.ZERO) == 0) {
+      throw new InvalidQuantityException("There is no quantity remaining for selected task");
+    }
+
+    final VPUser user = userService.getCurrentUser();
+
+    subtask.setQuantity(delta);
     subtask.setTask(task);
-    subtask.setVolunteer(userRepository.getById(subtask.getVolunteer().getId()));
+    subtask.setTaskId(task.getId());
+    subtask.setStatus(SubtaskStatus.IN_PROGRESS);
+    subtask.setCreatedBy(user);
+    subtask.setCreatedByUserId(user.getId());
+    subtask.setCreatedAt(ZonedDateTime.now());
 
-    return subtaskRepository.save(subtask);
-  }
-
-  @Override
-  public void complete(Integer subtaskId) {
-    Subtask subtask = findBySubtaskId(subtaskId);
-    if (subtask.getStatus() == SubtaskStatus.REJECTED) {
-      throw new InvalidQuantityException("Subtask has invalid status: " + subtask.getStatus());
-    }
-    subtask.setStatus(SubtaskStatus.COMPLETED);
-
-    subtaskRepository.save(subtask);
+    return repository.save(subtask);
   }
 
   @Override
   @Transactional
-  public void reject(Integer subtaskId) {
-    // Update subtask
-    Subtask subtask = findBySubtaskId(subtaskId);
-    if (subtask.getStatus() == SubtaskStatus.COMPLETED) {
-      throw new InvalidStatusException("Subtask has invalid status: " + subtask.getStatus());
+  public Subtask update(final Subtask subtask) {
+    final Subtask current = getById(subtask.getId(), true);
+    final Task task = current.getTask();
+
+    if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
+      throw new InvalidStatusException("Modification of closed task is prohibited");
     }
-    subtask.setStatus(SubtaskStatus.REJECTED);
 
-    Subtask result = subtaskRepository.save(subtask);
+    if (subtask.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
+      throw new InvalidQuantityException("quantity must be greater then 0");
+    }
 
-    // Update task.QuantityLeft
-    Task task = taskRepository.getById(result.getTask().getId());
-    task.setQuantityLeft(task.getQuantityLeft().add(subtask.getQuantity()));
-    taskRepository.save(task);
+    // we do allow change quantity only
+    BigDecimal delta = subtask.getQuantity().subtract(current.getQuantity());
+    if (delta.compareTo(BigDecimal.ZERO) == 0) {
+      return current;
+    }
+
+    delta = taskService.subtractRemainingQuantity(task, delta, false);
+    if (delta.compareTo(BigDecimal.ZERO) == 0) {
+      throw new InvalidQuantityException("There is no quantity remaining for selected task");
+    }
+
+    current.setQuantity(current.getQuantity().add(delta));
+
+    return repository.save(subtask);
+  }
+
+  @Override
+  public Subtask complete(final Integer subtaskId) {
+    final Subtask subtask = getById(subtaskId, false);
+    switch (subtask.getStatus()) {
+      case COMPLETED:
+        return subtask;
+      case IN_PROGRESS:
+        final VPUser user = userService.getCurrentUser();
+
+        subtask.setStatus(SubtaskStatus.COMPLETED);
+        subtask.setClosedBy(user);
+        subtask.setClosedByUserId(user.getId());
+        subtask.setClosedAt(ZonedDateTime.now());
+
+        return repository.save(subtask);
+      default:
+        throw new InvalidStatusException(String.format(
+            "It's prohibited to change status '%s' to '%s'",
+            subtask.getStatus().name(), SubtaskStatus.COMPLETED.name()));
+    }
+  }
+
+  @Override
+  @Transactional
+  public Subtask reject(final Integer subtaskId) {
+    final Subtask subtask = getById(subtaskId, false);
+    switch (subtask.getStatus()) {
+      case REJECTED:
+        return subtask;
+      case IN_PROGRESS:
+        final VPUser user = userService.getCurrentUser();
+        taskService.subtractRemainingQuantity(subtask.getTask(), subtask.getQuantity().negate(),
+            false);
+
+        subtask.setStatus(SubtaskStatus.REJECTED);
+        subtask.setClosedBy(user);
+        subtask.setClosedByUserId(user.getId());
+        subtask.setClosedAt(ZonedDateTime.now());
+
+        return repository.save(subtask);
+      default:
+        throw new InvalidStatusException(String.format(
+            "It's prohibited to change status '%s' to '%s'",
+            subtask.getStatus().name(), SubtaskStatus.REJECTED.name()));
+    }
   }
 }
