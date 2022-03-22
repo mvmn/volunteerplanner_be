@@ -1,8 +1,10 @@
 package com.volunteer.api.data.mapping;
 
 import com.volunteer.api.data.model.persistence.Product;
+import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
+import com.volunteer.api.data.repository.StoreRepository;
 import com.volunteer.api.data.repository.UserRepository;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -18,6 +20,8 @@ public abstract class GenericMapper {
   private UserRepository userRepository;
   @Autowired
   private ProductRepository productRepository;
+  @Autowired
+  private StoreRepository storeRepository;
 
   public Long mapZonedDateTimeToUnixtime(ZonedDateTime value) {
     return Objects.isNull(value) ? null : value.toEpochSecond();
@@ -36,4 +40,7 @@ public abstract class GenericMapper {
     return Objects.isNull(productId) ? null : productRepository.getById(productId);
   }
 
+  public Store mapStore(Integer storeId) {
+    return Objects.isNull(storeId) ? null : storeRepository.getById(storeId);
+  }
 }
