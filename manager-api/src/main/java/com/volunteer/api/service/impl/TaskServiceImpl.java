@@ -4,11 +4,9 @@ import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
-import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.StoreService;
 import com.volunteer.api.service.TaskService;
 import com.volunteer.api.service.UserService;
 import java.math.BigDecimal;
@@ -31,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskServiceImpl implements TaskService {
 
   private final TaskRepository repository;
-
-  private final ProductRepository productService;
-  private final StoreService storeService;
   private final UserService userService;
 
   @Override
