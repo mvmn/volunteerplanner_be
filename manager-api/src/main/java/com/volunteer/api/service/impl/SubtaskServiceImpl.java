@@ -71,9 +71,8 @@ public class SubtaskServiceImpl implements SubtaskService {
       throw new InvalidQuantityException("quantity must be greater then 0");
     }
 
-    final Task task = taskService.getTaskById(subtask.getTask().getId());
-    final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity(),
-        false);
+    final Task task = taskService.get(subtask.getTask().getId());
+    final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity());
 
     if (delta.compareTo(BigDecimal.ZERO) == 0) {
       throw new InvalidQuantityException("There is no quantity remaining for selected task");
@@ -112,7 +111,7 @@ public class SubtaskServiceImpl implements SubtaskService {
       return current;
     }
 
-    delta = taskService.subtractRemainingQuantity(task, delta, false);
+    delta = taskService.subtractRemainingQuantity(task, delta);
     if (delta.compareTo(BigDecimal.ZERO) == 0) {
       throw new InvalidQuantityException("There is no quantity remaining for selected task");
     }
@@ -153,8 +152,7 @@ public class SubtaskServiceImpl implements SubtaskService {
         return subtask;
       case IN_PROGRESS:
         final VPUser user = userService.getCurrentUser();
-        taskService.subtractRemainingQuantity(subtask.getTask(), subtask.getQuantity().negate(),
-            false);
+        taskService.subtractRemainingQuantity(subtask.getTask(), subtask.getQuantity().negate());
 
         subtask.setStatus(SubtaskStatus.REJECTED);
         subtask.setClosedBy(user);

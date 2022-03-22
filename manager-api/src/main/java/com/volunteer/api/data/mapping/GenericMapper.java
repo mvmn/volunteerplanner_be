@@ -3,9 +3,9 @@ package com.volunteer.api.data.mapping;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.data.repository.ProductRepository;
-import com.volunteer.api.data.repository.StoreRepository;
-import com.volunteer.api.data.repository.UserRepository;
+import com.volunteer.api.service.ProductService;
+import com.volunteer.api.service.StoreService;
+import com.volunteer.api.service.UserService;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -17,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class GenericMapper {
 
   @Autowired
-  private UserRepository userRepository;
+  private UserService userService;
   @Autowired
-  private ProductRepository productRepository;
+  private ProductService productService;
   @Autowired
-  private StoreRepository storeRepository;
+  private StoreService storeService;
 
   public Long mapZonedDateTimeToUnixtime(ZonedDateTime value) {
     return Objects.isNull(value) ? null : value.toEpochSecond();
@@ -33,14 +33,15 @@ public abstract class GenericMapper {
   }
 
   public VPUser mapVPUser(Integer userId) {
-    return Objects.isNull(userId) ? null : userRepository.getById(userId);
+    return Objects.isNull(userId) ? null : userService.get(userId);
   }
 
   public Product mapProduct(Integer productId) {
-    return Objects.isNull(productId) ? null : productRepository.getById(productId);
+    return Objects.isNull(productId) ? null : productService.get(productId);
   }
 
   public Store mapStore(Integer storeId) {
-    return Objects.isNull(storeId) ? null : storeRepository.getById(storeId);
+    return Objects.isNull(storeId) ? null : storeService.get(storeId, true);
   }
+
 }

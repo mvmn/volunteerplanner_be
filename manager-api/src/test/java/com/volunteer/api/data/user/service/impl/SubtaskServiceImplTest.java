@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
+import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
@@ -84,7 +85,6 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     user = userService.create(user);
 
     Task task = new Task();
-    task.setCustomer("cust 1");
     task.setProduct(product);
     task.setQuantity(BigDecimal.TEN);
     task.setPriority(1);
@@ -96,8 +96,8 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     SecurityContextHolder.getContext()
         .setAuthentication(new TestingAuthenticationToken(user.getUserName(), null));
 
-    task = taskService.createTask(task);
-    taskService.verify(task.getId());
+    task = taskService.create(task);
+    taskService.changeStatus(task.getId(), TaskStatus.VERIFIED);
 
     // Create
     Subtask subtask1 =
@@ -112,7 +112,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     assertThat(createdSubtask.getStatus()).isEqualTo(SubtaskStatus.IN_PROGRESS);
     assertThat(createdSubtask.getTask().getId()).isEqualTo(subtask1.getTask().getId());
 
-    Task updatedTask = taskService.getTaskById(task.getId());
+    Task updatedTask = taskService.get(task.getId());
     assertNotNull(updatedTask);
     assertThat(updatedTask.getQuantityLeft().longValue()).isEqualTo(7L);
 
@@ -121,7 +121,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     final Subtask completedSubtask = subtaskService.getById(subtask1.getId(), false);
     assertThat(completedSubtask.getStatus()).isEqualTo(SubtaskStatus.COMPLETED);
 
-    updatedTask = taskService.getTaskById(task.getId());
+    updatedTask = taskService.get(task.getId());
     assertNotNull(updatedTask);
     assertThat(updatedTask.getQuantityLeft().longValue()).isEqualTo(7L);
 
@@ -141,7 +141,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     final Subtask rejectedSubtask = subtaskService.getById(subtask2.getId(), false);
 
     assertThat(rejectedSubtask.getStatus()).isEqualTo(SubtaskStatus.REJECTED);
-    updatedTask = taskService.getTaskById(task.getId());
+    updatedTask = taskService.get(task.getId());
     assertNotNull(updatedTask);
     assertThat(updatedTask.getQuantityLeft().longValue()).isEqualTo(7L);
 

@@ -1,10 +1,10 @@
 package com.volunteer.api.data.model.api;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.volunteer.api.data.model.TaskStatus;
 import java.util.Set;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.volunteer.api.data.model.TaskStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

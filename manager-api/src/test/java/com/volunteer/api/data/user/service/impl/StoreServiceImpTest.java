@@ -44,7 +44,7 @@ public class StoreServiceImpTest extends AbstractTestWithPersistence {
     Store updated = storeService.update(created);
     assertProperties(store, updated);
 
-    Store byId = storeService.getById(updated.getId(), true);
+    Store byId = storeService.get(updated.getId(), true);
     assertProperties(updated, byId);
   }
 

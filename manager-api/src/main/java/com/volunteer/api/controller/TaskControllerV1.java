@@ -5,29 +5,33 @@ import com.volunteer.api.data.mapping.TaskV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
-import com.volunteer.api.data.model.api.IntegerIdsDtoV1;
-import com.volunteer.api.data.model.api.TaskBatchDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
-import com.volunteer.api.data.model.domain.TaskDetalization;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.service.TaskService;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+@Validated
 @RestController
 @RequestMapping(path = "/tasks", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -38,70 +42,76 @@ public class TaskControllerV1 {
 
   @PostMapping
   @PreAuthorize("hasAuthority('TASKS_MODIFY')")
-  public TaskDtoV1 createTask(@RequestBody @Valid TaskDtoV1 dto) {
-    return taskMapper.map(taskService.createTask(taskMapper.map(dto)));
+  @ResponseStatus(HttpStatus.CREATED)
+  public TaskDtoV1 create(@RequestBody @Valid final TaskDtoV1 source) {
+    return taskMapper.map(taskService.create(taskMapper.map(source)));
   }
 
-  @PostMapping("batch")
+  @PostMapping("/batch")
   @PreAuthorize("hasAuthority('TASKS_MODIFY')")
-  public GenericCollectionDtoV1<TaskDtoV1> createTasks(@RequestBody @Valid TaskBatchDtoV1 dto) {
-    Task blueprint = taskMapper.map(dto.getBlueprint());
-    List<TaskDetalization> details =
-        dto.getDetails().stream().map(taskMapper::map).collect(Collectors.toList());
-    List<TaskDtoV1> createdTasks = taskService.batchCreate(blueprint, details).stream()
-        .map(taskMapper::map).collect(Collectors.toList());
-    return GenericCollectionDtoV1.<TaskDtoV1>builder().items(createdTasks).build();
+  @ResponseStatus(HttpStatus.CREATED)
+  public GenericCollectionDtoV1<TaskDtoV1> create(
+      @RequestBody @Valid final GenericCollectionDtoV1<TaskDtoV1> source) {
+
+    final Collection<TaskDtoV1> items = taskMapper.map(taskService.create(
+        source.getItems().stream()
+            .map(taskMapper::map)
+            .collect(Collectors.toList()))
+    );
+
+    return GenericCollectionDtoV1.<TaskDtoV1>builder()
+        .items(items)
+        .build();
   }
 
   @PreAuthorize("hasAuthority('TASKS_VIEW')")
-  @PostMapping("batchget")
-  public GenericCollectionDtoV1<TaskDtoV1> getTasksByIds(
-      @RequestBody @Valid IntegerIdsDtoV1 idsDto) {
-    List<TaskDtoV1> tasks = taskService.getTasksByIds(idsDto.getIds()).stream().map(taskMapper::map)
-        .collect(Collectors.toList());
-    return GenericCollectionDtoV1.<TaskDtoV1>builder().items(tasks).build();
-  }
-
-  @PreAuthorize("hasAuthority('TASKS_VIEW')")
-  @GetMapping("{taskId}")
-  public TaskDtoV1 getTaskById(@PathVariable("taskId") Integer taskId) {
-    return taskMapper.map(taskService.getTaskById(taskId));
+  @GetMapping("/{taskId}")
+  public TaskDtoV1 getById(@PathVariable("taskId") Integer taskId) {
+    return taskMapper.map(taskService.get(taskId));
   }
 
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")
-  @PostMapping("{taskId}/verify")
+  @PostMapping("/{taskId}/verify")
   public void verify(@PathVariable("taskId") Integer taskId) {
-    taskService.verify(taskId);
+    taskService.changeStatus(taskId, TaskStatus.VERIFIED);
   }
 
   @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
-  @PostMapping("{taskId}/complete")
+  @PostMapping("/{taskId}/complete")
   public void complete(@PathVariable("taskId") Integer taskId) {
-    taskService.complete(taskId);
+    taskService.changeStatus(taskId, TaskStatus.COMPLETED);
   }
 
   @PreAuthorize("hasAuthority('TASKS_REJECT')")
-  @PostMapping("{taskId}/reject")
+  @PostMapping("/{taskId}/reject")
   public void reject(@PathVariable("taskId") Integer taskId) {
-    taskService.reject(taskId);
+    taskService.changeStatus(taskId, TaskStatus.REJECTED);
   }
 
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")
-  @PostMapping("batch/verify")
-  public void batchVerify(@RequestBody IntegerIdsDtoV1 taskIds) {
-    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.VERIFIED);
+  @PostMapping("/batch/verify")
+  public void batchVerify(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.VERIFIED);
   }
 
   @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
-  @PostMapping("batch/complete")
-  public void batchComplete(@RequestBody IntegerIdsDtoV1 taskIds) {
-    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.COMPLETED);
+  @PostMapping("/batch/complete")
+  public void batchComplete(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.COMPLETED);
   }
 
   @PreAuthorize("hasAuthority('TASKS_REJECT')")
-  @PostMapping("batch/reject")
-  public void batchReject(@RequestBody IntegerIdsDtoV1 taskIds) {
-    taskService.batchStatusChange(taskIds.getIds(), TaskStatus.REJECTED);
+  @PostMapping("/batch/reject")
+  public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.REJECTED);
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_VIEW')")
+  @GetMapping("/search")
+  public GenericCollectionDtoV1<TaskDtoV1> getByIds(
+      @RequestParam("ids") @NotEmpty final List<Integer> ids) {
+    final Collection<TaskDtoV1> tasks = taskMapper.map(taskService.get(ids));
+    return GenericCollectionDtoV1.<TaskDtoV1>builder().items(tasks).build();
   }
 
   @PreAuthorize("hasAuthority('TASKS_VIEW')")

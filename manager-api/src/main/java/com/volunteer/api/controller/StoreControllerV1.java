@@ -45,7 +45,7 @@ public class StoreControllerV1 {
     final boolean showConfidential = AuthenticationUtils.hasAuthority(
         UserAuthority.STORES_VIEW_CONFIDENTIAL, authentication);
 
-    return storeDtoMapper.map(service.getById(id, showConfidential));
+    return storeDtoMapper.map(service.get(id, showConfidential));
   }
 
   @PreAuthorize("hasAuthority('STORES_VIEW_CONFIDENTIAL')")
