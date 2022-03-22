@@ -212,10 +212,10 @@ public class TaskServiceImpl implements TaskService {
       throw new IllegalArgumentException("Deadline date cannot be in the past");
     }
 
+    task.setStatus(TaskStatus.NEW);
+
     task.setQuantityLeft(task.getQuantity());
     task.setCreatedAt(ZonedDateTime.now());
-
-    task.setStatus(TaskStatus.NEW);
 
     task.setCreatedBy(currentUser);
     task.setCreatedAt(currentTime);
