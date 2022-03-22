@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
-import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
@@ -14,7 +13,6 @@ import com.volunteer.api.data.model.persistence.Subtask;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
-import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.CategoryService;

@@ -221,11 +221,13 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   }
 
   protected TaskDtoV1 createTask(String token) throws Exception {
-    return getResponseAs(mockMvc.perform(MockMvcRequestBuilders.post("/tasks")
-            .header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON_VALUE)
+    return getResponseAs(mockMvc
+        .perform(MockMvcRequestBuilders.post("/tasks").header("Authorization", "Bearer " + token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder().customer("test")
-                .customerStoreId(1).volunteerStoreId(1).productMeasure("units").quantity(BigDecimal.TEN)
-                .priority(1).deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
+                .customerStoreId(store.getId()).volunteerStoreId(store.getId())
+                .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
+                .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
                 .productId(product.getId()).build())))
         .andExpect(MockMvcResultMatchers.status().isOk()), TaskDtoV1.class);
   }
