@@ -9,6 +9,7 @@ import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
 import com.volunteer.api.service.VerificationCodeService;
 import java.time.ZonedDateTime;
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final RoleService roleService;
   private final AddressService addressService;
   private final VerificationCodeService verificationCodeService;
+  private final SmsService smsService;
 
   public Page<VPUser> getAll(final QueryBuilder<VPUser> queryBuilder) {
     final Query<VPUser> query = queryBuilder.build();
@@ -254,7 +256,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throw new IllegalStateException("Phone number has been verified already");
     }
 
-    System.out.println(verificationCodeService.create(current));
+    smsService.send(current, "Kod veryfikatsiji: " + verificationCodeService.create(current));
     // generate code & put into the cache
     // call sms service
   }

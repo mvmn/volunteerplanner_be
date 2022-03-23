@@ -9,7 +9,8 @@ public class SmsServiceImpl implements SmsService {
 
   @Override
   public void send(final VPUser user, final String message) {
-    // sends the sms message to the user
+    System.out.println("SMS to " + user.getUserName() + ": " + message); // FIXME: Remove and
+                                                                         // implement functionality
   }
 
 }
