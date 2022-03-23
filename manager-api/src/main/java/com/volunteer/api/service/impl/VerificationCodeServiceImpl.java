@@ -2,27 +2,23 @@ package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.service.VerificationCodeService;
+import com.volunteer.api.service.VerificationCodesCache;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class VerificationCodeServiceImpl implements VerificationCodeService {
 
-  // inject cache here
+  private final VerificationCodesCache cache;
 
   @Override
   public String create(final VPUser user) {
-    // generate random string, 4 digits length
-    // put to the cache, userid - random string mapping. live time up to 10 mins
-    // return random string
-
-    return null;
+    return cache.getCode(user.getId());
   }
 
   @Override
   public boolean matches(final VPUser user, final String code) {
-    // gets random string entered by user
-    // compare existing and passed or false if no code exists
-
-    return false;
+    return cache.getCode(user.getId()).equals(code);
   }
 }

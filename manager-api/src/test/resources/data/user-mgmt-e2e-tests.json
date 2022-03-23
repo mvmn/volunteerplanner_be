@@ -599,5 +599,122 @@
         ]
       }
     }
+  },
+  {
+    "name": "create volunteer 2",
+    "given": {
+      "request": {
+        "endpoint": "/users",
+        "method": "POST",
+        "body": {
+          "userName": "volunteer2",
+          "phoneNumber": "123",
+          "password": "volunteer2",
+          "role": "volunteer",
+          "fullName": "FN volunteer",
+          "city": {
+            "id": 20
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 6,
+        "userName": "volunteer2",
+        "phoneNumber": "123",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": false,
+        "userVerified": false,
+        "locked": false
+      }
+    }
+  },
+  {
+    "name": "sms start verification",
+    "given": {
+      "auth": {
+        "userName": "volunteer2",
+        "password": "volunteer2"
+      },
+      "request": {
+        "endpoint": "/users/current/sms",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 204
+    }
+  },
+  {
+    "name": "sms fail verification",
+    "given": {
+      "auth": {
+        "userName": "volunteer2",
+        "password": "volunteer2"
+      },
+      "request": {
+        "endpoint": "/users/current/sms",
+        "method": "POST",
+        "body": {
+          "code": "000000"
+        }
+      }
+    },
+    "expected": {
+      "status": 400,
+      "body": {
+        "errorMessage": "Verification code doesn't match"
+      }
+    }
+  },
+  {
+    "name": "sms success verification",
+    "given": {
+      "auth": {
+        "userName": "volunteer2",
+        "password": "volunteer2"
+      },
+      "request": {
+        "endpoint": "/users/current/sms",
+        "method": "POST",
+        "body": {
+          "code": "123456"
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 6,
+        "userName": "volunteer2",
+        "phoneNumber": "123",
+        "password": "******",
+        "role": "volunteer",
+        "fullName": "FN volunteer",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "phoneNumberVerified": true,
+        "userVerified": false,
+        "locked": false
+      }
+    }
   }
 ]

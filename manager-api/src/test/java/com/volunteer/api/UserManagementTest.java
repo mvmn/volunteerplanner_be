@@ -15,7 +15,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,11 +30,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.volunteer.api.service.VerificationCodeGenerator;
 import com.volunteer.api.utils.JsonTestUtils;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
+@Import(com.volunteer.api.UserManagementTest.TestConfig.class)
 public class UserManagementTest extends AbstractTestWithPersistence {
 
   private static final ParameterizedTypeReference<JsonNode> JSON_NODE_TYPE_REFERENCE =
@@ -38,6 +44,23 @@ public class UserManagementTest extends AbstractTestWithPersistence {
       };
 
   private static final String TEST_CASES_FILE_PATH = "data/user-mgmt-e2e-tests.json";
+  
+  @TestConfiguration
+  public static class TestConfig {
+    public static volatile String verificationCode = "123456";
+
+    @Bean
+    @Primary
+    public VerificationCodeGenerator verificationCodeGenerator() {
+      return new VerificationCodeGenerator() {
+
+        @Override
+        public String generateRandomCode() {
+          return verificationCode;
+        }
+      };
+    }
+  }
 
   @Autowired
   private TestRestTemplate restTemplate;
