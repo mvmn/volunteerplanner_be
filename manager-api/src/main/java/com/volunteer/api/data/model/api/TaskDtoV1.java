@@ -17,16 +17,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonPropertyOrder({"id", "customer", "volunteerStoreId", "customerStoreId", "productId",
+@JsonPropertyOrder({"id", "volunteerStoreId", "customerStoreId", "productId",
     "quantity", "productMeasure", "priority", "deadlineDate", "note", "statusId", "createdByUserId",
     "createdAt", "verifiedByUserId", "verifiedAt", "closedByUserId", "closedAt", "quantityLeft"})
 @JsonInclude(Include.NON_NULL)
 public class TaskDtoV1 {
+
   @JsonProperty("id")
   private Integer id;
-  @NotNull(message = "cannot be empty")
-  @JsonProperty("customer")
-  private String customer;
   @NotNull(message = "cannot be empty")
   @JsonProperty("volunteerStoreId")
   private Integer volunteerStoreId;

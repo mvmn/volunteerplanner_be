@@ -39,7 +39,7 @@ public class ProductControllerV1 {
   @GetMapping("/{product-id}")
   @ResponseStatus(HttpStatus.OK)
   public ProductDtoV1 getById(@PathVariable("product-id") final Integer id) {
-    return productDtoMapper.map(service.getById(id));
+    return productDtoMapper.map(service.get(id));
   }
 
   // filter by category and / or name

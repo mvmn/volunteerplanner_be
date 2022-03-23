@@ -9,7 +9,7 @@ public interface StoreService {
 
   Page<Store> getAll(final QueryBuilder<Store> queryBuilder);
 
-  Store getById(final Integer id, final boolean showPrivate);
+  Store get(final Integer id, final boolean showPrivate);
 
   Store create(final Store store);
 

@@ -6,7 +6,6 @@ import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StoreServiceImpl implements StoreService {
+public class StoreServiceImpl implements com.volunteer.api.service.StoreService {
 
   private final StoreRepository repository;
   private final AddressService addressService;
@@ -26,7 +25,7 @@ public class StoreServiceImpl implements StoreService {
   }
 
   @Override
-  public Store getById(final Integer id, final boolean showConfidential) {
+  public Store get(final Integer id, final boolean showConfidential) {
     final Store result = repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
         String.format("Store with id '%d' does not exist", id)));
 
@@ -47,7 +46,7 @@ public class StoreServiceImpl implements StoreService {
 
   @Override
   public Store update(final Store store) {
-    final Store current = getById(store.getId(), true);
+    final Store current = get(store.getId(), true);
 
     current.setName(store.getName());
     current.setCity(addressService.getCityById(store.getCity().getId()));

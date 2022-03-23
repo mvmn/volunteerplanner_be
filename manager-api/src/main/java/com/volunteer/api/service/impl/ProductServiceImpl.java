@@ -6,14 +6,13 @@ import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.CategoryService;
-import com.volunteer.api.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl implements com.volunteer.api.service.ProductService {
 
   private final ProductRepository repository;
   private final CategoryService categoryService;
@@ -25,7 +24,7 @@ public class ProductServiceImpl implements ProductService {
   }
 
   @Override
-  public Product getById(final Integer id) {
+  public Product get(final Integer id) {
     return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
         String.format("Product with id '%d' not found", id)));
   }
@@ -40,7 +39,7 @@ public class ProductServiceImpl implements ProductService {
 
   @Override
   public Product update(final Product product) {
-    final Product current = getById(product.getId());
+    final Product current = get(product.getId());
 
     current.setName(product.getName());
     current.setCategory(categoryService.get(product.getCategory().getId()));

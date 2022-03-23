@@ -1,27 +1,23 @@
 package com.volunteer.api.service.impl;
 
-import com.volunteer.api.data.mapping.TaskV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
-import com.volunteer.api.data.model.domain.TaskDetalization;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
-import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.error.InvalidStatusException;
 import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.AuthService;
 import com.volunteer.api.service.TaskService;
+import com.volunteer.api.service.UserService;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -32,12 +28,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TaskServiceImpl implements TaskService {
 
-  private final TaskRepository taskRepository;
-  private final ProductRepository productRepository;
-  private final TaskV1Mapper mapper; // TODO: consider having separate mapper for domain objects to
-  // keep web layer separated
-  private final AuthService authService; // TODO: consider moving this to controller to keep web
-  // layer separated from business layer
+  private final TaskRepository repository;
+  private final UserService userService;
 
   @Override
   public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
@@ -95,21 +87,76 @@ public class TaskServiceImpl implements TaskService {
           TaskSearchSpecifications.byCloser(closedByUserId));
     }
 
-    return searchSpec != null ? taskRepository.findAll(searchSpec, pagingAndSorting)
-        : taskRepository.findAll(pagingAndSorting);
+    return searchSpec != null ? repository.findAll(searchSpec, pagingAndSorting)
+        : repository.findAll(pagingAndSorting);
   }
 
   @Override
-  public Task createTask(Task task) {
-    return taskRepository.save(prepare(task));
+  public Task get(int taskId) {
+    return repository.findById(taskId).orElseThrow(() -> new ObjectNotFoundException(
+        String.format("task with ID '%d' does not exist", taskId)));
+  }
+
+  @Override
+  public Collection<Task> get(final Collection<Integer> taskIds) {
+    if (CollectionUtils.isEmpty(taskIds)) {
+      return Collections.emptyList();
+    }
+
+    return repository.findAllById(taskIds);
+  }
+
+  @Override
+  public Task create(final Task task) {
+    return repository.save(prepareCreate(task, userService.getCurrentUser(), ZonedDateTime.now()));
   }
 
   @Override
   @Transactional
-  // bulkSubtract must be used for cases when we have to reject multiple subtasks at once
-  // as example when we do reject the task to avoid unnecessary multiple updates in DB
-  public BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta,
-      final boolean bulkSubtract) {
+  public List<Task> create(final Collection<Task> tasks) {
+    if (CollectionUtils.isEmpty(tasks)) {
+      return Collections.emptyList();
+    }
+
+    final VPUser currentUser = userService.getCurrentUser();
+    final ZonedDateTime currentTime = ZonedDateTime.now();
+
+    final List<Task> result = tasks.stream()
+        .map(task -> prepareCreate(task, currentUser, currentTime))
+        .collect(Collectors.toList());
+
+    return repository.saveAll(result);
+  }
+
+  @Override
+  public void changeStatus(final Integer taskId, final TaskStatus status) {
+    final Optional<Task> result = prepareStatusChange(taskId, status, userService.getCurrentUser(),
+        ZonedDateTime.now());
+    result.ifPresent(repository::save);
+  }
+
+  @Override
+  @Transactional
+  public void changeStatus(final Collection<Integer> taskIds, final TaskStatus status) {
+    if (CollectionUtils.isEmpty(taskIds)) {
+      return;
+    }
+
+    final VPUser currentUser = userService.getCurrentUser();
+    final ZonedDateTime currentTime = ZonedDateTime.now();
+
+    final List<Task> result = taskIds.stream()
+        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime))
+        .filter(Optional::isPresent)
+        .map(Optional::get)
+        .collect(Collectors.toList());
+
+    repository.saveAll(result);
+  }
+
+  @Override
+  @Transactional
+  public BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta) {
     final int deltaSign = delta.compareTo(BigDecimal.ZERO);
 
     // delta is zero
@@ -155,172 +202,89 @@ public class TaskServiceImpl implements TaskService {
             task.getStatus()));
     }
 
-    if (!bulkSubtract) {
-      taskRepository.save(task);
-    }
-
+    repository.save(task);
     return result;
   }
 
-  @Override
-  @Transactional
-  public List<Task> batchCreate(Task blueprint, List<TaskDetalization> details) {
-    return taskRepository.saveAll(details.stream().map(detail -> {
-      Task taskBlueprint = mapper.clone(blueprint);
-
-      taskBlueprint.setProduct(productRepository.getById(detail.getProductId()));
-      taskBlueprint.setQuantity(detail.getQuantity());
-      taskBlueprint.setProductMeasure(detail.getUnitOfMeasure());
-      return taskBlueprint;
-    }).map(this::prepare).collect(Collectors.toList()));
-  }
-
-  protected Task prepare(Task task) {
+  private Task prepareCreate(final Task task, final VPUser currentUser,
+      final ZonedDateTime currentTime) {
     if (task.getDeadlineDate().isBefore(ZonedDateTime.now())) {
       throw new IllegalArgumentException("Deadline date cannot be in the past");
     }
-    task.setId(null);
+
     task.setStatus(TaskStatus.NEW);
+
     task.setQuantityLeft(task.getQuantity());
     task.setCreatedAt(ZonedDateTime.now());
-    task.setCreatedBy(authService.getCurrentUser());
-    task.setVerifiedBy(null);
-    task.setVerifiedAt(null);
-    task.setClosedBy(null);
-    task.setClosedAt(null);
+
+    task.setCreatedBy(currentUser);
+    task.setCreatedAt(currentTime);
+
     return task;
   }
 
-  @Override
-  public Task getTaskById(int taskId) {
-    return taskRepository.findById(taskId).orElseThrow(() -> new ObjectNotFoundException(
-        String.format("task with ID '%d' does not exist", taskId)));
-  }
-
-  @Override
-  public List<Task> getTasksByIds(List<Integer> taskIds) {
-    return taskRepository.findAllById(taskIds);
-  }
-
-  @Override
-  @Transactional
-  public int batchStatusChange(Collection<Integer> taskIds, TaskStatus status) {
-    if (status == TaskStatus.NEW) {
-      throw new IllegalArgumentException("Changing task status to new is not allowed");
+  private Optional<Task> prepareStatusChange(final int taskId, final TaskStatus status,
+      final VPUser currentUser, final ZonedDateTime currentTime) {
+    final Task task = get(taskId);
+    if (task.getStatus() == status) {
+      return Optional.empty();
     }
 
-    List<Task> tasks = taskRepository.findAllById(taskIds);
-    VPUser currentUser = authService.getCurrentUser();
-    ZonedDateTime now = ZonedDateTime.now();
-
-    Set<Integer> unfitTasksIds = Collections.emptySet();
-    Consumer<Task> taskProcessor = task -> {
-    };
-    Predicate<Task> unfitTasksCondition = task -> false;
     switch (status) {
       case VERIFIED:
-        // If task is not new or already verified - we can't verify it
-        unfitTasksCondition =
-            task -> task.getStatus() != TaskStatus.NEW && task.getStatus() != TaskStatus.VERIFIED;
-        taskProcessor = taskProcessorSetVerifyData(currentUser, now);
+        prepareStatusChangeVerified(task, currentUser, currentTime);
         break;
       case COMPLETED:
-        // If task is not verified or already completed - we can't complete it
-        unfitTasksCondition = task -> task.getStatus() != TaskStatus.VERIFIED
-            && task.getStatus() != TaskStatus.COMPLETED;
-        taskProcessor = taskProcessorSetCloseData(currentUser, now);
+        prepareStatusChangeCompleted(task, currentUser, currentTime);
         break;
       case REJECTED:
-        // If task is already completed - we can't reject it
-        unfitTasksCondition = task -> task.getStatus() == TaskStatus.COMPLETED;
-        taskProcessor = taskProcessorSetCloseData(currentUser, now);
+        prepareStatusChangeRejected(task, currentUser, currentTime);
         break;
       default:
-    }
-    unfitTasksIds =
-        tasks.stream().filter(unfitTasksCondition).map(Task::getId).collect(Collectors.toSet());
-
-    if (!unfitTasksIds.isEmpty()) {
-      throw new IllegalStateException("Not allowed to change task(s) "
-          + (unfitTasksIds.stream().map(v -> v.toString()).collect(Collectors.joining(", ")))
-          + " state to " + status);
+        throw new InvalidStatusException(String.format(
+            "Unsupported status '%s' for status change operation", status));
     }
 
-    List<Task> tasksToUpdate = tasks.stream().filter(task -> task.getStatus() != status)
-        .peek(task -> task.setStatus(status)).peek(taskProcessor).collect(Collectors.toList());
+    return Optional.of(task);
+  }
 
-    if (tasksToUpdate.isEmpty()) { // Nothing to do - all tasks already in desired state
-      return 0;
+  private void prepareStatusChangeVerified(final Task task, final VPUser currentUser,
+      final ZonedDateTime currentTime) {
+    if (task.getStatus() != TaskStatus.NEW) {
+      throw new IllegalStateException(String.format("Cannot verify task in status '%s'",
+          task.getStatus()));
     }
 
-    return taskRepository.saveAll(tasksToUpdate).size();
+    task.setStatus(TaskStatus.VERIFIED);
+    task.setVerifiedBy(currentUser);
+    task.setVerifiedAt(currentTime);
   }
 
-  protected Consumer<Task> taskProcessorSetVerifyData(VPUser currentUser, ZonedDateTime now) {
-    return task -> {
-      task.setVerifiedBy(currentUser);
-      task.setVerifiedAt(now);
-    };
-  }
-
-  protected Consumer<Task> taskProcessorSetCloseData(VPUser currentUser, ZonedDateTime now) {
-    return task -> {
-      task.setClosedBy(currentUser);
-      task.setClosedAt(now);
-    };
-  }
-
-  @Override
-  public void verify(int taskId) {
-    Task task = getById(taskId);
-    if (task.getStatus() == TaskStatus.NEW) {
-      task.setStatus(TaskStatus.VERIFIED);
-      task.setVerifiedBy(authService.getCurrentUser());
-      task.setVerifiedAt(ZonedDateTime.now());
-      taskRepository.save(task);
-    } else if (task.getStatus() == TaskStatus.VERIFIED) {
-      // Do nothing in case already verified - idempotent operation
-    } else {
-      throw new IllegalStateException("Cannot verify task in status " + task.getStatus());
+  public void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
+      final ZonedDateTime currentTime) {
+    if (task.getStatus() != TaskStatus.VERIFIED) {
+      throw new IllegalStateException(String.format("Cannot complete task in status '%s'",
+          task.getStatus()));
     }
+
+    task.setStatus(TaskStatus.COMPLETED);
+    task.setClosedBy(currentUser);
+    task.setClosedAt(currentTime);
   }
 
-  @Override
-  public void reject(int taskId) {
-    Task task = getById(taskId);
-    if (task.getStatus() == TaskStatus.REJECTED) {
-      // Do nothing in case already rejected - idempotent operation
-    } else if (task.getStatus() == TaskStatus.COMPLETED) { // Disallow rejecting completed
+  public void prepareStatusChangeRejected(final Task task, final VPUser currentUser,
+      final ZonedDateTime currentTime) {
+    // Disallow rejecting completed
+    if (task.getStatus() == TaskStatus.COMPLETED) {
       throw new IllegalStateException("Cannot reject task in status " + task.getStatus());
-    } else {
-      task.setStatus(TaskStatus.REJECTED);
-      task.setClosedBy(authService.getCurrentUser());
-      task.setClosedAt(ZonedDateTime.now());
-      taskRepository.save(task);
     }
+
+    task.setStatus(TaskStatus.REJECTED);
+    task.setClosedBy(currentUser);
+    task.setClosedAt(currentTime);
 
     // consider to reject all subtasks which are in progress yet
     // later we could add SMS notification like stop working on it, task has been rejected
   }
 
-  @Override
-  public void complete(int taskId) {
-    Task task = getById(taskId);
-    if (task.getStatus() == TaskStatus.COMPLETED) {
-      // Do nothing in case already completed - idempotent operation
-    } else if (task.getStatus() == TaskStatus.VERIFIED) {
-      task.setStatus(TaskStatus.COMPLETED);
-      task.setClosedBy(authService.getCurrentUser());
-      task.setClosedAt(ZonedDateTime.now());
-      taskRepository.save(task);
-    } else {
-      // New or Rejected tasks can't be completed
-      throw new IllegalStateException("Cannot complete task in status " + task.getStatus());
-    }
-  }
-
-  protected Task getById(int taskId) {
-    return taskRepository.findById(taskId)
-        .orElseThrow(() -> new ObjectNotFoundException("Task not found by ID " + taskId));
-  }
 }
