@@ -51,10 +51,10 @@ dependencies {
     // common
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
-    
+
     // logging
     implementation 'ch.qos.logback:logback-classic'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     // test
     testImplementation "org.testcontainers:junit-jupiter:1.16.3"
@@ -66,6 +66,10 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.flywaydb:flyway-core:8.5.2'
+}
+
+jar {
+    enabled = false
 }
 
 tasks.named('test') {
