@@ -3,7 +3,6 @@ package com.volunteer.api;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,7 +22,6 @@ import com.volunteer.api.security.model.AuthenticationResponse;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.UserService;
-import redis.embedded.RedisServer;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Testcontainers
@@ -47,14 +45,8 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
 
   @BeforeAll
   public static void init(@Autowired UserService userService, @Autowired RoleService roleService,
-      @Autowired AddressService addressService, @Autowired RedisServer redisServer) {
-    redisServer.start();
+      @Autowired AddressService addressService) {
     createUser("op", "pass", "operator", userService, roleService, addressService);
-  }
-
-  @AfterAll
-  public static void destroy(@Autowired RedisServer redisServer) {
-    redisServer.stop();
   }
 
   protected static VPUser createUser(String userName, String password, String role,
