@@ -1,11 +1,13 @@
 package com.volunteer.api.service;
 
+import org.apache.commons.lang3.tuple.Pair;
 import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
 
 public interface VerificationCodeService {
 
-  String create(final VPUser user);
+  Pair<Boolean, String> getOrCreate(final VPUser user, VerificationCodeType codeType);
 
-  boolean matches(final VPUser user, final String code);
+  boolean matches(final VPUser user, final String code, VerificationCodeType codeType);
 
 }

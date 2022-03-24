@@ -2,6 +2,7 @@ package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.UserRole;
 import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
 import com.volunteer.api.data.repository.UserRepository;
 import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
@@ -256,9 +258,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throw new IllegalStateException("Phone number has been verified already");
     }
 
-    smsService.send(current, "Kod veryfikatsiji: " + verificationCodeService.create(current));
-    // generate code & put into the cache
-    // call sms service
+    Pair<Boolean, String> verificationCode =
+        verificationCodeService.getOrCreate(current, VerificationCodeType.PHONE);
+    if (verificationCode.getKey()) {
+      // Only send if it's newly created. Don't send same code twice
+      smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
+    }
   }
 
   @Override
@@ -266,7 +271,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     final VPUser current = getCurrentUser();
 
     // get code from cache & compare
-    if (!verificationCodeService.matches(current, code)) {
+    if (!verificationCodeService.matches(current, code, VerificationCodeType.PHONE)) {
       throw new IllegalArgumentException("Verification code doesn't match");
     }
     current.setPhoneNumberVerified(true);

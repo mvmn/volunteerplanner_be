@@ -8,9 +8,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
@@ -20,7 +17,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volunteer.api.AbstractMockMvcTest.EmbeddedRedisConfig;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.security.model.AuthenticationRequest;
 import com.volunteer.api.security.model.AuthenticationResponse;
@@ -33,17 +29,7 @@ import redis.embedded.RedisServer;
 @Testcontainers
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
-@Import(EmbeddedRedisConfig.class)
 public class AbstractMockMvcTest extends AbstractTestWithPersistence {
-
-  @TestConfiguration
-  public static class EmbeddedRedisConfig {
-
-    @Bean
-    public RedisServer redisServer() {
-      return RedisServer.builder().port(6370).setting("maxmemory 128M").build();
-    }
-  }
 
   private static final AtomicInteger PHONE_NUM = new AtomicInteger();
 
