@@ -17,13 +17,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class CachingConfig {
 
+  private static final String VERIFICATION_CODES_CACHE_NAME = "verificationCodesCache";
   @Value("${vp.verificationcodes.ttlmin:10}")
   private Integer verificationCodesCacheTtlMin = 10;
 
   @Bean
   public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer(
       CacheKeyPrefix keyPrefix) {
-    return (builder) -> builder.withCacheConfiguration("verificationCodesCache",
+    return (builder) -> builder.withCacheConfiguration(VERIFICATION_CODES_CACHE_NAME,
         RedisCacheConfiguration.defaultCacheConfig()
             .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .computePrefixWith(keyPrefix)
@@ -41,7 +42,8 @@ public class CachingConfig {
   public CacheKeyPrefix cacheKeyPrefix() {
     return new CacheKeyPrefix() {
 
-      private final Map<String, String> CACHE_PREFIXES = Map.of("verificationCodesCache", "vcc");
+      private final Map<String, String> CACHE_PREFIXES =
+          Map.of(VERIFICATION_CODES_CACHE_NAME, "vcc");
 
       @Override
       public String compute(String cacheName) {
