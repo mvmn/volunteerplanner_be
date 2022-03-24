@@ -66,4 +66,9 @@ public class VerificationCodesCacheImpl implements VerificationCodesCache {
     return ZonedDateTime.now(ZoneOffset.UTC).minus(verificationCodesCacheTtlMin, ChronoUnit.MINUTES)
         .toEpochSecond();
   }
+
+  @Override
+  public void delete(VPUser user, VerificationCodeType type) {
+    repo.deleteByTypeAndUser(type, user);
+  }
 }

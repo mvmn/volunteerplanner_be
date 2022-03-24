@@ -17,4 +17,8 @@ public interface VerificationCodeRepository extends JpaRepository<VerificationCo
   @Modifying
   public int deleteByTypeAndUserAndGenerationTimestampLessThan(VerificationCodeType type,
       VPUser user, Long timestamp);
+
+  @Transactional
+  @Modifying
+  public int deleteByTypeAndUser(VerificationCodeType type, VPUser user);
 }

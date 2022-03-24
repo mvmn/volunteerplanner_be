@@ -24,4 +24,9 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     return cache.getCode(user, codeType).filter(existingCode -> existingCode.equals(code))
         .isPresent();
   }
+
+  @Override
+  public void cleanup(VPUser user, VerificationCodeType type) {
+    cache.delete(user, type);
+  }
 }

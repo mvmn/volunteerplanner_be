@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -38,6 +37,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -267,6 +267,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
+  @Transactional
   public VPUser verifyPhoneNumberComplete(final String code) {
     final VPUser current = getCurrentUser();
 
@@ -275,6 +276,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throw new IllegalArgumentException("Verification code doesn't match");
     }
     current.setPhoneNumberVerified(true);
+    verificationCodeService.cleanup(current, VerificationCodeType.PHONE);
 
     return repository.save(current);
   }

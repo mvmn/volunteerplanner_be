@@ -10,4 +10,6 @@ public interface VerificationCodeService {
 
   boolean matches(final VPUser user, final String code, VerificationCodeType codeType);
 
+  void cleanup(VPUser current, VerificationCodeType phone);
+
 }

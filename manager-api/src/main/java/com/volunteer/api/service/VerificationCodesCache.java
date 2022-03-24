@@ -9,4 +9,6 @@ public interface VerificationCodesCache {
   Optional<String> getCode(VPUser user, VerificationCodeType type);
 
   Pair<Boolean, String> getOrCreateCode(VPUser user, VerificationCodeType type);
+
+  void delete(VPUser user, VerificationCodeType type);
 }
