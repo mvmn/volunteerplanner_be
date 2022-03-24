@@ -11,6 +11,7 @@ import org.springframework.data.redis.cache.CacheKeyPrefix;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableCaching
@@ -20,16 +21,19 @@ public class CachingConfig {
   private Integer verificationCodesCacheTtlMin = 10;
 
   @Bean
-  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer() {
+  public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer(
+      CacheKeyPrefix keyPrefix) {
     return (builder) -> builder.withCacheConfiguration("verificationCodesCache",
         RedisCacheConfiguration.defaultCacheConfig()
+            .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
+            .computePrefixWith(keyPrefix)
             .entryTtl(Duration.ofMinutes(verificationCodesCacheTtlMin)));
   }
 
   @Bean
-  public RedisCacheConfiguration cacheConfiguration() {
+  public RedisCacheConfiguration cacheConfiguration(CacheKeyPrefix keyPrefix) {
     return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ZERO)
-        .disableCachingNullValues().serializeValuesWith(
+        .computePrefixWith(keyPrefix).disableCachingNullValues().serializeValuesWith(
             SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
   }
 
@@ -41,7 +45,7 @@ public class CachingConfig {
 
       @Override
       public String compute(String cacheName) {
-        return CACHE_PREFIXES.getOrDefault(cacheName, cacheName);
+        return CACHE_PREFIXES.getOrDefault(cacheName, cacheName) + "::";
       }
     };
   }
