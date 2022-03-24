@@ -8,14 +8,9 @@ spring:
   datasource:
     driverClassName: 'org.postgresql.Driver'
   jpa:
-    show-sql: true
+    show-sql: false
     hibernate:
       ddl-auto: 'validate'
-#      ddl-auto: 'create'
-    properties:
-      hibernate:
-        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
-        format_sql: true
   profiles:
     active: local
 
@@ -36,6 +31,13 @@ spring:
     driverClassName: 'org.postgresql.Driver'
     username: 'postgres'
     password: 'root'
+  jpa:
+    show-sql: true
+    hibernate:
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        format_sql: true
 
 ---
 spring:
