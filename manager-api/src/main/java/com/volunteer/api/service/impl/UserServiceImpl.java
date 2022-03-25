@@ -2,6 +2,7 @@ package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.UserRole;
 import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
 import com.volunteer.api.data.repository.UserRepository;
 import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
@@ -9,7 +10,9 @@ import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
+import com.volunteer.api.service.VerificationCodeService;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,9 +22,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
@@ -34,16 +37,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
 
   private final UserRepository repository;
-
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
   private final AddressService addressService;
+  private final VerificationCodeService verificationCodeService;
+  private final SmsService smsService;
 
   public Page<VPUser> getAll(final QueryBuilder<VPUser> queryBuilder) {
     final Query<VPUser> query = queryBuilder.build();
@@ -253,16 +258,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throw new IllegalStateException("Phone number has been verified already");
     }
 
-    // generate code & put into the cache
-    // call sms service
+    Pair<Boolean, String> verificationCode =
+        verificationCodeService.getOrCreate(current, VerificationCodeType.PHONE);
+    if (verificationCode.getKey()) {
+      // Only send if it's newly created. Don't send same code twice
+      smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
+    }
   }
 
   @Override
+  @Transactional
   public VPUser verifyPhoneNumberComplete(final String code) {
     final VPUser current = getCurrentUser();
 
     // get code from cache & compare
-    return current;
+    if (!verificationCodeService.matches(current, code, VerificationCodeType.PHONE)) {
+      throw new IllegalArgumentException("Verification code doesn't match");
+    }
+    current.setPhoneNumberVerified(true);
+    verificationCodeService.cleanup(current, VerificationCodeType.PHONE);
+
+    return repository.save(current);
   }
 
   private boolean isVerified(final VPUser user) {

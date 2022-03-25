@@ -33,7 +33,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.postgresql:postgresql:42.3.3'
-
+    
     implementation project(':db-schema')
 
     // spring doc
@@ -51,10 +51,10 @@ dependencies {
     // common
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
-    
+
     // logging
     implementation 'ch.qos.logback:logback-classic'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
 
     // test
     testImplementation "org.testcontainers:junit-jupiter:1.16.3"
@@ -66,6 +66,12 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.flywaydb:flyway-core:8.5.2'
+    
+    testImplementation 'it.ozimov:embedded-redis:0.7.3'
+}
+
+jar {
+    enabled = false
 }
 
 tasks.named('test') {
