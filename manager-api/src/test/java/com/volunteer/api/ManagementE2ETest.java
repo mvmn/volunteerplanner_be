@@ -27,14 +27,14 @@ public class ManagementE2ETest extends AbstractRestTemplateTest {
   private static final String CATEGORIES_CONTROLLER_TEST_CASES_FLP = "data/categories-controller-e2e-tests.json";
   private static final String PRODUCTS_CONTROLLER_TEST_CASES_FLP = "data/products-controller-e2e-tests.json";
 
-//  @ParameterizedTest()
-//  @MethodSource("loadAddressControllerTestCases")
-//  @Order(1)
-//  @DisplayName("address-controller")
-//  public void addressControllerTest(final String testName, final JsonNode given,
-//      final JsonNode expected) {
-//    endpointTest(testName, given, expected, Collections.emptySet());
-//  }
+  @ParameterizedTest()
+  @MethodSource("loadAddressControllerTestCases")
+  @Order(1)
+  @DisplayName("address-controller")
+  public void addressControllerTest(final String testName, final JsonNode given,
+      final JsonNode expected) {
+    endpointTest(testName, given, expected, Collections.emptySet());
+  }
 
   @ParameterizedTest()
   @MethodSource("loadUsersControllerTestCases")
