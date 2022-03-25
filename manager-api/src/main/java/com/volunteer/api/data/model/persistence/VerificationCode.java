@@ -36,8 +36,8 @@ public class VerificationCode implements Serializable {
   @Column(name = "id", nullable = false)
   private Integer id;
 
-  @Column(nullable = false, name = "gen_time")
-  private Long generationTimestamp;
+  @Column(nullable = false, name = "created_at")
+  private Long createdAt;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id", nullable = false)

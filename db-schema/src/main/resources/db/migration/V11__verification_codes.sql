@@ -1,6 +1,6 @@
 CREATE TABLE verification_code (
 	id serial,
-	gen_time bigint NOT NULL,
+	created_at bigint NOT NULL,
 	user_id integer NOT NULL,
 	code varchar(16) NOT NULL,
 	code_type varchar(64) NOT NULL,

@@ -29,8 +29,9 @@ public class VerificationCodesCacheImpl implements VerificationCodesCache {
 
   @Override
   public Optional<String> getCode(VPUser user, VerificationCodeType type) {
-    return repo.findByTypeAndUserAndGenerationTimestampGreaterThan(type, user,
-        getTimestampValidityThreshold()).map(VerificationCode::getCode);
+    return repo
+        .findByTypeAndUserAndCreatedAtGreaterThan(type, user, getTimestampValidityThreshold())
+        .map(VerificationCode::getCode);
   }
 
   @Override
@@ -44,9 +45,8 @@ public class VerificationCodesCacheImpl implements VerificationCodesCache {
       code.setType(type);
       code.setUser(user);
       code.setCode(generator.generateRandomCode());
-      code.setGenerationTimestamp(ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond());
-      repo.deleteByTypeAndUserAndGenerationTimestampLessThan(type, user,
-          getTimestampValidityThreshold());
+      code.setCreatedAt(ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond());
+      repo.deleteByTypeAndUserAndCreatedAtLessThan(type, user, getTimestampValidityThreshold());
       code = repo.save(code);
       return Pair.of(true, code.getCode());
     } catch (DataIntegrityViolationException exception) {
