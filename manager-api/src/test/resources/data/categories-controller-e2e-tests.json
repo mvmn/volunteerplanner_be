@@ -1,0 +1,282 @@
+[
+  {
+    "name": "create dummy category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories",
+        "method": "POST",
+        "body": {
+          "name": "dummy",
+          "note": "dummy category"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 1,
+        "name": "dummy",
+        "note": "dummy category"
+      }
+    }
+  },
+  {
+    "name": "update dummy category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/1",
+        "method": "PUT",
+        "body": {
+          "name": "dummy - update",
+          "note": "dummy category - update"
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "name": "dummy - update",
+        "note": "dummy category - update"
+      }
+    }
+  },
+  {
+    "name": "delete dummy category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/1",
+        "method": "DELETE"
+      }
+    },
+    "expected": {
+      "status": 204
+    }
+  },
+  {
+    "name": "create Ліки category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories",
+        "method": "POST",
+        "body": {
+          "name": "Ліки"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 2,
+        "name": "Ліки"
+      }
+    }
+  },
+  {
+    "name": "create Знеболювальні category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories",
+        "method": "POST",
+        "body": {
+          "parent": {
+            "id": 2
+          },
+          "name": "Знеболювальні"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 3,
+        "parent": {
+          "id": 2,
+          "name": "Ліки"
+        },
+        "name": "Знеболювальні"
+      }
+    }
+  },
+  {
+    "name": "create Амуніція category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories",
+        "method": "POST",
+        "body": {
+          "name": "Амуніція"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 4,
+        "name": "Амуніція"
+      }
+    }
+  },
+  {
+    "name": "create Захист category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories",
+        "method": "POST",
+        "body": {
+          "parent": {
+            "id": 4
+          },
+          "name": "Захист"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 5,
+        "parent": {
+          "id": 4,
+          "name": "Амуніція"
+        },
+        "name": "Захист"
+      }
+    }
+  },
+  {
+    "name": "get category by id",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/5",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 5,
+        "parent": {
+          "id": 4,
+          "name": "Амуніція"
+        },
+        "name": "Захист"
+      }
+    }
+  },
+  {
+    "name": "get all root categories",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/roots",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 2,
+            "name": "Ліки"
+          },
+          {
+            "id": 4,
+            "name": "Амуніція"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "get all child categories",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/4/children",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 5,
+            "parent": {
+              "id": 4,
+              "name": "Амуніція"
+            },
+            "name": "Захист"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "search by name",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/categories/search?name=Захист",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 5,
+            "parent": {
+              "id": 4,
+              "name": "Амуніція"
+            },
+            "name": "Захист"
+          }
+        ]
+      }
+    }
+  }
+]

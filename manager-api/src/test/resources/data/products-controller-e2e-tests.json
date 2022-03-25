@@ -1,0 +1,38 @@
+[
+  {
+    "name": "create dummy product",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products",
+        "method": "POST",
+        "body": {
+          "name": "dummy",
+          "category": {
+            "id": 5
+          },
+          "note": "dummy product"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 1,
+        "name": "dummy",
+        "category": {
+          "id": 5,
+          "parent": {
+            "id": 4,
+            "name": "Амуніція"
+          },
+          "name": "Захист"
+        },
+        "note": "dummy product"
+      }
+    }
+  }
+]
