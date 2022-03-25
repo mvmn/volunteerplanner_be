@@ -63,7 +63,8 @@ public class AbstractRestTemplateTest extends AbstractTestWithPersistence {
     final ResponseEntity<JsonNode> actual = executeRequest(given);
 
     assertEquals(expected.get("status").asInt(), actual.getStatusCodeValue(),
-        String.format("[%s] response status code", testName));
+        String.format("[%s] response status code. Body: '%s'", testName,
+            JsonTestUtils.toJsonString(actual.getBody())));
 
     final JsonNode expectedBody = expected.path("body");
     if (JsonTestUtils.isNull(expectedBody)) {

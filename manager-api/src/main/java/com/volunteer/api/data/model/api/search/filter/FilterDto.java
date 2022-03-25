@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 )
 @JsonSubTypes({
     @Type(name = "bool", value = ValueBoolFilterDto.class),
-    @Type(name = "number", value = ValueNumericFilterDto.class),
+    @Type(name = "number", value = ValueNumberFilterDto.class),
     @Type(name = "text", value = ValueTextFilterDto.class),
     @Type(name = "operator", value = OperatorFilterDto.class)
 })

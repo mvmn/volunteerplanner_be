@@ -47,10 +47,6 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
         return UserSearchSpecifications.byFullName(value);
       case "email":
         return UserSearchSpecifications.byEmail(value);
-      case "address.region":
-        return UserSearchSpecifications.byAddressRegion(value);
-      case "address.city":
-        return UserSearchSpecifications.byAddressCity(value);
     }
 
     return super.buildFilterSpecification(source);

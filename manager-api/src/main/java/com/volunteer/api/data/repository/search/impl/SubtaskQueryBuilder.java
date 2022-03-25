@@ -1,6 +1,6 @@
 package com.volunteer.api.data.repository.search.impl;
 
-import com.volunteer.api.data.model.api.search.filter.ValueNumericFilterDto;
+import com.volunteer.api.data.model.api.search.filter.ValueNumberFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueTextFilterDto;
 import com.volunteer.api.data.model.api.search.sort.SortOrder;
 import com.volunteer.api.data.model.api.search.sort.SortParameters;
@@ -56,7 +56,7 @@ public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
   }
 
   @Override
-  protected Specification<Subtask> buildFilterSpecification(final ValueNumericFilterDto source) {
+  protected Specification<Subtask> buildFilterSpecification(final ValueNumberFilterDto source) {
     final Number value = source.getValue();
     switch (source.getField().toLowerCase()) {
       case "createdby.id":

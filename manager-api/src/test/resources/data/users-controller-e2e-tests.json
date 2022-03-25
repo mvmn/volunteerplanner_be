@@ -10,10 +10,7 @@
           "phoneNumber": "111",
           "password": "root",
           "role": "root",
-          "fullName": "FN root",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN root"
         }
       }
     },
@@ -26,14 +23,6 @@
         "password": "******",
         "role": "root",
         "fullName": "FN root",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -53,10 +42,7 @@
           "phoneNumber": "222",
           "password": "operator",
           "role": "operator",
-          "fullName": "FN operator",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN operator"
         }
       }
     },
@@ -69,14 +55,6 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -120,14 +98,6 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": false,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -157,14 +127,6 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -184,10 +146,7 @@
           "phoneNumber": "333",
           "password": "volunteer",
           "role": "volunteer",
-          "fullName": "FN volunteer",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN volunteer"
         }
       }
     },
@@ -200,14 +159,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -235,14 +186,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": false,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -272,14 +215,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -309,14 +244,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -379,10 +306,7 @@
           "phoneNumber": "222",
           "password": "root",
           "role": "volunteer",
-          "fullName": "FN duplicate",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN duplicate"
         }
       }
     },
@@ -404,10 +328,7 @@
           "phoneNumber": "222",
           "password": "vivo",
           "role": "volunteer",
-          "fullName": "FN duplicate",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN duplicate"
         }
       }
     },
@@ -439,14 +360,6 @@
         "password": "******",
         "role": "root",
         "fullName": "FN root",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -492,14 +405,6 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -531,14 +436,6 @@
         "password": "******",
         "role": "operator",
         "fullName": "FN operator",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -582,14 +479,6 @@
             "password": "******",
             "role": "volunteer",
             "fullName": "FN volunteer",
-            "city": {
-              "id": 20,
-              "region": {
-                "id": 1,
-                "name": "Вінницька"
-              },
-              "name": "Уланов"
-            },
             "phoneNumberVerified": true,
             "userVerified": true,
             "userVerifiedByUserId": 2,
@@ -611,10 +500,7 @@
           "phoneNumber": "123",
           "password": "volunteer2",
           "role": "volunteer",
-          "fullName": "FN volunteer",
-          "city": {
-            "id": 20
-          }
+          "fullName": "FN volunteer"
         }
       }
     },
@@ -627,14 +513,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -703,14 +581,6 @@
         "password": "******",
         "role": "volunteer",
         "fullName": "FN volunteer",
-        "city": {
-          "id": 20,
-          "region": {
-            "id": 1,
-            "name": "Вінницька"
-          },
-          "name": "Уланов"
-        },
         "phoneNumberVerified": true,
         "userVerified": false,
         "locked": false

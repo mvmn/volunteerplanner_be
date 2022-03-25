@@ -79,7 +79,6 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     VPUser user = new VPUser();
     user.setPhoneNumber("1234567");
     user.setRole(roleService.get("operator"));
-    user.setCity(addressService.getCityById(12));
     user.setUserName("u1");
     user.setPassword("pwd");
     user = userService.create(user);
@@ -147,18 +146,5 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
 
     assertThrows(
         InvalidStatusException.class, () -> subtaskService.complete(rejectedSubtask.getId()));
-
-    // Find
-//    Collection<Subtask> foundSubtasks = subtaskService.findByProductId(product.getId());
-//    assertFalse(foundSubtasks.isEmpty());
-//
-//    foundSubtasks = subtaskService.getByTaskId(task.getId());
-//    assertFalse(foundSubtasks.isEmpty());
-//
-//    foundSubtasks = subtaskService.findByVolunteerId(user.getId());
-//    assertFalse(foundSubtasks.isEmpty());
-//
-//    foundSubtasks = subtaskService.findByVolunteerPrincipal(user.getUserName());
-//    assertFalse(foundSubtasks.isEmpty());
   }
 }

@@ -55,10 +55,6 @@ public class VPUser implements Serializable {
   @Column(name = "email")
   private String email;
 
-  @ManyToOne(fetch = FetchType.EAGER, optional = false)
-  @JoinColumn(name = "city_id")
-  private City city;
-
   @Column(name = "phone_number_verified")
   private boolean phoneNumberVerified;
 

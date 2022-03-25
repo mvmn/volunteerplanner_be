@@ -1,7 +1,7 @@
 package com.volunteer.api.data.repository.search.impl;
 
 import com.volunteer.api.data.model.api.search.filter.ValueBoolFilterDto;
-import com.volunteer.api.data.model.api.search.filter.ValueNumericFilterDto;
+import com.volunteer.api.data.model.api.search.filter.ValueNumberFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueTextFilterDto;
 import com.volunteer.api.data.model.api.search.sort.SortOrder;
 import com.volunteer.api.data.model.api.search.sort.SortParameters;
@@ -42,7 +42,7 @@ public class StoreQueryBuilder extends AbstractQueryBuilder<Store> {
   }
 
   @Override
-  protected Specification<Store> buildFilterSpecification(final ValueNumericFilterDto source) {
+  protected Specification<Store> buildFilterSpecification(final ValueNumberFilterDto source) {
     final Number value = source.getValue();
     switch (source.getField().toLowerCase()) {
       case "region.id":

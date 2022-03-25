@@ -66,7 +66,7 @@
     }
   },
   {
-    "name": "create Ліки category",
+    "name": "create root-2 category",
     "given": {
       "auth": {
         "userName": "operator",
@@ -76,7 +76,7 @@
         "endpoint": "/categories",
         "method": "POST",
         "body": {
-          "name": "Ліки"
+          "name": "root-2"
         }
       }
     },
@@ -84,12 +84,12 @@
       "status": 201,
       "body": {
         "id": 2,
-        "name": "Ліки"
+        "name": "root-2"
       }
     }
   },
   {
-    "name": "create Знеболювальні category",
+    "name": "create root-2-child-3 category",
     "given": {
       "auth": {
         "userName": "operator",
@@ -102,7 +102,7 @@
           "parent": {
             "id": 2
           },
-          "name": "Знеболювальні"
+          "name": "root-2-child-3"
         }
       }
     },
@@ -112,14 +112,14 @@
         "id": 3,
         "parent": {
           "id": 2,
-          "name": "Ліки"
+          "name": "root-2"
         },
-        "name": "Знеболювальні"
+        "name": "root-2-child-3"
       }
     }
   },
   {
-    "name": "create Амуніція category",
+    "name": "create root-4 category",
     "given": {
       "auth": {
         "userName": "operator",
@@ -129,7 +129,7 @@
         "endpoint": "/categories",
         "method": "POST",
         "body": {
-          "name": "Амуніція"
+          "name": "root-4"
         }
       }
     },
@@ -137,12 +137,12 @@
       "status": 201,
       "body": {
         "id": 4,
-        "name": "Амуніція"
+        "name": "root-4"
       }
     }
   },
   {
-    "name": "create Захист category",
+    "name": "create root-4-child-5 category",
     "given": {
       "auth": {
         "userName": "operator",
@@ -155,7 +155,7 @@
           "parent": {
             "id": 4
           },
-          "name": "Захист"
+          "name": "root-4-child-5"
         }
       }
     },
@@ -165,9 +165,9 @@
         "id": 5,
         "parent": {
           "id": 4,
-          "name": "Амуніція"
+          "name": "root-4"
         },
-        "name": "Захист"
+        "name": "root-4-child-5"
       }
     }
   },
@@ -189,9 +189,9 @@
         "id": 5,
         "parent": {
           "id": 4,
-          "name": "Амуніція"
+          "name": "root-4"
         },
-        "name": "Захист"
+        "name": "root-4-child-5"
       }
     }
   },
@@ -213,11 +213,11 @@
         "items": [
           {
             "id": 2,
-            "name": "Ліки"
+            "name": "root-2"
           },
           {
             "id": 4,
-            "name": "Амуніція"
+            "name": "root-4"
           }
         ]
       }
@@ -243,9 +243,9 @@
             "id": 5,
             "parent": {
               "id": 4,
-              "name": "Амуніція"
+              "name": "root-4"
             },
-            "name": "Захист"
+            "name": "root-4-child-5"
           }
         ]
       }
@@ -259,7 +259,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/search?name=Захист",
+        "endpoint": "/categories/search?name=root-4-child-5",
         "method": "GET"
       }
     },
@@ -271,9 +271,9 @@
             "id": 5,
             "parent": {
               "id": 4,
-              "name": "Амуніція"
+              "name": "root-4"
             },
-            "name": "Захист"
+            "name": "root-4-child-5"
           }
         ]
       }
