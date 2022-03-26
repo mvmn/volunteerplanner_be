@@ -1,6 +1,7 @@
 package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.specifications.TaskSearchSpecifications;
@@ -112,6 +113,31 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public Task update(final Task task) {
+    final Task current = get(task.getId());
+    // while status is NEW we could allow adjustments
+    if (current.getStatus() != TaskStatus.NEW) {
+      throw new InvalidStatusException(String.format(
+          "Modification of task with status '%s' is prohibited", current.getStatus()));
+    }
+
+    validateDeadlineDate(task.getDeadlineDate());
+    validateVolunteerStore(task.getVolunteerStore());
+
+    current.setVolunteerStore(task.getVolunteerStore());
+    current.setCustomerStore(task.getCustomerStore());
+    current.setProduct(task.getProduct());
+    current.setQuantity(task.getQuantity());
+    current.setQuantityLeft(current.getQuantity());
+    current.setProductMeasure(task.getProductMeasure());
+    current.setPriority(task.getPriority());
+    current.setDeadlineDate(task.getDeadlineDate());
+    current.setNote(task.getNote());
+
+    return repository.save(current);
+  }
+
+  @Override
   @Transactional
   public List<Task> create(final Collection<Task> tasks) {
     if (CollectionUtils.isEmpty(tasks)) {
@@ -208,9 +234,8 @@ public class TaskServiceImpl implements TaskService {
 
   private Task prepareCreate(final Task task, final VPUser currentUser,
       final ZonedDateTime currentTime) {
-    if (task.getDeadlineDate().isBefore(ZonedDateTime.now())) {
-      throw new IllegalArgumentException("Deadline date cannot be in the past");
-    }
+    validateDeadlineDate(task.getDeadlineDate());
+    validateVolunteerStore(task.getVolunteerStore());
 
     task.setStatus(TaskStatus.NEW);
 
@@ -255,12 +280,17 @@ public class TaskServiceImpl implements TaskService {
           task.getStatus()));
     }
 
+    // task could be created with valid deadline date
+    // but validation could be performed after.
+    // In this case we won't allow mark task verification till deadline date won't be corrected
+    validateDeadlineDate(task.getDeadlineDate());
+
     task.setStatus(TaskStatus.VERIFIED);
     task.setVerifiedBy(currentUser);
     task.setVerifiedAt(currentTime);
   }
 
-  public void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
+  private void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
       final ZonedDateTime currentTime) {
     if (task.getStatus() != TaskStatus.VERIFIED) {
       throw new IllegalStateException(String.format("Cannot complete task in status '%s'",
@@ -272,7 +302,7 @@ public class TaskServiceImpl implements TaskService {
     task.setClosedAt(currentTime);
   }
 
-  public void prepareStatusChangeRejected(final Task task, final VPUser currentUser,
+  private void prepareStatusChangeRejected(final Task task, final VPUser currentUser,
       final ZonedDateTime currentTime) {
     // Disallow rejecting completed
     if (task.getStatus() == TaskStatus.COMPLETED) {
@@ -285,6 +315,19 @@ public class TaskServiceImpl implements TaskService {
 
     // consider to reject all subtasks which are in progress yet
     // later we could add SMS notification like stop working on it, task has been rejected
+  }
+
+  private void validateDeadlineDate(final ZonedDateTime date) {
+    if (date.isBefore(ZonedDateTime.now())) {
+      throw new IllegalArgumentException("Deadline date cannot be in the past");
+    }
+  }
+
+
+  private void validateVolunteerStore(final Store store) {
+    if (store.isConfidential()) {
+      throw new IllegalArgumentException("Volunteer store must be public");
+    }
   }
 
 }

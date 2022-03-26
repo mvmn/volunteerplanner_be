@@ -7,12 +7,12 @@ import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
-public abstract class UserV1Mapper {
+@Mapper(componentModel = "spring", uses = GenericMapper.class)
+public abstract class UserDtoV1Mapper {
 
   @Mapping(target = "role", source = "role.name")
   @Mapping(target = "password", constant = "******")
-  public abstract UserDtoV1 map(VPUser dto);
+  public abstract UserDtoV1 map(final VPUser dto);
 
 
   @Mapping(target = "version", ignore = true)
@@ -25,10 +25,10 @@ public abstract class UserV1Mapper {
   @Mapping(target = "lockedBy", ignore = true)
   @Mapping(target = "lockedByUserId", ignore = true)
   @Mapping(target = "lockedAt", ignore = true)
-  public abstract VPUser map(UserDtoV1 user);
+  public abstract VPUser map(final UserDtoV1 user);
 
-  public Role map(String roleName) {
-    Role result = new Role();
+  public Role map(final String roleName) {
+    final Role result = new Role();
     result.setName(roleName);
     return result;
   }

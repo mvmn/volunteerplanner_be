@@ -1,7 +1,7 @@
 package com.volunteer.api.controller;
 
 import com.volunteer.api.data.mapping.GenericPageDtoMapper;
-import com.volunteer.api.data.mapping.UserV1Mapper;
+import com.volunteer.api.data.mapping.UserDtoV1Mapper;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.PasswordChangeDtoV1;
 import com.volunteer.api.data.model.api.PhoneVerificationDtoV1;
@@ -36,13 +36,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserControllerV1 {
 
   private final UserService service;
-  private final UserV1Mapper userV1Mapper;
+  private final UserDtoV1Mapper userMapper;
 
   // access for anybody
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public UserDtoV1 create(@Valid @RequestBody final UserDtoV1 source) {
-    return userV1Mapper.map(service.create(userV1Mapper.map(source)));
+    return userMapper.map(service.create(userMapper.map(source)));
   }
 
   @PutMapping("/password/reset")
@@ -54,7 +54,7 @@ public class UserControllerV1 {
   @PreAuthorize("hasAuthority('USERS_VIEW')")
   @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericPageDtoV1<UserDtoV1> getAll(@RequestBody @Valid final SearchDto<FilterDto> body,
+  public GenericPageDtoV1<UserDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body,
       final UserQueryBuilder queryBuilder) {
     final Page<VPUser> result = service.getAll(queryBuilder
         .withPageNum(body.getPage())
@@ -63,55 +63,55 @@ public class UserControllerV1 {
         .withSort(body.getSort())
     );
 
-    return GenericPageDtoMapper.map(body.getPage(), body.getPageSize(), result, userV1Mapper::map);
+    return GenericPageDtoMapper.map(body.getPage(), body.getPageSize(), result, userMapper::map);
   }
 
   @PreAuthorize("hasAuthority('USERS_VIEW')")
   @GetMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 getById(@PathVariable("id") final Integer userId) {
-    return userV1Mapper.map(service.get(userId));
+    return userMapper.map(service.get(userId));
   }
 
   @PreAuthorize("hasAuthority('USERS_VERIFY')")
   @PutMapping("/{id}/verify/phone")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 verifyPhone(@PathVariable("id") final Integer userId) {
-    return userV1Mapper.map(service.verifyPhoneNumber(userId));
+    return userMapper.map(service.verifyPhoneNumber(userId));
   }
 
   @PreAuthorize("hasAuthority('USERS_VERIFY')")
   @PutMapping("/{id}/verify/user")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 verifyUser(@PathVariable("id") final Integer userId) {
-    return userV1Mapper.map(service.verifyUser(userId));
+    return userMapper.map(service.verifyUser(userId));
   }
 
   @PreAuthorize("hasAuthority('USERS_LOCK')")
   @PutMapping("/{id}/lock")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 lock(@PathVariable("id") final Integer userId) {
-    return userV1Mapper.map(service.lock(userId));
+    return userMapper.map(service.lock(userId));
   }
 
   @PreAuthorize("hasAuthority('USERS_LOCK')")
   @PutMapping("/{id}/unlock")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 unlock(@PathVariable("id") final Integer userId) {
-    return userV1Mapper.map(service.unlock(userId));
+    return userMapper.map(service.unlock(userId));
   }
 
   // access for current user ONLY
   @GetMapping("/current")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 getCurrent() {
-    return userV1Mapper.map(service.getCurrentUser());
+    return userMapper.map(service.getCurrentUser());
   }
 
   @PutMapping("/current")
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 update(@Valid @RequestBody final UserDtoV1 source) {
-    return userV1Mapper.map(service.update(userV1Mapper.map(source)));
+    return userMapper.map(service.update(userMapper.map(source)));
   }
 
   @PutMapping("/current/password/change")
@@ -130,7 +130,7 @@ public class UserControllerV1 {
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 verifyPhoneNumberComplete(
       @Valid @RequestBody final PhoneVerificationDtoV1 source) {
-    return userV1Mapper.map(service.verifyPhoneNumberComplete(source.getCode()));
+    return userMapper.map(service.verifyPhoneNumberComplete(source.getCode()));
   }
 
 }

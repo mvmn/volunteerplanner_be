@@ -45,13 +45,13 @@ public class UserDtoV1 {
   @JsonProperty("userVerifiedByUserId")
   private Integer userVerifiedByUserId;
   @Column(name = "userVerifiedAt")
-  private ZonedDateTime userVerifiedAt;
+  private Long userVerifiedAt;
 
   @JsonProperty("locked")
   private Boolean locked;
   @JsonProperty("lockedByUserId")
   private Integer lockedByUserId;
   @Column(name = "lockedAt")
-  private ZonedDateTime lockedAt;
+  private Long lockedAt;
 
 }

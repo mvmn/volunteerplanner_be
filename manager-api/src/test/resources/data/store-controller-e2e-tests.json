@@ -1,0 +1,409 @@
+[
+  {
+    "name": "create dummy store",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores",
+        "method": "POST",
+        "body": {
+          "name": "dummy",
+          "city": {
+            "id": 15
+          },
+          "address": "address",
+          "confidential": false,
+          "note": "dummy"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 1,
+        "name": "dummy",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "address",
+        "confidential": false,
+        "note": "dummy"
+      }
+    }
+  },
+  {
+    "name": "update dummy store",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/1",
+        "method": "PUT",
+        "body": {
+          "name": "dummy u",
+          "city": {
+            "id": 20
+          },
+          "address": "address u",
+          "confidential": true,
+          "note": "dummy u"
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "name": "dummy u",
+        "city": {
+          "id": 20,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Уланов"
+        },
+        "address": "address u",
+        "confidential": true,
+        "note": "dummy u"
+      }
+    }
+  },
+  {
+    "name": "delete dummy store",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/1",
+        "method": "DELETE"
+      }
+    },
+    "expected": {
+      "status": 204
+    }
+  },
+  {
+    "name": "create public store",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores",
+        "method": "POST",
+        "body": {
+          "name": "public store",
+          "city": {
+            "id": 15
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 2,
+        "name": "public store",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "public address",
+        "confidential": false,
+        "note": "public note"
+      }
+    }
+  },
+  {
+    "name": "create private store",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores",
+        "method": "POST",
+        "body": {
+          "name": "private store",
+          "city": {
+            "id": 15
+          },
+          "address": "private address",
+          "confidential": true,
+          "note": "private note"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 3,
+        "name": "private store",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "private address",
+        "confidential": true,
+        "note": "private note"
+      }
+    }
+  },
+  {
+    "name": "get public store by id - operator",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "name": "public store",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "public address",
+        "confidential": false,
+        "note": "public note"
+      }
+    }
+  },
+  {
+    "name": "get public store by id - volunteer",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/stores/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "name": "public store",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "public address",
+        "confidential": false,
+        "note": "public note"
+      }
+    }
+  },
+  {
+    "name": "get private store by id - operator",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/3",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 3,
+        "name": "private store",
+        "city": {
+          "id": 15,
+          "region": {
+            "id": 1,
+            "name": "Вінницька"
+          },
+          "name": "Гнівань"
+        },
+        "address": "private address",
+        "confidential": true,
+        "note": "private note"
+      }
+    }
+  },
+  {
+    "name": "get private store by id - volunteer",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/stores/3",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 403
+    }
+  },
+  {
+    "name": "POST: search by name",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "operator",
+            "operator": "and",
+            "operands": [
+              {
+                "type": "text",
+                "field": "name",
+                "value": "store"
+              },
+              {
+                "type": "number",
+                "field": "region.id",
+                "value": 1
+              },
+              {
+                "type": "number",
+                "field": "city.id",
+                "value": 15
+              },
+              {
+                "type": "bool",
+                "field": "confidential",
+                "value": true
+              }
+            ]
+          },
+          "sort": {
+            "field": "city.name",
+            "order": "asc"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 3,
+            "name": "private store",
+            "city": {
+              "id": 15,
+              "region": {
+                "id": 1,
+                "name": "Вінницька"
+              },
+              "name": "Гнівань"
+            },
+            "address": "private address",
+            "confidential": true,
+            "note": "private note"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "GET: search by city",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/stores/search?city.id=15",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 3,
+            "name": "private store",
+            "city": {
+              "id": 15,
+              "region": {
+                "id": 1,
+                "name": "Вінницька"
+              },
+              "name": "Гнівань"
+            },
+            "address": "private address",
+            "confidential": true,
+            "note": "private note"
+          },
+          {
+            "id": 2,
+            "name": "public store",
+            "city": {
+              "id": 15,
+              "region": {
+                "id": 1,
+                "name": "Вінницька"
+              },
+              "name": "Гнівань"
+            },
+            "address": "public address",
+            "confidential": false,
+            "note": "public note"
+          }
+        ]
+      }
+    }
+  }
+]

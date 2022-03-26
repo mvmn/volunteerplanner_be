@@ -1,13 +1,17 @@
 package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.persistence.Product;
+import com.volunteer.api.data.model.persistence.specifications.ProductSearchSpecifications;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.CategoryService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +31,12 @@ public class ProductServiceImpl implements com.volunteer.api.service.ProductServ
   public Product get(final Integer id) {
     return repository.findById(id).orElseThrow(() -> new ObjectNotFoundException(
         String.format("Product with id '%d' not found", id)));
+  }
+
+  @Override
+  public List<Product> getByCategoryId(final Integer categoryId) {
+    return repository.findAll(ProductSearchSpecifications.byCategoryId(categoryId),
+        Sort.by(Order.asc("name")));
   }
 
   @Override

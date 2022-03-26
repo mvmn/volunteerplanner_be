@@ -26,6 +26,8 @@ public class ManagementE2ETest extends AbstractRestTemplateTest {
   private static final String USERS_CONTROLLER_TEST_CASES_FLP = "data/users-controller-e2e-tests.json";
   private static final String CATEGORIES_CONTROLLER_TEST_CASES_FLP = "data/categories-controller-e2e-tests.json";
   private static final String PRODUCTS_CONTROLLER_TEST_CASES_FLP = "data/products-controller-e2e-tests.json";
+  private static final String STORES_CONTROLLER_TEST_CASES_FLP = "data/store-controller-e2e-tests.json";
+  private static final String TASKS_CONTROLLER_TEST_CASES_FLP = "data/task-controller-e2e-tests.json";
 
   @ParameterizedTest()
   @MethodSource("loadAddressControllerTestCases")
@@ -63,6 +65,24 @@ public class ManagementE2ETest extends AbstractRestTemplateTest {
     endpointTest(testName, given, expected, Collections.emptySet());
   }
 
+  @ParameterizedTest()
+  @MethodSource("loadStoresControllerTestCases")
+  @Order(4)
+  @DisplayName("stores-controller")
+  public void storesControllerTest(final String testName, final JsonNode given,
+      final JsonNode expected) {
+    endpointTest(testName, given, expected, Collections.emptySet());
+  }
+
+  @ParameterizedTest()
+  @MethodSource("loadTasksControllerTestCases")
+  @Order(5)
+  @DisplayName("tasks-controller")
+  public void tasksControllerTest(final String testName, final JsonNode given,
+      final JsonNode expected) {
+    endpointTest(testName, given, expected, Set.of("createdAt", "verifiedAt", "closedAt"));
+  }
+
   private static Stream<Arguments> loadAddressControllerTestCases() {
     return loadTestCases(ADDRESS_CONTROLLER_TEST_CASES_FLP);
   }
@@ -77,6 +97,14 @@ public class ManagementE2ETest extends AbstractRestTemplateTest {
 
   private static Stream<Arguments> loadProductsControllerTestCases() {
     return loadTestCases(PRODUCTS_CONTROLLER_TEST_CASES_FLP);
+  }
+
+  private static Stream<Arguments> loadStoresControllerTestCases() {
+    return loadTestCases(STORES_CONTROLLER_TEST_CASES_FLP);
+  }
+
+  private static Stream<Arguments> loadTasksControllerTestCases() {
+    return loadTestCases(TASKS_CONTROLLER_TEST_CASES_FLP);
   }
 
 }

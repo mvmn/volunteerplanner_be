@@ -3,6 +3,7 @@ package com.volunteer.api.controller;
 import com.volunteer.api.data.mapping.GenericPageDtoMapper;
 import com.volunteer.api.data.mapping.StoreDtoMapper;
 import com.volunteer.api.data.model.UserAuthority;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.StoreDtoV1;
 import com.volunteer.api.data.model.api.search.SearchDto;
@@ -11,6 +12,7 @@ import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.search.impl.StoreQueryBuilder;
 import com.volunteer.api.security.utils.AuthenticationUtils;
 import com.volunteer.api.service.StoreService;
+import java.util.Collection;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,12 +21,14 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -64,6 +68,17 @@ public class StoreControllerV1 {
         storeDtoMapper::map);
   }
 
+  @PreAuthorize("hasAuthority('STORES_VIEW_CONFIDENTIAL')")
+  @GetMapping(path = "/search")
+  @ResponseStatus(HttpStatus.OK)
+  public GenericCollectionDtoV1<StoreDtoV1> search(@RequestParam("city.id") final Integer cityId) {
+    final Collection<StoreDtoV1> result = storeDtoMapper.map(service.getByCityId(cityId));
+
+    return GenericCollectionDtoV1.<StoreDtoV1>builder()
+        .items(result)
+        .build();
+  }
+
   @PreAuthorize("hasAuthority('STORES_MODIFY')")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
@@ -80,6 +95,13 @@ public class StoreControllerV1 {
     entity.setId(id);
 
     return storeDtoMapper.map(service.update(entity));
+  }
+
+  @PreAuthorize("hasAuthority('STORES_MODIFY')")
+  @DeleteMapping(path = "/{store-id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable("store-id") final Integer id) {
+    service.delete(id);
   }
 
 }

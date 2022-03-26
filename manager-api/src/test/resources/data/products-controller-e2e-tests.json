@@ -245,7 +245,7 @@
     }
   },
   {
-    "name": "search by category",
+    "name": "POST search by category",
     "given": {
       "auth": {
         "userName": "operator",
@@ -275,6 +275,38 @@
         "page": 1,
         "pageSize": 10,
         "totalCount": 1,
+        "items": [
+          {
+            "id": 2,
+            "name": "product-2",
+            "category": {
+              "id": 3,
+              "parent": {
+                "id": 2,
+                "name": "root-2"
+              },
+              "name": "root-2-child-3"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "GET search by category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/search?category.id=2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
         "items": [
           {
             "id": 2,

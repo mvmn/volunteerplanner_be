@@ -24,6 +24,8 @@ public interface TaskService {
 
   Task create(Task task);
 
+  Task update(Task task);
+
   List<Task> create(final Collection<Task> tasks);
 
   BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta);

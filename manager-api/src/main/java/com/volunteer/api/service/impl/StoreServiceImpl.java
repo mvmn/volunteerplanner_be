@@ -1,13 +1,17 @@
 package com.volunteer.api.service.impl;
 
 import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.data.model.persistence.specifications.StoreSearchSpecifications;
 import com.volunteer.api.data.repository.StoreRepository;
 import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.AddressService;
+import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,11 @@ public class StoreServiceImpl implements com.volunteer.api.service.StoreService 
   }
 
   @Override
+  public Collection<Store> getByCityId(final Integer cityId) {
+    return repository.findAll(StoreSearchSpecifications.byCity(cityId), Sort.by(Order.asc("name")));
+  }
+
+  @Override
   public Store create(final Store store) {
     store.setId(null);
     store.setCity(addressService.getCityById(store.getCity().getId()));
@@ -55,6 +64,11 @@ public class StoreServiceImpl implements com.volunteer.api.service.StoreService 
     current.setNote(store.getNote());
 
     return repository.save(current);
+  }
+
+  @Override
+  public void delete(final Integer id) {
+    repository.deleteById(id);
   }
 
 }
