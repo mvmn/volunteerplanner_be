@@ -1,0 +1,2 @@
+ALTER TABLE "user"
+DROP COLUMN city_id;

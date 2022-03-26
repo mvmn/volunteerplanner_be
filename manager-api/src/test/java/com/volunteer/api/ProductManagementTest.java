@@ -17,7 +17,7 @@ import com.volunteer.api.data.model.api.search.SearchDto;
 import com.volunteer.api.data.model.api.search.filter.FilterDto;
 import com.volunteer.api.data.model.api.search.filter.OperatorFilterDto;
 import com.volunteer.api.data.model.api.search.filter.OperatorFilterDto.Operator;
-import com.volunteer.api.data.model.api.search.filter.ValueNumericFilterDto;
+import com.volunteer.api.data.model.api.search.filter.ValueNumberFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueTextFilterDto;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.service.CategoryService;
@@ -83,7 +83,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
                     .field("name")
                     .value(product.getName())
                     .build(),
-                ValueNumericFilterDto.builder()
+                ValueNumberFilterDto.builder()
                     .field("category.id")
                     .value(product.getCategory().getId())
                     .build()

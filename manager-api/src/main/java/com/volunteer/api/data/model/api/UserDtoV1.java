@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.ZonedDateTime;
 import javax.persistence.Column;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
@@ -38,11 +36,6 @@ public class UserDtoV1 {
   private String fullName;
   @JsonProperty("email")
   private String email;
-
-  @NotNull
-  @Valid
-  @JsonProperty("city")
-  private CityDtoV1 city;
 
   @JsonProperty("phoneNumberVerified")
   private Boolean phoneNumberVerified;

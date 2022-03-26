@@ -26,16 +26,6 @@ public final class UserSearchSpecifications {
     return (root, query, builder) -> builder.equal(root.get("role").get("name"), value);
   }
 
-  public static Specification<VPUser> byAddressRegion(final String value) {
-    return (root, query, builder) -> builder.like(root.get("address").get("region"),
-        "%" + value + "%");
-  }
-
-  public static Specification<VPUser> byAddressCity(final String value) {
-    return (root, query, builder) -> builder.like(root.get("address").get("city"),
-        "%" + value + "%");
-  }
-
   public static Specification<VPUser> byPhoneNumberVerified(final Boolean value) {
     return (root, query, builder) -> builder.equal(root.get("phoneNumberVerified"), value);
   }

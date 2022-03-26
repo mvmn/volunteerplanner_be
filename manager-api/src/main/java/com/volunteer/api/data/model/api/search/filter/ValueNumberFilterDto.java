@@ -14,8 +14,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
-@JsonTypeName("numeric")
-public class ValueNumericFilterDto extends ValueFilterDto {
+@JsonTypeName("number")
+public class ValueNumberFilterDto extends ValueFilterDto {
 
   @NotNull
   @JsonProperty("value")

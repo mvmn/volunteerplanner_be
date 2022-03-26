@@ -4,7 +4,7 @@ import com.volunteer.api.data.model.api.search.filter.FilterDto;
 import com.volunteer.api.data.model.api.search.filter.OperatorFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueBoolFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueFilterDto;
-import com.volunteer.api.data.model.api.search.filter.ValueNumericFilterDto;
+import com.volunteer.api.data.model.api.search.filter.ValueNumberFilterDto;
 import com.volunteer.api.data.model.api.search.filter.ValueTextFilterDto;
 import com.volunteer.api.data.model.api.search.sort.SortParameters;
 import com.volunteer.api.data.repository.search.Query;
@@ -63,7 +63,7 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T> {
     return null;
   }
 
-  protected Specification<T> buildFilterSpecification(final ValueNumericFilterDto source) {
+  protected Specification<T> buildFilterSpecification(final ValueNumberFilterDto source) {
     return null;
   }
 
@@ -99,8 +99,8 @@ public abstract class AbstractQueryBuilder<T> implements QueryBuilder<T> {
       return buildFilterSpecification((ValueBoolFilterDto) source);
     }
 
-    if (source instanceof ValueNumericFilterDto) {
-      return buildFilterSpecification((ValueNumericFilterDto) source);
+    if (source instanceof ValueNumberFilterDto) {
+      return buildFilterSpecification((ValueNumberFilterDto) source);
     }
 
     if (source instanceof ValueTextFilterDto) {

@@ -1,0 +1,366 @@
+[
+  {
+    "name": "create dummy product",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products",
+        "method": "POST",
+        "body": {
+          "name": "dummy",
+          "category": {
+            "id": 5
+          },
+          "note": "dummy product"
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 1,
+        "name": "dummy",
+        "category": {
+          "id": 5,
+          "parent": {
+            "id": 4,
+            "name": "root-4"
+          },
+          "name": "root-4-child-5"
+        },
+        "note": "dummy product"
+      }
+    }
+  },
+  {
+    "name": "update dummy product",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/1",
+        "method": "PUT",
+        "body": {
+          "name": "dummy update",
+          "category": {
+            "id": 3
+          },
+          "note": "dummy product update"
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "name": "dummy update",
+        "category": {
+          "id": 3,
+          "parent": {
+            "id": 2,
+            "name": "root-2"
+          },
+          "name": "root-2-child-3"
+        },
+        "note": "dummy product update"
+      }
+    }
+  },
+  {
+    "name": "get dummy product by id",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/1",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "name": "dummy update",
+        "category": {
+          "id": 3,
+          "parent": {
+            "id": 2,
+            "name": "root-2"
+          },
+          "name": "root-2-child-3"
+        },
+        "note": "dummy product update"
+      }
+    }
+  },
+  {
+    "name": "delete dummy product",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/1",
+        "method": "DELETE"
+      }
+    },
+    "expected": {
+      "status": 204
+    }
+  },
+  {
+    "name": "create product-2",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products",
+        "method": "POST",
+        "body": {
+          "name": "product-2",
+          "category": {
+            "id": 3
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 2,
+        "name": "product-2",
+        "category": {
+          "id": 3,
+          "parent": {
+            "id": 2,
+            "name": "root-2"
+          },
+          "name": "root-2-child-3"
+        }
+      }
+    }
+  },
+  {
+    "name": "create product-3",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products",
+        "method": "POST",
+        "body": {
+          "name": "product-3",
+          "category": {
+            "id": 5
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 3,
+        "name": "product-3",
+        "category": {
+          "id": 5,
+          "parent": {
+            "id": 4,
+            "name": "root-4"
+          },
+          "name": "root-4-child-5"
+        }
+      }
+    }
+  },
+  {
+    "name": "search by name",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "text",
+            "field": "name",
+            "value": "prod"
+          },
+          "sort": {
+            "field": "name",
+            "order": "asc"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 2,
+        "items": [
+          {
+            "id": 2,
+            "name": "product-2",
+            "category": {
+              "id": 3,
+              "parent": {
+                "id": 2,
+                "name": "root-2"
+              },
+              "name": "root-2-child-3"
+            }
+          },
+          {
+            "id": 3,
+            "name": "product-3",
+            "category": {
+              "id": 5,
+              "parent": {
+                "id": 4,
+                "name": "root-4"
+              },
+              "name": "root-4-child-5"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "search by category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "number",
+            "field": "category.id",
+            "value": 2
+          },
+          "sort": {
+            "field": "category.name",
+            "order": "asc"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 2,
+            "name": "product-2",
+            "category": {
+              "id": 3,
+              "parent": {
+                "id": 2,
+                "name": "root-2"
+              },
+              "name": "root-2-child-3"
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "search by name or category",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/products/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "operator",
+            "operator": "or",
+            "operands": [
+              {
+                "type": "text",
+                "field": "name",
+                "value": "-2"
+              },
+              {
+                "type": "number",
+                "field": "category.id",
+                "value": 4
+              }
+            ]
+          },
+          "sort": {
+            "field": "category.parent.name",
+            "order": "asc"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 2,
+        "items": [
+          {
+            "id": 2,
+            "name": "product-2",
+            "category": {
+              "id": 3,
+              "parent": {
+                "id": 2,
+                "name": "root-2"
+              },
+              "name": "root-2-child-3"
+            }
+          },
+          {
+            "id": 3,
+            "name": "product-3",
+            "category": {
+              "id": 5,
+              "parent": {
+                "id": 4,
+                "name": "root-4"
+              },
+              "name": "root-4-child-5"
+            }
+          }
+        ]
+      }
+    }
+  }
+]

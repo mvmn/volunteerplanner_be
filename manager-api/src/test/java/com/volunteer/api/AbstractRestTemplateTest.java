@@ -3,15 +3,18 @@ package com.volunteer.api;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.volunteer.api.AbstractRestTemplateTest.TestConfig;
+import com.volunteer.api.service.VerificationCodeGenerator;
+import com.volunteer.api.utils.JsonTestUtils;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -28,57 +31,47 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.volunteer.api.service.VerificationCodeGenerator;
-import com.volunteer.api.utils.JsonTestUtils;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Testcontainers
 @ActiveProfiles("test")
-@Import(com.volunteer.api.UserManagementTest.TestConfig.class)
-public class UserManagementTest extends AbstractTestWithPersistence {
+@Import(TestConfig.class)
+public class AbstractRestTemplateTest extends AbstractTestWithPersistence {
 
   private static final ParameterizedTypeReference<JsonNode> JSON_NODE_TYPE_REFERENCE =
       new ParameterizedTypeReference<>() {
       };
 
-  private static final String TEST_CASES_FILE_PATH = "data/user-mgmt-e2e-tests.json";
-  
   @TestConfiguration
   public static class TestConfig {
-    public static volatile String verificationCode = "123456";
+
+    public static final String VERIFICATION_CODE = "123456";
 
     @Bean
     @Primary
     public VerificationCodeGenerator verificationCodeGenerator() {
-      return new VerificationCodeGenerator() {
-
-        @Override
-        public String generateRandomCode() {
-          return verificationCode;
-        }
-      };
+      return () -> VERIFICATION_CODE;
     }
+
   }
 
   @Autowired
-  private TestRestTemplate restTemplate;
+  protected TestRestTemplate restTemplate;
 
-  @ParameterizedTest()
-  @MethodSource("loadClassPassTestCases")
-  public void endpointTest(final String testName, final JsonNode given, final JsonNode expected) {
+  public void endpointTest(final String testName, final JsonNode given, final JsonNode expected,
+      final Set<String> assertIgnoreProperties) {
     final ResponseEntity<JsonNode> actual = executeRequest(given);
 
     assertEquals(expected.get("status").asInt(), actual.getStatusCodeValue(),
-        String.format("[%s] response status code", testName));
+        String.format("[%s] response status code. Body: '%s'", testName,
+            JsonTestUtils.toJsonString(actual.getBody())));
 
     final JsonNode expectedBody = expected.path("body");
     if (JsonTestUtils.isNull(expectedBody)) {
       assertNull(actual.getBody(), String.format("[%s] response body", testName));
     } else {
-      Assertions.assertTrue(JsonTestUtils.equals(expectedBody, actual.getBody(),
-              Set.of("userVerifiedAt", "lockedAt")),
+      Assertions.assertTrue(JsonTestUtils.equals(
+              expectedBody, actual.getBody(), assertIgnoreProperties),
           String.format("[%s] response body. \nExpected: '%s' \nActual:   '%s'", testName,
               JsonTestUtils.toJsonString(expectedBody),
               JsonTestUtils.toJsonString(actual.getBody())));
@@ -116,16 +109,16 @@ public class UserManagementTest extends AbstractTestWithPersistence {
     final HttpHeaders headers = new HttpHeaders();
     token.ifPresent(value -> headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + value));
 
-    if (Objects.isNull(body) || body.isMissingNode()) {
+    if (JsonTestUtils.isNull(body)) {
       return new HttpEntity<>(null, headers);
-    } else {
-      headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-      return new HttpEntity<>(body, headers);
     }
+
+    headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+    return new HttpEntity<>(body, headers);
   }
 
-  private static Stream<Arguments> loadClassPassTestCases() {
-    final List<JsonNode> testCases = JsonTestUtils.loadClassPathJson(TEST_CASES_FILE_PATH,
+  public static Stream<Arguments> loadTestCases(final String resourceFilePath) {
+    final List<JsonNode> testCases = JsonTestUtils.loadClassPathJson(resourceFilePath,
         new TypeReference<>() {
         });
 

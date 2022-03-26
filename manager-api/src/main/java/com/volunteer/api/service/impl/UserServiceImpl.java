@@ -125,7 +125,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
-    user.setCity(addressService.getCityById(user.getCity().getId()));
 
     VPUser result = repository.save(user);
     if (!isRootUser) {
@@ -157,7 +156,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     current.setFullName(user.getFullName());
     current.setEmail(user.getEmail());
-    current.setCity(addressService.getCityById(user.getCity().getId()));
 
     return repository.save(current);
   }

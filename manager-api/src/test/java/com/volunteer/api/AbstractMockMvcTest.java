@@ -1,5 +1,13 @@
 package com.volunteer.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.security.model.AuthenticationRequest;
+import com.volunteer.api.security.model.AuthenticationResponse;
+import com.volunteer.api.service.AddressService;
+import com.volunteer.api.service.RoleService;
+import com.volunteer.api.service.UserService;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,14 +22,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.security.model.AuthenticationRequest;
-import com.volunteer.api.security.model.AuthenticationResponse;
-import com.volunteer.api.service.AddressService;
-import com.volunteer.api.service.RoleService;
-import com.volunteer.api.service.UserService;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Testcontainers
@@ -63,7 +63,6 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
     user.setPhoneNumberVerified(true);
     user.setPassword(password);
     user.setRole(roleService.get(role));
-    user.setCity(addressService.getCityById(10));
     return userService.create(user);
   }
 
