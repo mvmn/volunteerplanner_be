@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
@@ -44,9 +45,8 @@ public class TaskDtoV1 {
   @JsonProperty("productMeasure")
   private String productMeasure;
 
-  @NotNull(message = "cannot be empty")
   @JsonProperty("priority")
-  private Integer priority;
+  private TaskPriority priority;
   @NotNull(message = "cannot be empty")
   @JsonProperty("deadlineDate")
   private Long deadlineDate;

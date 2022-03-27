@@ -15,7 +15,7 @@
           "productId": 2,
           "quantity": 10.5,
           "productMeasure": "kg",
-          "priority": 1,
+          "priority": "LOW",
           "deadlineDate": "1899375600",
           "note": "dummy task"
         }
@@ -70,10 +70,11 @@
         "quantity": 10.5,
         "quantityLeft": 10.5,
         "productMeasure": "kg",
-        "priority": 1,
+        "priority": "LOW",
         "deadlineDate": 1899375600,
         "note": "dummy task",
         "status": "NEW",
+        "subtaskCount": 0,
         "createdBy": {
           "id": 2,
           "userName": "operator",
@@ -144,10 +145,11 @@
         "quantity": 10.5,
         "quantityLeft": 10.5,
         "productMeasure": "kg",
-        "priority": 1,
+        "priority": "LOW",
         "deadlineDate": 1899375600,
         "note": "dummy task",
         "status": "NEW",
+        "subtaskCount": 0,
         "createdBy": {
           "id": 2,
           "userName": "operator",
@@ -220,10 +222,11 @@
             "quantity": 10.5,
             "quantityLeft": 10.5,
             "productMeasure": "kg",
-            "priority": 1,
+            "priority": "LOW",
             "deadlineDate": 1899375600,
             "note": "dummy task",
             "status": "NEW",
+            "subtaskCount": 0,
             "createdBy": {
               "id": 2,
               "userName": "operator",

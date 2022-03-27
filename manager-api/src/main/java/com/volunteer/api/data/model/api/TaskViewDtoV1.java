@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @JsonPropertyOrder({"id", "volunteerStore", "customerStore", "product",
     "quantity", "quantityLeft", "productMeasure", "priority", "deadlineDate", "note",
-    "status", "createdBy", "createdAt", "verifiedBy", "verifiedAt", "closedBy", "closedAt"})
+    "status", "subtaskCount", "createdBy", "createdAt", "verifiedBy", "verifiedAt",
+    "closedBy", "closedAt"})
 @JsonInclude(Include.NON_NULL)
 public class TaskViewDtoV1 {
 
@@ -40,7 +42,7 @@ public class TaskViewDtoV1 {
   private String productMeasure;
 
   @JsonProperty("priority")
-  private Integer priority;
+  private TaskPriority priority;
   @JsonProperty("deadlineDate")
   private Long deadlineDate;
   @JsonProperty("note")
@@ -48,6 +50,9 @@ public class TaskViewDtoV1 {
 
   @JsonProperty("status")
   private TaskStatus status;
+
+  @JsonProperty("subtaskCount")
+  private Long subtaskCount;
 
   @JsonProperty("createdBy")
   private UserDtoV1 createdBy;

@@ -230,7 +230,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder()
                 .customerStoreId(store.getId()).volunteerStoreId(store.getId())
-                .productMeasure("units").quantity(BigDecimal.TEN).priority(1)
+                .productMeasure("units").quantity(BigDecimal.TEN)
                 .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
                 .productId(product.getId()).build())))
         .andExpect(MockMvcResultMatchers.status().isCreated()), TaskViewDtoV1.class);
@@ -241,12 +241,12 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     final TaskDtoV1 task1 = TaskDtoV1.builder().customerStoreId(store.getId())
         .volunteerStoreId(store.getId()).productMeasure("units").quantity(BigDecimal.TEN)
-        .priority(1).deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
+        .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
         .productId(productId).quantity(BigDecimal.valueOf(20)).productMeasure("units").build();
 
     final TaskDtoV1 task2 = TaskDtoV1.builder().customerStoreId(store.getId())
         .volunteerStoreId(store.getId()).productMeasure("units").quantity(BigDecimal.TEN)
-        .priority(1).deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
+        .deadlineDate(ZonedDateTime.now().plusDays(365).toEpochSecond())
         .productId(productId).quantity(BigDecimal.valueOf(30)).productMeasure("units").build();
 
     return getResponseAs(

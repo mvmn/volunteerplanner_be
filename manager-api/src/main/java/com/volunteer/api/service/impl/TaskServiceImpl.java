@@ -1,5 +1,6 @@
 package com.volunteer.api.service.impl;
 
+import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.model.persistence.Task;
@@ -130,7 +131,7 @@ public class TaskServiceImpl implements TaskService {
     current.setQuantity(task.getQuantity());
     current.setQuantityLeft(current.getQuantity());
     current.setProductMeasure(task.getProductMeasure());
-    current.setPriority(task.getPriority());
+    current.setPriority(Optional.ofNullable(task.getPriority()).orElse(TaskPriority.NORMAL));
     current.setDeadlineDate(task.getDeadlineDate());
     current.setNote(task.getNote());
 
@@ -237,6 +238,7 @@ public class TaskServiceImpl implements TaskService {
     validateDeadlineDate(task.getDeadlineDate());
     validateVolunteerStore(task.getVolunteerStore());
 
+    task.setPriority(Optional.ofNullable(task.getPriority()).orElse(TaskPriority.NORMAL));
     task.setStatus(TaskStatus.NEW);
 
     task.setQuantityLeft(task.getQuantity());
@@ -244,6 +246,8 @@ public class TaskServiceImpl implements TaskService {
 
     task.setCreatedBy(currentUser);
     task.setCreatedAt(currentTime);
+
+    task.setSubtaskCount(0L);
 
     return task;
   }
