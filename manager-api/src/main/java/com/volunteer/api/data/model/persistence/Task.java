@@ -12,6 +12,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -19,6 +21,16 @@ import lombok.Data;
 
 @Data
 @Entity
+@NamedEntityGraph(name = "task.detail",
+    attributeNodes = {
+        @NamedAttributeNode("volunteerStore"),
+        @NamedAttributeNode("customerStore"),
+        @NamedAttributeNode("product"),
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("verifiedBy"),
+        @NamedAttributeNode("closedBy")
+    }
+)
 @Table(name = "task")
 public class Task implements Serializable {
 

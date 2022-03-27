@@ -84,7 +84,7 @@
     }
   },
   {
-    "name": "get dummy task",
+    "name": "get dummy task by id",
     "given": {
       "auth": {
         "userName": "operator",
@@ -154,6 +154,84 @@
           "fullName": "FN operator"
         },
         "createdAt": 1648316192
+      }
+    }
+  },
+  {
+    "name": "get dummy task by ids",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/search?ids=1",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 1,
+            "volunteerStore": {
+              "id": 2,
+              "name": "public store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "public address",
+              "confidential": false,
+              "note": "public note"
+            },
+            "customerStore": {
+              "id": 3,
+              "name": "private store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "private address",
+              "confidential": true,
+              "note": "private note"
+            },
+            "product": {
+              "id": 2,
+              "category": {
+                "id": 3,
+                "parent": {
+                  "id": 2,
+                  "name": "root-2"
+                },
+                "name": "root-2-child-3"
+              },
+              "name": "product-2"
+            },
+            "quantity": 10.5,
+            "quantityLeft": 10.5,
+            "productMeasure": "kg",
+            "priority": 1,
+            "deadlineDate": 1899375600,
+            "note": "dummy task",
+            "status": "NEW",
+            "createdBy": {
+              "id": 2,
+              "userName": "operator",
+              "fullName": "FN operator"
+            },
+            "createdAt": 1648316192
+          }
+        ]
       }
     }
   }
