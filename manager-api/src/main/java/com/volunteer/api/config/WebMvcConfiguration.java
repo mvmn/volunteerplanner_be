@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.volunteer.api.audit.AuditInterceptor;
 
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Autowired
   private AuditInterceptor auditInterceptor;

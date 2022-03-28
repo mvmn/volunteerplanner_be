@@ -56,19 +56,4 @@ public class TaskDtoV1 {
   @JsonProperty("status")
   private TaskStatus status;
 
-  @JsonProperty("createdByUserId")
-  private Integer createdByUserId;
-  @JsonProperty("createdAt")
-  private Long createdAt;
-
-  @JsonProperty("verifiedByUserId")
-  private Integer verifiedByUserId;
-  @JsonProperty("verifiedAt")
-  private Long verifiedAt;
-
-  @JsonProperty("closedByUserId")
-  private Integer closedByUserId;
-  @JsonProperty("closedAt")
-  private Long closedAt;
-
 }

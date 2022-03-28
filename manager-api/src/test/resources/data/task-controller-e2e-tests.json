@@ -800,13 +800,17 @@
         "status": "IN_PROGRESS",
         "note": "my first subtask",
         "transportRequired": true,
-        "createdByUserId": 3,
-        "createdAt": 1648383545
+        "createdBy": {
+          "id": 3,
+          "userName": "volunteer",
+          "fullName": "FN volunteer"
+        },
+        "createdAt": 1648483271
       }
     }
   },
   {
-    "name": "volunteer: get task by id after subtask",
+    "name": "volunteer: get task by id after subtask create",
     "given": {
       "auth": {
         "userName": "volunteer",
@@ -868,6 +872,659 @@
           "fullName": "FN operator"
         },
         "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "volunteer: update subtask - first",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks/1",
+        "method": "PUT",
+        "body": {
+          "taskId": 2,
+          "quantity": 2.5,
+          "note": "my first subtask u",
+          "transportRequired": false
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "taskId": 2,
+        "quantity": 2.5,
+        "status": "IN_PROGRESS",
+        "note": "my first subtask u",
+        "transportRequired": false,
+        "createdBy": {
+          "id": 3,
+          "userName": "volunteer",
+          "fullName": "FN volunteer"
+        },
+        "createdAt": 1648383545
+      }
+    }
+  },
+  {
+    "name": "volunteer: get task by id after subtask update",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 8.0,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 1,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "volunteer: update subtask - second",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks/1",
+        "method": "PUT",
+        "body": {
+          "taskId": 2,
+          "quantity": 7.5,
+          "note": "my first subtask",
+          "transportRequired": true
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "taskId": 2,
+        "quantity": 7.5,
+        "status": "IN_PROGRESS",
+        "note": "my first subtask",
+        "transportRequired": true,
+        "createdBy": {
+          "id": 3,
+          "userName": "volunteer",
+          "fullName": "FN volunteer"
+        },
+        "createdAt": 1648383545
+      }
+    }
+  },
+  {
+    "name": "volunteer: get task by id after subtask update",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 3.0,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 1,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "operator: create subtask",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/subtasks",
+        "method": "POST",
+        "body": {
+          "taskId": 2,
+          "quantity": 5,
+          "note": "operator subtask",
+          "transportRequired": false
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 2,
+        "taskId": 2,
+        "quantity": 3.0,
+        "status": "IN_PROGRESS",
+        "note": "operator subtask",
+        "transportRequired": false,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648483272
+      }
+    }
+  },
+  {
+    "name": "volunteer: get task by id after subtask update",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 0.0,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 2,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "volunteer: reject subtask",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks/1/reject",
+        "method": "PUT"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "taskId": 2,
+        "quantity": 7.5,
+        "status": "REJECTED",
+        "note": "my first subtask",
+        "transportRequired": true,
+        "createdBy": {
+          "id": 3,
+          "userName": "volunteer",
+          "fullName": "FN volunteer"
+        },
+        "createdAt": 1648383545,
+        "closedBy": {
+          "id": 3,
+          "userName": "volunteer",
+          "fullName": "FN volunteer"
+        },
+        "closedAt": 1648383545
+      }
+    }
+  },
+  {
+    "name": "volunteer: get task by id after subtask reject",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 7.5,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 2,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "operator: get all subtasks for task",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/subtasks/search?taskId=2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 2,
+            "taskId": 2,
+            "quantity": 3.0,
+            "status": "IN_PROGRESS",
+            "note": "operator subtask",
+            "transportRequired": false,
+            "createdBy": {
+              "id": 2,
+              "userName": "operator",
+              "fullName": "FN operator"
+            },
+            "createdAt": 1648486676
+          },
+          {
+            "id": 1,
+            "taskId": 2,
+            "quantity": 7.5,
+            "status": "REJECTED",
+            "note": "my first subtask",
+            "transportRequired": true,
+            "createdBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "createdAt": 1648486675,
+            "closedBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "closedAt": 1648486677
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "volunteer: get all subtasks for task",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks/search?taskId=2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "items": [
+          {
+            "id": 1,
+            "taskId": 2,
+            "quantity": 7.5,
+            "status": "REJECTED",
+            "note": "my first subtask",
+            "transportRequired": true,
+            "createdBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "createdAt": 1648486675,
+            "closedBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "closedAt": 1648486677
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "operator: search all subtasks by status",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/subtasks/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "text",
+            "field": "status",
+            "value": "REJECTED"
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 1,
+            "taskId": 2,
+            "quantity": 7.5,
+            "status": "REJECTED",
+            "note": "my first subtask",
+            "transportRequired": true,
+            "createdBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "createdAt": 1648486675,
+            "closedBy": {
+              "id": 3,
+              "userName": "volunteer",
+              "fullName": "FN volunteer"
+            },
+            "closedAt": 1648486677
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "operator: search all subtasks by task id and status",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/subtasks/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "operator",
+            "operator": "and",
+            "operands": [
+              {
+                "type": "text",
+                "field": "status",
+                "value": "IN_PROGRESS"
+              },
+              {
+                "type": "number",
+                "field": "task.id",
+                "value": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 2,
+            "taskId": 2,
+            "quantity": 3.0,
+            "status": "IN_PROGRESS",
+            "note": "operator subtask",
+            "transportRequired": false,
+            "createdBy": {
+              "id": 2,
+              "userName": "operator",
+              "fullName": "FN operator"
+            },
+            "createdAt": 1648486676
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "volunteer: search all subtasks by task id and status",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks/search",
+        "method": "POST",
+        "body": {
+          "page": 1,
+          "pageSize": 10,
+          "filter": {
+            "type": "operator",
+            "operator": "and",
+            "operands": [
+              {
+                "type": "text",
+                "field": "status",
+                "value": "IN_PROGRESS"
+              },
+              {
+                "type": "number",
+                "field": "task.id",
+                "value": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "page": 1,
+        "pageSize": 10,
+        "totalCount": 0,
+        "items": []
       }
     }
   }

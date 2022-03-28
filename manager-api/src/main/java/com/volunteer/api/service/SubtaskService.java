@@ -19,5 +19,5 @@ public interface SubtaskService {
 
   Subtask complete(final Integer subtaskId);
 
-  Subtask reject(final Integer subtaskId);
+  Subtask reject(final Integer subtaskId, final boolean onlyMine);
 }

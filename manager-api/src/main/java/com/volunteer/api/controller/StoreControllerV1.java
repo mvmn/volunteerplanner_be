@@ -15,6 +15,7 @@ import com.volunteer.api.service.StoreService;
 import java.util.Collection;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,7 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class StoreControllerV1 {
 
   private final StoreService service;
-  private final StoreDtoMapper storeDtoMapper;
+  private final StoreDtoMapper mapper;
+
+  private final ObjectFactory<StoreQueryBuilder> queryBuilderFactory;
 
   @PreAuthorize("hasAuthority('STORES_VIEW_PUBLIC') or hasAuthority('STORES_VIEW_CONFIDENTIAL')")
   @GetMapping(path = "/{store-id}")
@@ -49,15 +52,14 @@ public class StoreControllerV1 {
     final boolean showConfidential = AuthenticationUtils.hasAuthority(
         UserAuthority.STORES_VIEW_CONFIDENTIAL, authentication);
 
-    return storeDtoMapper.map(service.get(id, showConfidential));
+    return mapper.map(service.get(id, showConfidential));
   }
 
   @PreAuthorize("hasAuthority('STORES_VIEW_CONFIDENTIAL')")
   @PostMapping(path = "/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericPageDtoV1<StoreDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body,
-      final StoreQueryBuilder queryBuilder) {
-    final Page<Store> result = service.getAll(queryBuilder
+  public GenericPageDtoV1<StoreDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body) {
+    final Page<Store> result = service.getAll(queryBuilderFactory.getObject()
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
         .withFilter(body.getFilter())
@@ -65,14 +67,14 @@ public class StoreControllerV1 {
     );
 
     return GenericPageDtoMapper.map(body.getPage(), body.getPageSize(), result,
-        storeDtoMapper::map);
+        mapper::map);
   }
 
   @PreAuthorize("hasAuthority('STORES_VIEW_CONFIDENTIAL')")
   @GetMapping(path = "/search")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<StoreDtoV1> search(@RequestParam("city.id") final Integer cityId) {
-    final Collection<StoreDtoV1> result = storeDtoMapper.map(service.getByCityId(cityId));
+    final Collection<StoreDtoV1> result = mapper.map(service.getByCityId(cityId));
 
     return GenericCollectionDtoV1.<StoreDtoV1>builder()
         .items(result)
@@ -83,7 +85,7 @@ public class StoreControllerV1 {
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public StoreDtoV1 create(@RequestBody final StoreDtoV1 store) {
-    return storeDtoMapper.map(service.create(storeDtoMapper.map(store)));
+    return mapper.map(service.create(mapper.map(store)));
   }
 
   @PreAuthorize("hasAuthority('STORES_MODIFY')")
@@ -91,10 +93,10 @@ public class StoreControllerV1 {
   @ResponseStatus(HttpStatus.OK)
   public StoreDtoV1 update(@PathVariable("store-id") final Integer id,
       @RequestBody final StoreDtoV1 store) {
-    final Store entity = storeDtoMapper.map(store);
+    final Store entity = mapper.map(store);
     entity.setId(id);
 
-    return storeDtoMapper.map(service.update(entity));
+    return mapper.map(service.update(entity));
   }
 
   @PreAuthorize("hasAuthority('STORES_MODIFY')")

@@ -67,16 +67,12 @@ public class SubtaskServiceImpl implements SubtaskService {
   @Override
   @Transactional
   public Subtask create(final Subtask subtask) {
-    if (subtask.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidQuantityException("quantity must be greater then 0");
-    }
+    validateQuantity(subtask.getQuantity());
 
     final Task task = taskService.get(subtask.getTask().getId());
-    final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity());
 
-    if (delta.compareTo(BigDecimal.ZERO) == 0) {
-      throw new InvalidQuantityException("There is no quantity remaining for selected task");
-    }
+    final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity());
+    validateRemainingQuantity(delta);
 
     final VPUser user = userService.getCurrentUser();
 
@@ -85,7 +81,6 @@ public class SubtaskServiceImpl implements SubtaskService {
     subtask.setTaskId(task.getId());
     subtask.setStatus(SubtaskStatus.IN_PROGRESS);
     subtask.setCreatedBy(user);
-    subtask.setCreatedByUserId(user.getId());
     subtask.setCreatedAt(ZonedDateTime.now());
 
     return repository.save(subtask);
@@ -97,28 +92,24 @@ public class SubtaskServiceImpl implements SubtaskService {
     final Subtask current = getById(subtask.getId(), true);
     final Task task = current.getTask();
 
-    if (subtask.getStatus() != SubtaskStatus.IN_PROGRESS) {
+    if (current.getStatus() != SubtaskStatus.IN_PROGRESS) {
       throw new InvalidStatusException("Modification of closed task is prohibited");
     }
 
-    if (subtask.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
-      throw new InvalidQuantityException("quantity must be greater then 0");
-    }
+    validateQuantity(subtask.getQuantity());
 
-    // we do allow change quantity only
+    current.setNote(subtask.getNote());
+    current.setTransportRequired(subtask.isTransportRequired());
+
     BigDecimal delta = subtask.getQuantity().subtract(current.getQuantity());
-    if (delta.compareTo(BigDecimal.ZERO) == 0) {
-      return current;
+    if (delta.compareTo(BigDecimal.ZERO) != 0) {
+      delta = taskService.subtractRemainingQuantity(task, delta);
+      validateRemainingQuantity(delta);
+
+      current.setQuantity(current.getQuantity().add(delta));
     }
 
-    delta = taskService.subtractRemainingQuantity(task, delta);
-    if (delta.compareTo(BigDecimal.ZERO) == 0) {
-      throw new InvalidQuantityException("There is no quantity remaining for selected task");
-    }
-
-    current.setQuantity(current.getQuantity().add(delta));
-
-    return repository.save(subtask);
+    return repository.save(current);
   }
 
   @Override
@@ -132,7 +123,6 @@ public class SubtaskServiceImpl implements SubtaskService {
 
         subtask.setStatus(SubtaskStatus.COMPLETED);
         subtask.setClosedBy(user);
-        subtask.setClosedByUserId(user.getId());
         subtask.setClosedAt(ZonedDateTime.now());
 
         return repository.save(subtask);
@@ -145,8 +135,8 @@ public class SubtaskServiceImpl implements SubtaskService {
 
   @Override
   @Transactional
-  public Subtask reject(final Integer subtaskId) {
-    final Subtask subtask = getById(subtaskId, false);
+  public Subtask reject(final Integer subtaskId, final boolean onlyMine) {
+    final Subtask subtask = getById(subtaskId, onlyMine);
     switch (subtask.getStatus()) {
       case REJECTED:
         return subtask;
@@ -156,7 +146,6 @@ public class SubtaskServiceImpl implements SubtaskService {
 
         subtask.setStatus(SubtaskStatus.REJECTED);
         subtask.setClosedBy(user);
-        subtask.setClosedByUserId(user.getId());
         subtask.setClosedAt(ZonedDateTime.now());
 
         return repository.save(subtask);
@@ -166,4 +155,17 @@ public class SubtaskServiceImpl implements SubtaskService {
             subtask.getStatus().name(), SubtaskStatus.REJECTED.name()));
     }
   }
+
+  private void validateQuantity(final BigDecimal quantity) {
+    if (quantity.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new InvalidQuantityException("quantity must be greater then 0");
+    }
+  }
+
+  private void validateRemainingQuantity(final BigDecimal delta) {
+    if (delta.compareTo(BigDecimal.ZERO) == 0) {
+      throw new InvalidQuantityException("There is no remaining quantity for selected task");
+    }
+  }
+
 }
