@@ -237,5 +237,638 @@
         ]
       }
     }
+  },
+  {
+    "name": "update dummy task",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/1",
+        "method": "PUT",
+        "body": {
+          "volunteerStoreId": 2,
+          "customerStoreId": 2,
+          "productId": 3,
+          "quantity": 15.5,
+          "productMeasure": "kg",
+          "priority": "HIGH",
+          "deadlineDate": "1899375600",
+          "note": "dummy task u"
+        }
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "customerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 3,
+          "category": {
+            "id": 5,
+            "parent": {
+              "id": 4,
+              "name": "root-4"
+            },
+            "name": "root-4-child-5"
+          },
+          "name": "product-3"
+        },
+        "quantity": 15.5,
+        "quantityLeft": 15.5,
+        "productMeasure": "kg",
+        "priority": "HIGH",
+        "deadlineDate": 1899375600,
+        "note": "dummy task u",
+        "status": "NEW",
+        "subtaskCount": 0,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648380323
+      }
+    }
+  },
+  {
+    "name": "verify dummy task",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/1/verify",
+        "method": "POST"
+      }
+    },
+    "expected": {
+      "status": 200
+    }
+  },
+  {
+    "name": "get verified dummy task by id",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/1",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "customerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 3,
+          "category": {
+            "id": 5,
+            "parent": {
+              "id": 4,
+              "name": "root-4"
+            },
+            "name": "root-4-child-5"
+          },
+          "name": "product-3"
+        },
+        "quantity": 15.5,
+        "quantityLeft": 15.5,
+        "productMeasure": "kg",
+        "priority": "HIGH",
+        "deadlineDate": 1899375600,
+        "note": "dummy task u",
+        "status": "VERIFIED",
+        "subtaskCount": 0,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648380323,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648380323
+      }
+    }
+  },
+  {
+    "name": "reject dummy task",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/1/reject",
+        "method": "POST"
+      }
+    },
+    "expected": {
+      "status": 200
+    }
+  },
+  {
+    "name": "get rejected dummy task by id",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/1",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 1,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "customerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 3,
+          "category": {
+            "id": 5,
+            "parent": {
+              "id": 4,
+              "name": "root-4"
+            },
+            "name": "root-4-child-5"
+          },
+          "name": "product-3"
+        },
+        "quantity": 15.5,
+        "quantityLeft": 15.5,
+        "productMeasure": "kg",
+        "priority": "HIGH",
+        "deadlineDate": 1899375600,
+        "note": "dummy task u",
+        "status": "REJECTED",
+        "subtaskCount": 0,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648380323,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648380323,
+        "closedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "closedAt": 1648380323
+      }
+    }
+  },
+  {
+    "name": "bulk create tasks",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/batch",
+        "method": "POST",
+        "body": {
+          "items": [
+            {
+              "volunteerStoreId": 2,
+              "customerStoreId": 3,
+              "productId": 2,
+              "quantity": 10.5,
+              "productMeasure": "kg",
+              "priority": "LOW",
+              "deadlineDate": "1899375600",
+              "note": "task 2"
+            },
+            {
+              "volunteerStoreId": 2,
+              "customerStoreId": 3,
+              "productId": 3,
+              "quantity": 20,
+              "productMeasure": "kg",
+              "priority": "HIGH",
+              "deadlineDate": "1899375600",
+              "note": "task 3"
+            }
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "items": [
+          {
+            "id": 2,
+            "volunteerStore": {
+              "id": 2,
+              "name": "public store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "public address",
+              "confidential": false,
+              "note": "public note"
+            },
+            "customerStore": {
+              "id": 3,
+              "name": "private store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "private address",
+              "confidential": true,
+              "note": "private note"
+            },
+            "product": {
+              "id": 2,
+              "category": {
+                "id": 3,
+                "parent": {
+                  "id": 2,
+                  "name": "root-2"
+                },
+                "name": "root-2-child-3"
+              },
+              "name": "product-2"
+            },
+            "quantity": 10.5,
+            "quantityLeft": 10.5,
+            "productMeasure": "kg",
+            "priority": "LOW",
+            "deadlineDate": 1899375600,
+            "note": "task 2",
+            "status": "NEW",
+            "subtaskCount": 0,
+            "createdBy": {
+              "id": 2,
+              "userName": "operator",
+              "fullName": "FN operator"
+            },
+            "createdAt": 1648382552
+          },
+          {
+            "id": 3,
+            "volunteerStore": {
+              "id": 2,
+              "name": "public store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "public address",
+              "confidential": false,
+              "note": "public note"
+            },
+            "customerStore": {
+              "id": 3,
+              "name": "private store",
+              "city": {
+                "id": 15,
+                "region": {
+                  "id": 1,
+                  "name": "Вінницька"
+                },
+                "name": "Гнівань"
+              },
+              "address": "private address",
+              "confidential": true,
+              "note": "private note"
+            },
+            "product": {
+              "id": 3,
+              "category": {
+                "id": 5,
+                "parent": {
+                  "id": 4,
+                  "name": "root-4"
+                },
+                "name": "root-4-child-5"
+              },
+              "name": "product-3"
+            },
+            "quantity": 20,
+            "quantityLeft": 20,
+            "productMeasure": "kg",
+            "priority": "HIGH",
+            "deadlineDate": 1899375600,
+            "note": "task 3",
+            "status": "NEW",
+            "subtaskCount": 0,
+            "createdBy": {
+              "id": 2,
+              "userName": "operator",
+              "fullName": "FN operator"
+            },
+            "createdAt": 1648382552
+          }
+        ]
+      }
+    }
+  },
+  {
+    "name": "bulk verify tasks",
+    "given": {
+      "auth": {
+        "userName": "operator",
+        "password": "operator"
+      },
+      "request": {
+        "endpoint": "/tasks/batch/verify",
+        "method": "POST",
+        "body": {
+          "items": [
+            2,
+            3
+          ]
+        }
+      }
+    },
+    "expected": {
+      "status": 200
+    }
+  },
+  {
+    "name": "volunteer: get task by id",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 10.5,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 0,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
+  },
+  {
+    "name": "volunteer: create subtask",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/subtasks",
+        "method": "POST",
+        "body": {
+          "taskId": 2,
+          "quantity": 5.5,
+          "note": "my first subtask",
+          "transportRequired": true
+        }
+      }
+    },
+    "expected": {
+      "status": 201,
+      "body": {
+        "id": 1,
+        "taskId": 2,
+        "quantity": 5.5,
+        "status": "IN_PROGRESS",
+        "note": "my first subtask",
+        "transportRequired": true,
+        "createdByUserId": 3,
+        "createdAt": 1648383545
+      }
+    }
+  },
+  {
+    "name": "volunteer: get task by id after subtask",
+    "given": {
+      "auth": {
+        "userName": "volunteer",
+        "password": "volunteer1"
+      },
+      "request": {
+        "endpoint": "/tasks/2",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 200,
+      "body": {
+        "id": 2,
+        "volunteerStore": {
+          "id": 2,
+          "name": "public store",
+          "city": {
+            "id": 15,
+            "region": {
+              "id": 1,
+              "name": "Вінницька"
+            },
+            "name": "Гнівань"
+          },
+          "address": "public address",
+          "confidential": false,
+          "note": "public note"
+        },
+        "product": {
+          "id": 2,
+          "category": {
+            "id": 3,
+            "parent": {
+              "id": 2,
+              "name": "root-2"
+            },
+            "name": "root-2-child-3"
+          },
+          "name": "product-2"
+        },
+        "quantity": 10.5,
+        "quantityLeft": 5.0,
+        "productMeasure": "kg",
+        "priority": "LOW",
+        "deadlineDate": 1899375600,
+        "note": "task 2",
+        "status": "VERIFIED",
+        "subtaskCount": 1,
+        "createdBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "createdAt": 1648382552,
+        "verifiedBy": {
+          "id": 2,
+          "userName": "operator",
+          "fullName": "FN operator"
+        },
+        "verifiedAt": 1648382552
+      }
+    }
   }
 ]

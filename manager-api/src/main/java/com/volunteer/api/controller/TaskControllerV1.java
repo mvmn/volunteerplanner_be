@@ -25,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,13 +56,20 @@ public class TaskControllerV1 {
 
   @PreAuthorize("hasAuthority('TASKS_MODIFY')")
   @PutMapping("/{task-id}")
-  @ResponseStatus(HttpStatus.CREATED)
+  @ResponseStatus(HttpStatus.OK)
   public TaskViewDtoV1 update(@PathVariable("task-id") final Integer taskId,
       @RequestBody @Valid final TaskDtoV1 source) {
     final Task task = taskMapper.map(source);
     task.setId(taskId);
 
     return taskViewMapper.map(taskService.update(task));
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
+  @DeleteMapping("/{task-id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(@PathVariable("task-id") final Integer taskId) {
+    taskService.delete(taskId);
   }
 
   @PostMapping("/batch")

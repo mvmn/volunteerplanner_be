@@ -139,6 +139,21 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
+  public void delete(final Integer taskId) {
+    final Optional<Task> current = repository.findById(taskId);
+    if (current.isEmpty()) {
+      return;
+    }
+
+    if (current.get().getStatus() != TaskStatus.NEW) {
+      throw new InvalidStatusException(String.format(
+          "Can't delete task with status '%s'", current.get().getStatus()));
+    }
+
+    repository.deleteById(taskId);
+  }
+
+  @Override
   @Transactional
   public List<Task> create(final Collection<Task> tasks) {
     if (CollectionUtils.isEmpty(tasks)) {
