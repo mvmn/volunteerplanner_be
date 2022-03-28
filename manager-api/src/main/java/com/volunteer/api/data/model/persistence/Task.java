@@ -1,5 +1,6 @@
 package com.volunteer.api.data.model.persistence;
 
+import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,13 +13,26 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 import lombok.Data;
+import org.hibernate.annotations.Formula;
 
 @Data
 @Entity
+@NamedEntityGraph(name = "task.detail",
+    attributeNodes = {
+        @NamedAttributeNode("volunteerStore"),
+        @NamedAttributeNode("customerStore"),
+        @NamedAttributeNode("product"),
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("verifiedBy"),
+        @NamedAttributeNode("closedBy")
+    }
+)
 @Table(name = "task")
 public class Task implements Serializable {
 
@@ -55,8 +69,8 @@ public class Task implements Serializable {
   @Column(name = "product_measure", nullable = false, length = 100)
   private String productMeasure;
 
-  @Column(name = "priority", columnDefinition = "NUMERIC", nullable = false)
-  private Integer priority;
+  @Column(name = "priority_id", nullable = false)
+  private TaskPriority priority;
 
   @Column(name = "deadline_date", nullable = false)
   private ZonedDateTime deadlineDate;
@@ -66,6 +80,9 @@ public class Task implements Serializable {
 
   @Column(name = "status_id", nullable = false)
   private TaskStatus status;
+
+  @Formula("(select count(s.id) from subtask s where s.task_id = id)")
+  private Long subtaskCount;
 
   @ManyToOne(optional = false, fetch = FetchType.LAZY)
   @JoinColumn(name = "created_by")

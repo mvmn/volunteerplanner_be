@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.volunteer.api.data.model.SubtaskStatus;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -40,11 +39,11 @@ public class SubtaskDtoV1 {
   @JsonProperty("createdByUserId")
   private Integer createdByUserId;
   @JsonProperty("createdAt")
-  private ZonedDateTime createdAt;
+  private Long createdAt;
 
   @JsonProperty("closedByUserId")
   private Integer closedByUserId;
   @JsonProperty("closedAt")
-  private ZonedDateTime closedAt;
+  private Long closedAt;
 
 }

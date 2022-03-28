@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,36 +16,33 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonPropertyOrder({"id", "volunteerStoreId", "customerStoreId", "productId",
-    "quantity", "productMeasure", "priority", "deadlineDate", "note", "statusId", "createdByUserId",
-    "createdAt", "verifiedByUserId", "verifiedAt", "closedByUserId", "closedAt", "quantityLeft"})
+@JsonPropertyOrder({"id", "volunteerStore", "customerStore", "product",
+    "quantity", "quantityLeft", "productMeasure", "priority", "deadlineDate", "note",
+    "status", "subtaskCount", "createdBy", "createdAt", "verifiedBy", "verifiedAt",
+    "closedBy", "closedAt"})
 @JsonInclude(Include.NON_NULL)
-public class TaskDtoV1 {
+public class TaskViewDtoV1 {
 
   @JsonProperty("id")
   private Integer id;
 
-  @NotNull(message = "cannot be empty")
-  @JsonProperty("volunteerStoreId")
-  private Integer volunteerStoreId;
-  @NotNull(message = "cannot be empty")
-  @JsonProperty("customerStoreId")
-  private Integer customerStoreId;
+  @JsonProperty("volunteerStore")
+  private StoreDtoV1 volunteerStore;
+  @JsonProperty("customerStore")
+  private StoreDtoV1 customerStore;
 
-  @NotNull(message = "cannot be empty")
-  @JsonProperty("productId")
-  private Integer productId;
-  @NotNull(message = "cannot be empty")
-  @Min(value = 1, message = "cannot be less than one")
+  @JsonProperty("product")
+  private ProductDtoV1 product;
+
   @JsonProperty("quantity")
   private BigDecimal quantity;
-  @NotNull(message = "cannot be empty")
+  @JsonProperty("quantityLeft")
+  private BigDecimal quantityLeft;
   @JsonProperty("productMeasure")
   private String productMeasure;
 
   @JsonProperty("priority")
   private TaskPriority priority;
-  @NotNull(message = "cannot be empty")
   @JsonProperty("deadlineDate")
   private Long deadlineDate;
   @JsonProperty("note")
@@ -56,18 +51,21 @@ public class TaskDtoV1 {
   @JsonProperty("status")
   private TaskStatus status;
 
-  @JsonProperty("createdByUserId")
-  private Integer createdByUserId;
+  @JsonProperty("subtaskCount")
+  private Long subtaskCount;
+
+  @JsonProperty("createdBy")
+  private UserDtoV1 createdBy;
   @JsonProperty("createdAt")
   private Long createdAt;
 
-  @JsonProperty("verifiedByUserId")
-  private Integer verifiedByUserId;
+  @JsonProperty("verifiedBy")
+  private UserDtoV1 verifiedBy;
   @JsonProperty("verifiedAt")
   private Long verifiedAt;
 
-  @JsonProperty("closedByUserId")
-  private Integer closedByUserId;
+  @JsonProperty("closedBy")
+  private UserDtoV1 closedBy;
   @JsonProperty("closedAt")
   private Long closedAt;
 

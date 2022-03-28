@@ -4,24 +4,24 @@ import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.Getter;
 
-public enum TaskStatus {
+public enum TaskPriority {
 
-  NEW(1),
-  VERIFIED(2),
-  COMPLETED(3),
-  REJECTED(4);
+  CRITICAL(1),
+  HIGH(2),
+  NORMAL(3),
+  LOW(4);
 
   @Getter
   private final int code;
 
-  TaskStatus(int code) {
+  TaskPriority(int code) {
     this.code = code;
   }
 
-  public static Optional<TaskStatus> byCode(int code) {
-    return Stream.of(TaskStatus.values())
+  public static Optional<TaskPriority> byCode(int code) {
+    return Stream.of(TaskPriority.values())
         .filter(status -> status.getCode() == code)
         .findAny();
   }
 
-}
+  }
