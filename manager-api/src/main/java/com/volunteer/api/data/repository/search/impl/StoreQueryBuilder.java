@@ -8,15 +8,15 @@ import com.volunteer.api.data.model.api.search.sort.SortParameters;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.model.persistence.specifications.StoreSearchSpecifications;
 import java.util.Objects;
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class StoreQueryBuilder extends AbstractQueryBuilder<Store> {
 
   @Override

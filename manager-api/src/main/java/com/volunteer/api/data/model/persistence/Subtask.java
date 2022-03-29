@@ -11,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -19,11 +21,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Entity
+@NamedEntityGraph(name = "subtask.detail",
+    attributeNodes = {
+        @NamedAttributeNode("createdBy"),
+        @NamedAttributeNode("closedBy")
+    }
+)
+@Table(name = "subtask")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name = "subtask")
 public class Subtask {
 
   @Id
@@ -55,18 +63,12 @@ public class Subtask {
   @JoinColumn(name = "created_by")
   private VPUser createdBy;
 
-  @Column(name = "created_by", insertable = false, updatable = false)
-  private Integer createdByUserId;
-
   @Column(name = "created_at", nullable = false)
   private ZonedDateTime createdAt;
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "closed_by")
   private VPUser closedBy;
-
-  @Column(name = "closed_by", insertable = false, updatable = false)
-  private Integer closedByUserId;
 
   @Column(name = "closed_at")
   private ZonedDateTime closedAt;

@@ -2,6 +2,7 @@ plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
+    id 'jacoco'
 }
 
 group = 'com.volunteer.api'
@@ -52,6 +53,9 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
 
+    // warning: unknown enum constant When.MAYBE
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
     // logging
     implementation 'ch.qos.logback:logback-classic'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
@@ -72,6 +76,21 @@ jar {
     enabled = false
 }
 
-tasks.named('test') {
+test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/reports/jacoco/html")
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(fileTree(dir: "$buildDir",
+                includes: ['**/com/volunteer/api/**'],
+                excludes: ['**/test/**', '**/model/**']))
+    }
 }

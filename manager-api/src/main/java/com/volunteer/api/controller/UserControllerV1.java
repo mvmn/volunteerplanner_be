@@ -14,6 +14,7 @@ import com.volunteer.api.service.UserService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,6 +39,8 @@ public class UserControllerV1 {
   private final UserService service;
   private final UserDtoV1Mapper userMapper;
 
+  private final ObjectFactory<UserQueryBuilder> queryBuilderFactory;
+
   // access for anybody
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
@@ -54,9 +57,8 @@ public class UserControllerV1 {
   @PreAuthorize("hasAuthority('USERS_VIEW')")
   @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericPageDtoV1<UserDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body,
-      final UserQueryBuilder queryBuilder) {
-    final Page<VPUser> result = service.getAll(queryBuilder
+  public GenericPageDtoV1<UserDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body) {
+    final Page<VPUser> result = service.getAll(queryBuilderFactory.getObject()
         .withPageNum(body.getPage())
         .withPageSize(body.getPageSize())
         .withFilter(body.getFilter())

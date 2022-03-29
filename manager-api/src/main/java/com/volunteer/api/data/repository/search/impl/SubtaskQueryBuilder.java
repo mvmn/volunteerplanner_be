@@ -10,15 +10,15 @@ import com.volunteer.api.data.model.persistence.specifications.SubtaskSearchSpec
 import com.volunteer.api.service.UserService;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @Component
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @RequiredArgsConstructor
 public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
 
@@ -63,6 +63,8 @@ public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
         return SubtaskSearchSpecifications.byCreator(value);
       case "closedby.id":
         return SubtaskSearchSpecifications.byCloser(value);
+      case "task.id":
+        return SubtaskSearchSpecifications.byTask(value);
       case "task.product.id":
         return SubtaskSearchSpecifications.byProduct(value);
       case "task.product.category.id":

@@ -34,7 +34,10 @@ public final class SubtaskSearchSpecifications {
         value.intValue());
   }
 
-
+  public static Specification<Subtask> byTask(final Number value) {
+    return (root, query, builder) -> builder.equal(root.get("task").get("id"),
+        value.intValue());
+  }
 
   private SubtaskSearchSpecifications() {
     // empty constructor

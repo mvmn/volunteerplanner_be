@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonPropertyOrder({"id", "taskId", "quantity", "status", "note", "transportRequired",
-    "createdByUserId", "createdAt", "closedByUserId", "closedAt"})
+    "createdBy", "createdAt", "closedBy", "closedAt"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SubtaskDtoV1 {
 
@@ -36,13 +36,13 @@ public class SubtaskDtoV1 {
   @JsonProperty("transportRequired")
   private Boolean transportRequired;
 
-  @JsonProperty("createdByUserId")
-  private Integer createdByUserId;
+  @JsonProperty("createdBy")
+  private UserDtoV1 createdBy;
   @JsonProperty("createdAt")
   private Long createdAt;
 
-  @JsonProperty("closedByUserId")
-  private Integer closedByUserId;
+  @JsonProperty("closedBy")
+  private UserDtoV1 closedBy;
   @JsonProperty("closedAt")
   private Long closedAt;
 

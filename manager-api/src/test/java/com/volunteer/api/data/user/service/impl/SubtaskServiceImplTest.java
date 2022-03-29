@@ -125,7 +125,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     assertThat(updatedTask.getQuantityLeft().longValue()).isEqualTo(7L);
 
     assertThrows(
-        InvalidStatusException.class, () -> subtaskService.reject(completedSubtask.getId()));
+        InvalidStatusException.class, () -> subtaskService.reject(completedSubtask.getId(), false));
 
     // Reject
     Subtask subtask2 =
@@ -136,7 +136,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
             .build();
     subtask2 = subtaskService.create(subtask2);
 
-    subtaskService.reject(subtask2.getId());
+    subtaskService.reject(subtask2.getId(), false);
     final Subtask rejectedSubtask = subtaskService.getById(subtask2.getId(), false);
 
     assertThat(rejectedSubtask.getStatus()).isEqualTo(SubtaskStatus.REJECTED);

@@ -6,7 +6,7 @@ import java.util.Collection;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = GenericMapper.class)
+@Mapper(componentModel = "spring", uses = {GenericMapper.class, UserViewDtoV1Mapper.class})
 public interface SubtaskDtoMapper {
 
   SubtaskDtoV1 map(final Subtask subtask);
