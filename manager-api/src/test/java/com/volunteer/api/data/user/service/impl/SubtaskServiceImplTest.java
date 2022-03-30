@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.volunteer.api.AbstractTestWithPersistence;
 import com.volunteer.api.data.model.SubtaskStatus;
-import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
