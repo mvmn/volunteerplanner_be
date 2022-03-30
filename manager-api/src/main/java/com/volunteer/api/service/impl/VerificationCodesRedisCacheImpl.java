@@ -40,7 +40,7 @@ public class VerificationCodesRedisCacheImpl implements VerificationCodesCache {
     Optional<String> existingCode =
         Optional.ofNullable(cache.putIfAbsent(toCacheKey(user, type), newCode))
             .map(ValueWrapper::get).filter(v -> v != null).map(Object::toString);
-    return Pair.of(existingCode.isPresent(), existingCode.orElse(newCode));
+    return Pair.of(!existingCode.isPresent(), existingCode.orElse(newCode));
   }
 
   @Override
