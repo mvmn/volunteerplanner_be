@@ -53,6 +53,10 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
 
+	// cache
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
     // warning: unknown enum constant When.MAYBE
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
@@ -70,6 +74,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.flywaydb:flyway-core:8.5.2'
+    testImplementation 'it.ozimov:embedded-redis:0.7.3'
 }
 
 jar {

@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import com.volunteer.api.data.model.persistence.VPUser;
@@ -17,9 +18,10 @@ import com.volunteer.api.service.VerificationCodeGenerator;
 import com.volunteer.api.service.VerificationCodesCache;
 import lombok.RequiredArgsConstructor;
 
+@ConditionalOnProperty(name = "vp.cachetype", havingValue = "db", matchIfMissing = true)
 @Service
 @RequiredArgsConstructor
-public class VerificationCodesCacheImpl implements VerificationCodesCache {
+public class VerificationCodesDbCacheImpl implements VerificationCodesCache {
 
   protected final VerificationCodeGenerator generator;
   protected final VerificationCodeRepository repo;

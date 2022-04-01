@@ -8,7 +8,6 @@ import com.volunteer.api.data.repository.search.Query;
 import com.volunteer.api.data.repository.search.QueryBuilder;
 import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
@@ -46,7 +45,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
-  private final AddressService addressService;
   private final VerificationCodeService verificationCodeService;
   private final SmsService smsService;
 
