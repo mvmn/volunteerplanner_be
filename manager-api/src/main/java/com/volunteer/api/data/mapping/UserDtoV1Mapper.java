@@ -16,6 +16,7 @@ public abstract class UserDtoV1Mapper {
 
 
   @Mapping(target = "version", ignore = true)
+  @Mapping(target = "rating", ignore = true)
   @Mapping(target = "phoneNumberVerified", ignore = true)
   @Mapping(target = "userVerified", ignore = true)
   @Mapping(target = "userVerifiedBy", ignore = true)

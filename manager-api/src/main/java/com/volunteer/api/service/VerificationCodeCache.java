@@ -1,14 +1,15 @@
 package com.volunteer.api.service;
 
 import java.util.Optional;
-import org.apache.commons.lang3.tuple.Pair;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
 
-public interface VerificationCodesCache {
-  Optional<String> getCode(VPUser user, VerificationCodeType type);
+public interface VerificationCodeCache {
 
-  Pair<Boolean, String> getOrCreateCode(VPUser user, VerificationCodeType type);
+  Optional<String> get(final VPUser user, final VerificationCodeType type);
+
+  void put(final VPUser user, final VerificationCodeType type, final String value);
 
   void delete(VPUser user, VerificationCodeType type);
+
 }

@@ -6,10 +6,10 @@ import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCod
 
 public interface VerificationCodeService {
 
-  Pair<Boolean, String> getOrCreate(final VPUser user, VerificationCodeType codeType);
+  Pair<Boolean, String> getOrCreate(final VPUser user, final VerificationCodeType codeType);
 
-  boolean matches(final VPUser user, final String code, VerificationCodeType codeType);
+  boolean matches(final VPUser user, final VerificationCodeType codeType, final String code);
 
-  void cleanup(VPUser current, VerificationCodeType phone);
+  void cleanup(final VPUser current, final VerificationCodeType phone);
 
 }

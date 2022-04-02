@@ -4,12 +4,14 @@ import com.volunteer.api.data.mapping.GenericPageDtoMapper;
 import com.volunteer.api.data.mapping.TaskDtoV1Mapper;
 import com.volunteer.api.data.mapping.TaskViewDtoV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.UserAuthority;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
 import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.security.utils.AuthenticationUtils;
 import com.volunteer.api.service.TaskService;
 import java.util.Collection;
 import java.util.List;
@@ -47,33 +49,40 @@ public class TaskControllerV1 {
   private final TaskDtoV1Mapper taskMapper;
   private final TaskViewDtoV1Mapper taskViewMapper;
 
-  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY') or hasAuthority('TASKS_MODIFY_MINE')")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public TaskViewDtoV1 create(@RequestBody @Valid final TaskDtoV1 source) {
     return taskViewMapper.map(taskService.create(taskMapper.map(source)));
   }
 
-  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY') or hasAuthority('TASKS_MODIFY_MINE')")
   @PutMapping("/{task-id}")
   @ResponseStatus(HttpStatus.OK)
   public TaskViewDtoV1 update(@PathVariable("task-id") final Integer taskId,
-      @RequestBody @Valid final TaskDtoV1 source) {
+      @RequestBody @Valid final TaskDtoV1 source, final Authentication authentication) {
+    final boolean updateAny = AuthenticationUtils.hasAuthority(
+        UserAuthority.TASKS_MODIFY, authentication);
+
     final Task task = taskMapper.map(source);
     task.setId(taskId);
 
-    return taskViewMapper.map(taskService.update(task));
+    return taskViewMapper.map(taskService.update(task, !updateAny));
   }
 
-  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY') or hasAuthority('TASKS_MODIFY_MINE')")
   @DeleteMapping("/{task-id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void delete(@PathVariable("task-id") final Integer taskId) {
-    taskService.delete(taskId);
+  public void delete(@PathVariable("task-id") final Integer taskId,
+      final Authentication authentication) {
+    final boolean deleteAny = AuthenticationUtils.hasAuthority(
+        UserAuthority.TASKS_MODIFY, authentication);
+
+    taskService.delete(taskId, !deleteAny);
   }
 
   @PostMapping("/batch")
-  @PreAuthorize("hasAuthority('TASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('TASKS_MODIFY') or hasAuthority('TASKS_MODIFY_MINE')")
   @ResponseStatus(HttpStatus.CREATED)
   public GenericCollectionDtoV1<TaskViewDtoV1> create(
       @RequestBody @Valid final GenericCollectionDtoV1<TaskDtoV1> source) {
@@ -99,37 +108,44 @@ public class TaskControllerV1 {
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")
   @PostMapping("/{taskId}/verify")
   public void verify(@PathVariable("taskId") Integer taskId) {
-    taskService.changeStatus(taskId, TaskStatus.VERIFIED);
+    taskService.changeStatus(taskId, TaskStatus.VERIFIED, false);
   }
 
   @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
   @PostMapping("/{taskId}/complete")
   public void complete(@PathVariable("taskId") Integer taskId) {
-    taskService.changeStatus(taskId, TaskStatus.COMPLETED);
+    taskService.changeStatus(taskId, TaskStatus.COMPLETED, false);
   }
 
-  @PreAuthorize("hasAuthority('TASKS_REJECT')")
+  @PreAuthorize("hasAuthority('TASKS_REJECT') or hasAuthority('TASKS_REJECT_MINE')")
   @PostMapping("/{taskId}/reject")
-  public void reject(@PathVariable("taskId") Integer taskId) {
-    taskService.changeStatus(taskId, TaskStatus.REJECTED);
+  public void reject(@PathVariable("taskId") Integer taskId, final Authentication authentication) {
+    final boolean rejectAny = AuthenticationUtils.hasAuthority(
+        UserAuthority.TASKS_REJECT, authentication);
+
+    taskService.changeStatus(taskId, TaskStatus.REJECTED, !rejectAny);
   }
 
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")
   @PostMapping("/batch/verify")
   public void batchVerify(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.VERIFIED);
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.VERIFIED, false);
   }
 
   @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
   @PostMapping("/batch/complete")
   public void batchComplete(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.COMPLETED);
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.COMPLETED, false);
   }
 
-  @PreAuthorize("hasAuthority('TASKS_REJECT')")
+  @PreAuthorize("hasAuthority('TASKS_REJECT') or hasAuthority('TASKS_REJECT_MINE')")
   @PostMapping("/batch/reject")
-  public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.REJECTED);
+  public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds,
+      final Authentication authentication) {
+    final boolean rejectAny = AuthenticationUtils.hasAuthority(
+        UserAuthority.TASKS_REJECT, authentication);
+
+    taskService.changeStatus(taskIds.getItems(), TaskStatus.REJECTED, !rejectAny);
   }
 
   @PreAuthorize("hasAuthority('TASKS_VIEW')")
@@ -170,4 +186,5 @@ public class TaskControllerV1 {
     return GenericPageDtoMapper.map(searchRequest.getPageNumber(), searchRequest.getPageSize(),
         searchResult, task -> taskViewMapper.map(task, authentication));
   }
+
 }

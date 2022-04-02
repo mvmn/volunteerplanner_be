@@ -11,6 +11,10 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: 'validate'
+    properties:
+      hibernate:
+        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
+        format_sql: false
   profiles:
     active: local
 
@@ -28,17 +32,38 @@ spring:
   profiles: local
   datasource:
     url: 'jdbc:postgresql://localhost:5432/volunteer'
-    driverClassName: 'org.postgresql.Driver'
     username: 'postgres'
     password: 'root'
   jpa:
     show-sql: true
-    hibernate:
     properties:
       hibernate:
-        dialect: 'org.hibernate.dialect.PostgreSQLDialect'
         format_sql: true
+
+security:
+  jwt:
+    secret: "secret"
+    access-token-ttl: 30m
+    refresh-token-ttl: 1h
+
+cache:
+  type: "db"
+  verification-code-ttl: 10m
 
 ---
 spring:
-  profiles: cloud
+  profiles: aws
+  datasource:
+    url: 'jdbc:postgresql://${VOLUNTEER_DB_HOST}:5432/volunteer'
+    username: '${VOLUNTEER_DB_USER}'
+    password: '${VOLUNTEER_DB_PASSWORD}'
+
+security:
+  jwt:
+    secret: '${VOLUNTEER_JWT_SECRET}'
+    access-token-ttl: 30m
+    refresh-token-ttl: 1h
+
+cache:
+  type: "redis"
+  verification-code-ttl: 10m

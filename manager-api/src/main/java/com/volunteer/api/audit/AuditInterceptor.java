@@ -32,7 +32,7 @@ public class AuditInterceptor implements HandlerInterceptor {
     MDC.put("REQUEST_ADDRESS", request.getRemoteAddr());
     MDC.put("REQUEST_METHOD", request.getMethod());
     MDC.put("REQUEST_PATH", path);
-    MDC.put("REQUEST_USER_ID", authService.getCurrentUserName());
+    MDC.put("REQUEST_USER_ID", authService.getCurrentPrincipal());
     MDC.put("REQUEST_USER_ROLES",
         authService.getCurrentUserRoles().stream().collect(Collectors.joining(",")));
     LOGGER.info("AUDIT_BEGIN");

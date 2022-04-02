@@ -10,6 +10,7 @@ import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
 import com.volunteer.api.data.model.persistence.Store;
+import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.ProductRepository;
 import com.volunteer.api.data.repository.TaskRepository;
 import com.volunteer.api.data.repository.UserRepository;
@@ -68,13 +69,13 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
   @Test
   public void testTaskCrud() throws Exception {
-    int userIdOp2 = createUser("op2", "pass", "operator").getId();
-    int userIdOp3 = createUser("op3", "pass", "operator").getId();
+    final VPUser userOp2 = createUser(generatePhoneNumber(), "pass", "operator");
+    final VPUser userOp3 = createUser(generatePhoneNumber(), "pass", "operator");
 
     Assert.assertEquals(0, taskRepository.count());
-    String token1 = login("op", "pass").getRefreshToken();
-    String token2 = login("op2", "pass").getRefreshToken();
-    String token3 = login("op3", "pass").getRefreshToken();
+    String token1 = login(SYSTEM_USER.getPhoneNumber(), SYSTEM_USER.getPassword()).getAccessToken();
+    String token2 = login(userOp2.getPhoneNumber(), userOp2.getPassword()).getAccessToken();
+    String token3 = login(userOp3.getPhoneNumber(), userOp3.getPassword()).getAccessToken();
 
     // Test get and search by ids of non-existing tasks
     mockMvc
@@ -104,7 +105,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .getResponse().getContentAsByteArray();
 
     TaskViewDtoV1 getResponse = objectMapper.readValue(responseBodyGetTask, TaskViewDtoV1.class);
-    Assert.assertEquals(userRepo.findByUserName("op").getId(), getResponse.getCreatedBy().getId());
+    Assert.assertEquals(SYSTEM_USER.getId(), getResponse.getCreatedBy().getId());
     Assert.assertTrue(
         (getResponse.getCreatedAt().longValue() - ZonedDateTime.now().toEpochSecond()) < 180L);
 
@@ -189,8 +190,8 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     // Test search by user ID
     {
       Set<Integer> tasksCreatedByOp2 =
-          search(token1, TaskSearchDtoV1.builder().createdByUserId(userIdOp2).build()).getItems()
-              .stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
+          search(token1, TaskSearchDtoV1.builder().createdByUserId(userOp2.getId()).build())
+              .getItems().stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(2, tasksCreatedByOp2.size());
       Assert.assertTrue(tasksCreatedByOp2.contains(taskId2));
       Assert.assertTrue(tasksCreatedByOp2.contains(taskId3));
@@ -198,16 +199,16 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     {
       Set<Integer> tasksVerifiedByOp3 =
-          search(token1, TaskSearchDtoV1.builder().verifiedByUserId(userIdOp3).build()).getItems()
-              .stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
+          search(token1, TaskSearchDtoV1.builder().verifiedByUserId(userOp3.getId()).build())
+              .getItems().stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(1, tasksVerifiedByOp3.size());
       Assert.assertTrue(tasksVerifiedByOp3.contains(taskId));
     }
 
     {
       Set<Integer> tasksClosedByOp3 =
-          search(token1, TaskSearchDtoV1.builder().closedByUserId(userIdOp3).build()).getItems()
-              .stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
+          search(token1, TaskSearchDtoV1.builder().closedByUserId(userOp3.getId()).build())
+              .getItems().stream().map(TaskViewDtoV1::getId).collect(Collectors.toSet());
       Assert.assertEquals(2, tasksClosedByOp3.size());
       Assert.assertTrue(tasksClosedByOp3.contains(taskId2));
       Assert.assertTrue(tasksClosedByOp3.contains(taskId3));
@@ -268,6 +269,5 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         new TypeReference<GenericPageDtoV1<TaskViewDtoV1>>() {
         });
   }
-
 
 }

@@ -36,13 +36,35 @@ public enum UserRole {
       UserAuthority.SUBTASKS_COMPLETE,
       UserAuthority.SUBTASKS_REJECT
   )),
+  REQUESTOR("requestor", Set.of(
+      UserAuthority.CATEGORIES_VIEW,
+      UserAuthority.CATEGORIES_MODIFY,
+
+      UserAuthority.STORES_VIEW_PUBLIC,
+      UserAuthority.STORES_VIEW_CONFIDENTIAL,
+      UserAuthority.STORES_MODIFY,
+
+      UserAuthority.PRODUCTS_VIEW,
+      UserAuthority.PRODUCTS_MODIFY,
+
+      UserAuthority.TASKS_VIEW,
+      UserAuthority.TASKS_MODIFY_MINE,
+      UserAuthority.TASKS_REJECT_MINE,
+
+      UserAuthority.SUBTASKS_VIEW,
+      UserAuthority.SUBTASKS_MODIFY,
+      UserAuthority.SUBTASKS_REJECT_MINE
+  )),
   VOLUNTEER("volunteer", Set.of(
       UserAuthority.CATEGORIES_VIEW,
-      UserAuthority.PRODUCTS_VIEW,
+
       UserAuthority.STORES_VIEW_PUBLIC,
+
+      UserAuthority.PRODUCTS_VIEW,
+
       UserAuthority.TASKS_VIEW,
 
-      UserAuthority.SUBTASKS_VIEW_MINE,
+      UserAuthority.SUBTASKS_VIEW,
       UserAuthority.SUBTASKS_MODIFY,
       UserAuthority.SUBTASKS_REJECT_MINE
   ));

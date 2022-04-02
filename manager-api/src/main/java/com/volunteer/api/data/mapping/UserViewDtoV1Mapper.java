@@ -11,7 +11,6 @@ public interface UserViewDtoV1Mapper {
   @Mapping(target = "phoneNumber", ignore = true)
   @Mapping(target = "password", ignore = true)
   @Mapping(target = "role", ignore = true)
-  @Mapping(target = "email", ignore = true)
   @Mapping(target = "phoneNumberVerified", ignore = true)
   @Mapping(target = "userVerified", ignore = true)
   @Mapping(target = "userVerifiedByUserId", ignore = true)

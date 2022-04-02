@@ -1,12 +1,16 @@
 package com.volunteer.api.config;
 
 import com.volunteer.api.security.filter.JWTAuthorizationFilter;
+import com.volunteer.api.service.JWTService;
+import com.volunteer.api.service.impl.JWTServiceImpl;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import java.time.Duration;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -29,6 +33,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+  @Value("${security.jwt.secret}")
+  private String secret;
+
+  @Value("${security.jwt.access-token-ttl:1m}")
+  private Duration accessTokenTtl;
+  @Value("${security.jwt.refresh-token-ttl:5m}")
+  private Duration refreshTokenTtl;
+
   @Autowired
   private PasswordEncoder passwordEncoder;
   @Autowired
@@ -48,12 +60,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     configureOpenApi(http.authorizeRequests()
         .antMatchers("/actuator/**").permitAll()
         .antMatchers("/authenticate").permitAll()
-        .antMatchers(HttpMethod.GET,"/address/**").permitAll()
+        .antMatchers(HttpMethod.GET, "/address/**").permitAll()
         .antMatchers(HttpMethod.POST, "/users").permitAll()
         .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll())
         .anyRequest().authenticated();
 
-    http.addFilterBefore(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(new JWTAuthorizationFilter(jwtService()),
+        UsernamePasswordAuthenticationFilter.class);
   }
 
   @Bean
@@ -63,9 +76,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
+  public JWTService jwtService() {
+    return new JWTServiceImpl(secret, accessTokenTtl, refreshTokenTtl);
+  }
+
+  @Bean
   @Profile("local")
   public OpenAPI customOpenAPI() {
-
     final String securitySchemeName = "bearerAuth";
     return new OpenAPI().addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
         .components(new Components().addSecuritySchemes(securitySchemeName,

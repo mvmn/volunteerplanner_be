@@ -3,7 +3,7 @@
     "name": "create dummy task",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -77,8 +77,8 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648316192
       }
@@ -88,7 +88,7 @@
     "name": "get dummy task by id",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -152,8 +152,8 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648316192
       }
@@ -163,7 +163,7 @@
     "name": "get dummy task by ids",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -229,8 +229,8 @@
             "subtaskCount": 0,
             "createdBy": {
               "id": 2,
-              "userName": "operator",
-              "fullName": "FN operator"
+              "displayName": "FN operator",
+              "rating": 0
             },
             "createdAt": 1648316192
           }
@@ -242,7 +242,7 @@
     "name": "update dummy task",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -316,8 +316,8 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648380323
       }
@@ -327,7 +327,7 @@
     "name": "verify dummy task",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -343,7 +343,7 @@
     "name": "get verified dummy task by id",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -407,14 +407,14 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648380323,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648380323
       }
@@ -424,7 +424,7 @@
     "name": "reject dummy task",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -440,7 +440,7 @@
     "name": "get rejected dummy task by id",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -504,20 +504,20 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648380323,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648380323,
         "closedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "closedAt": 1648380323
       }
@@ -527,7 +527,7 @@
     "name": "bulk create tasks",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -617,8 +617,8 @@
             "subtaskCount": 0,
             "createdBy": {
               "id": 2,
-              "userName": "operator",
-              "fullName": "FN operator"
+              "displayName": "FN operator",
+              "rating": 0
             },
             "createdAt": 1648382552
           },
@@ -676,8 +676,8 @@
             "subtaskCount": 0,
             "createdBy": {
               "id": 2,
-              "userName": "operator",
-              "fullName": "FN operator"
+              "displayName": "FN operator",
+              "rating": 0
             },
             "createdAt": 1648382552
           }
@@ -689,7 +689,7 @@
     "name": "bulk verify tasks",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -711,7 +711,7 @@
     "name": "volunteer: get task by id",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -760,14 +760,14 @@
         "subtaskCount": 0,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -777,7 +777,7 @@
     "name": "volunteer: create subtask",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -802,8 +802,8 @@
         "transportRequired": true,
         "createdBy": {
           "id": 3,
-          "userName": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer",
+          "rating": 0
         },
         "createdAt": 1648483271
       }
@@ -813,7 +813,7 @@
     "name": "volunteer: get task by id after subtask create",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -862,14 +862,14 @@
         "subtaskCount": 1,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -879,7 +879,7 @@
     "name": "volunteer: update subtask - first",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -904,8 +904,8 @@
         "transportRequired": false,
         "createdBy": {
           "id": 3,
-          "userName": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer",
+          "rating": 0
         },
         "createdAt": 1648383545
       }
@@ -915,7 +915,7 @@
     "name": "volunteer: get task by id after subtask update",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -964,14 +964,14 @@
         "subtaskCount": 1,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -981,7 +981,7 @@
     "name": "volunteer: update subtask - second",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1006,8 +1006,8 @@
         "transportRequired": true,
         "createdBy": {
           "id": 3,
-          "userName": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer",
+          "rating": 0
         },
         "createdAt": 1648383545
       }
@@ -1017,7 +1017,7 @@
     "name": "volunteer: get task by id after subtask update",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1066,14 +1066,14 @@
         "subtaskCount": 1,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -1083,7 +1083,7 @@
     "name": "operator: create subtask",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -1108,8 +1108,8 @@
         "transportRequired": false,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648483272
       }
@@ -1119,7 +1119,7 @@
     "name": "volunteer: get task by id after subtask update",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1168,14 +1168,14 @@
         "subtaskCount": 2,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -1185,7 +1185,7 @@
     "name": "volunteer: reject subtask",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1204,14 +1204,14 @@
         "transportRequired": true,
         "createdBy": {
           "id": 3,
-          "userName": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer",
+          "rating": 0
         },
         "createdAt": 1648383545,
         "closedBy": {
           "id": 3,
-          "userName": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer",
+          "rating": 0
         },
         "closedAt": 1648383545
       }
@@ -1221,7 +1221,7 @@
     "name": "volunteer: get task by id after subtask reject",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1270,14 +1270,14 @@
         "subtaskCount": 2,
         "createdBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "createdAt": 1648382552,
         "verifiedBy": {
           "id": 2,
-          "userName": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator",
+          "rating": 0
         },
         "verifiedAt": 1648382552
       }
@@ -1287,7 +1287,7 @@
     "name": "operator: get all subtasks for task",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -1308,8 +1308,8 @@
             "transportRequired": false,
             "createdBy": {
               "id": 2,
-              "userName": "operator",
-              "fullName": "FN operator"
+              "displayName": "FN operator",
+              "rating": 0
             },
             "createdAt": 1648486676
           },
@@ -1322,14 +1322,14 @@
             "transportRequired": true,
             "createdBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "createdAt": 1648486675,
             "closedBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "closedAt": 1648486677
           }
@@ -1341,7 +1341,7 @@
     "name": "volunteer: get all subtasks for task",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1354,6 +1354,20 @@
       "body": {
         "items": [
           {
+            "id": 2,
+            "taskId": 2,
+            "quantity": 3.0,
+            "status": "IN_PROGRESS",
+            "note": "operator subtask",
+            "transportRequired": false,
+            "createdBy": {
+              "id": 2,
+              "displayName": "FN operator",
+              "rating": 0
+            },
+            "createdAt": 1648486676
+          },
+          {
             "id": 1,
             "taskId": 2,
             "quantity": 7.5,
@@ -1362,14 +1376,14 @@
             "transportRequired": true,
             "createdBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "createdAt": 1648486675,
             "closedBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "closedAt": 1648486677
           }
@@ -1381,7 +1395,7 @@
     "name": "operator: search all subtasks by status",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -1414,14 +1428,14 @@
             "transportRequired": true,
             "createdBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "createdAt": 1648486675,
             "closedBy": {
               "id": 3,
-              "userName": "volunteer",
-              "fullName": "FN volunteer"
+              "displayName": "FN volunteer",
+              "rating": 0
             },
             "closedAt": 1648486677
           }
@@ -1433,7 +1447,7 @@
     "name": "operator: search all subtasks by task id and status",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -1477,8 +1491,8 @@
             "transportRequired": false,
             "createdBy": {
               "id": 2,
-              "userName": "operator",
-              "fullName": "FN operator"
+              "displayName": "FN operator",
+              "rating": 0
             },
             "createdAt": 1648486676
           }
@@ -1490,7 +1504,7 @@
     "name": "volunteer: search all subtasks by task id and status",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -1523,8 +1537,23 @@
       "body": {
         "page": 1,
         "pageSize": 10,
-        "totalCount": 0,
-        "items": []
+        "totalCount": 1,
+        "items": [
+          {
+            "id": 2,
+            "taskId": 2,
+            "quantity": 3.0,
+            "status": "IN_PROGRESS",
+            "note": "operator subtask",
+            "transportRequired": false,
+            "createdBy": {
+              "id": 2,
+              "displayName": "FN operator",
+              "rating": 0
+            },
+            "createdAt": 1648929798
+          }
+        ]
       }
     }
   }

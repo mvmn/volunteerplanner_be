@@ -8,7 +8,7 @@ public interface AuthService {
 
   VPUser getCurrentUser();
 
-  String getCurrentUserName();
+  String getCurrentPrincipal();
 
   Set<String> getCurrentUserRoles();
 

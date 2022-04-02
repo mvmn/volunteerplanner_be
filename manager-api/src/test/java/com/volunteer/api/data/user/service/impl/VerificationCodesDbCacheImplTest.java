@@ -1,5 +1,10 @@
 package com.volunteer.api.data.user.service.impl;
 
+import com.volunteer.api.data.model.persistence.VPUser;
+import com.volunteer.api.data.repository.RoleRepository;
+import com.volunteer.api.service.UserService;
+import com.volunteer.api.service.impl.VerificationCodesDbCacheImpl;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,39 +12,41 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.volunteer.api.data.model.persistence.VPUser;
-import com.volunteer.api.data.repository.RoleRepository;
-import com.volunteer.api.data.repository.UserRepository;
-import com.volunteer.api.service.impl.VerificationCodesDbCacheImpl;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-@TestPropertySource(properties = "vp.cachetype=db")
+@TestPropertySource(properties = "cache.type=db")
 public class VerificationCodesDbCacheImplTest extends AbstractVerificationCodesCacheImplTest {
 
   @Autowired
   private VerificationCodesDbCacheImpl unit;
 
   @Autowired
-  private UserRepository userRepo;
+  private UserService userService;
 
   @Autowired
   private RoleRepository roleRepo;
 
   @Test
   public void testFunctionality() {
-    VPUser user = new VPUser();
-    user.setUserName("test");
-    user.setFullName("test");
-    user.setPhoneNumber("12345");
-    user.setUserVerified(true);
-    user.setPhoneNumberVerified(true);
-    user.setPassword("pass");
-    user.setRole(roleRepo.findByName("operator"));
-
-    user = userRepo.save(user);
-
+    final VPUser user = prepareUser("123456789");
     testCacheFunctionality(user, unit);
   }
+
+  private VPUser prepareUser(final String phoneNumber) {
+    final Optional<VPUser> current = userService.getByPrincipal(phoneNumber);
+    if (current.isPresent()) {
+      return current.get();
+    }
+
+    final VPUser result = new VPUser();
+    result.setPhoneNumber(phoneNumber);
+    result.setPassword("pass");
+    result.setRole(roleRepo.findByName("operator"));
+    result.setDisplayName("u-" + phoneNumber);
+
+    return userService.create(result);
+  }
+
 }

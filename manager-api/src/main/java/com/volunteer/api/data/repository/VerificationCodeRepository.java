@@ -10,15 +10,8 @@ import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCod
 
 public interface VerificationCodeRepository extends JpaRepository<VerificationCode, Integer> {
 
-  public Optional<VerificationCode> findByTypeAndUserAndCreatedAtGreaterThan(
-      VerificationCodeType type, VPUser user, Long timestamp);
+  Optional<VerificationCode> findByUserAndType(final VPUser user, final VerificationCodeType type);
 
-  @Transactional
-  @Modifying
-  public int deleteByTypeAndUserAndCreatedAtLessThan(VerificationCodeType type, VPUser user,
-      Long timestamp);
+  void deleteByUserAndType(final VPUser user, final VerificationCodeType type);
 
-  @Transactional
-  @Modifying
-  public int deleteByTypeAndUser(VerificationCodeType type, VPUser user);
 }

@@ -20,20 +20,19 @@ public interface TaskService {
       Integer createdByUserId, Integer verifiedByUserId, Integer closedByUserId,
       Pageable pagingAndSorting);
 
-  //Page<Task> search(final QueryBuilder<Task> queryBuilder);
+  Task create(final Task task);
 
-  Task create(Task task);
+  Task update(final Task task, final boolean onlyMine);
 
-  Task update(Task task);
-
-  void delete(Integer taskId);
+  void delete(final Integer taskId, final boolean onlyMine);
 
   List<Task> create(final Collection<Task> tasks);
 
   BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta);
 
-  void changeStatus(final Integer taskId, final TaskStatus status);
+  void changeStatus(final Integer taskId, final TaskStatus status, final boolean onlyMine);
 
-  void changeStatus(final Collection<Integer> taskIds, TaskStatus status);
+  void changeStatus(final Collection<Integer> taskIds, final TaskStatus status,
+      final boolean onlyMine);
 
 }
