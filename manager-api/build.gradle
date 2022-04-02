@@ -74,9 +74,7 @@ dependencies {
     }
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.flywaydb:flyway-core:8.5.2'
-    testImplementation('it.ozimov:embedded-redis:0.7.3') {
-        exclude group: ' org.slf4j', module: 'slf4j-simple'
-    }
+    testImplementation('it.ozimov:embedded-redis:0.7.3')
 }
 
 jar {
