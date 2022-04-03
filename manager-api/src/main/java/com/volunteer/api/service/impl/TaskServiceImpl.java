@@ -16,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,12 +117,18 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public Task update(final Task task) {
+  public Task update(final Task task, final boolean onlyMine) {
     final Task current = get(task.getId());
     // while status is NEW we could allow adjustments
     if (current.getStatus() != TaskStatus.NEW) {
       throw new InvalidStatusException(String.format(
           "Modification of task with status '%s' is prohibited", current.getStatus()));
+    }
+
+    final VPUser currentUser = userService.getCurrentUser();
+    if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
+      throw new AuthorizationServiceException(String.format(
+          "You are not allowed to modify task '%d'", task.getId()));
     }
 
     validateDeadlineDate(task.getDeadlineDate());
@@ -140,15 +148,22 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void delete(final Integer taskId) {
+  public void delete(final Integer taskId, final boolean onlyMine) {
     final Optional<Task> current = repository.findById(taskId);
     if (current.isEmpty()) {
       return;
     }
 
-    if (current.get().getStatus() != TaskStatus.NEW) {
+    final Task task = current.get();
+    if (task.getStatus() != TaskStatus.NEW) {
       throw new InvalidStatusException(String.format(
-          "Can't delete task with status '%s'", current.get().getStatus()));
+          "Can't delete task with status '%s'", task.getStatus()));
+    }
+
+    final VPUser currentUser = userService.getCurrentUser();
+    if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
+      throw new AuthorizationServiceException(String.format(
+          "You are not allowed to delete task '%d'", task.getId()));
     }
 
     repository.deleteById(taskId);
@@ -172,17 +187,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void changeStatus(final Integer taskId, final TaskStatus status,
-      final String taskVerificationComment) {
+  public void changeStatus(final Integer taskId, final TaskStatus status, final String comment,
+      final boolean onlyMine) {
     final Optional<Task> result = prepareStatusChange(taskId, status, userService.getCurrentUser(),
-        ZonedDateTime.now(), taskVerificationComment);
+        ZonedDateTime.now(), comment, onlyMine);
     result.ifPresent(repository::save);
   }
 
   @Override
   @Transactional
   public void changeStatus(final Collection<Integer> taskIds, final TaskStatus status,
-      final String taskVerificationComment) {
+      final String comment, final boolean onlyMine) {
     if (CollectionUtils.isEmpty(taskIds)) {
       return;
     }
@@ -191,8 +206,8 @@ public class TaskServiceImpl implements TaskService {
     final ZonedDateTime currentTime = ZonedDateTime.now();
 
     final List<Task> result = taskIds.stream()
-        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime,
-            taskVerificationComment))
+        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime, comment,
+            onlyMine))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
@@ -272,24 +287,27 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Optional<Task> prepareStatusChange(final int taskId, final TaskStatus status,
-      final VPUser currentUser, final ZonedDateTime currentTime, final String taskVerificationComment) {
+      final VPUser currentUser, final ZonedDateTime currentTime, final String comment,
+      final Boolean onlyMine) {
     final Task task = get(taskId);
     if (task.getStatus() == status) {
       return Optional.empty();
     }
 
-    if (StringUtils.isNotBlank(taskVerificationComment)) {
-      task.setVerificationComment(taskVerificationComment);
+    if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
+      throw new AuthorizationServiceException(String.format(
+          "You are not allowed to change task '%d' status", taskId));
     }
+
     switch (status) {
       case VERIFIED:
-        prepareStatusChangeVerified(task, currentUser, currentTime);
+        prepareStatusChangeVerified(task, currentUser, currentTime, comment);
         break;
       case COMPLETED:
-        prepareStatusChangeCompleted(task, currentUser, currentTime);
+        prepareStatusChangeCompleted(task, currentUser, currentTime, comment);
         break;
       case REJECTED:
-        prepareStatusChangeRejected(task, currentUser, currentTime);
+        prepareStatusChangeRejected(task, currentUser, currentTime, comment);
         break;
       default:
         throw new InvalidStatusException(String.format(
@@ -300,7 +318,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void prepareStatusChangeVerified(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.NEW) {
       throw new IllegalStateException(String.format("Cannot verify task in status '%s'",
           task.getStatus()));
@@ -314,10 +332,11 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.VERIFIED);
     task.setVerifiedBy(currentUser);
     task.setVerifiedAt(currentTime);
+    task.setVerificationComment(comment);
   }
 
   private void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.VERIFIED) {
       throw new IllegalStateException(String.format("Cannot complete task in status '%s'",
           task.getStatus()));
@@ -326,10 +345,11 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.COMPLETED);
     task.setClosedBy(currentUser);
     task.setClosedAt(currentTime);
+    task.setCloseComment(comment);
   }
 
   private void prepareStatusChangeRejected(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     // Disallow rejecting completed
     if (task.getStatus() == TaskStatus.COMPLETED) {
       throw new IllegalStateException("Cannot reject task in status " + task.getStatus());
@@ -338,6 +358,7 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.REJECTED);
     task.setClosedBy(currentUser);
     task.setClosedAt(currentTime);
+    task.setCloseComment(comment);
 
     // consider to reject all subtasks which are in progress yet
     // later we could add SMS notification like stop working on it, task has been rejected

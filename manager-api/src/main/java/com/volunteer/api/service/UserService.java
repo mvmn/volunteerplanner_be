@@ -11,7 +11,7 @@ public interface UserService extends AuthService {
 
   VPUser get(final Integer id);
 
-  Optional<VPUser> get(final String userName);
+  Optional<VPUser> getByPrincipal(final String principal);
 
   VPUser create(final VPUser user);
 

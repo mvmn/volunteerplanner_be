@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @JsonPropertyOrder({"id", "volunteerStore", "customerStore", "product",
     "quantity", "quantityLeft", "productMeasure", "priority", "deadlineDate", "note",
     "status", "subtaskCount", "createdBy", "createdAt", "verifiedBy", "verifiedAt",
-    "closedBy", "closedAt"})
+    "verificationComment", "closedBy", "closedAt", "closeComment"})
 @JsonInclude(Include.NON_NULL)
 public class TaskViewDtoV1 {
 
@@ -63,10 +63,14 @@ public class TaskViewDtoV1 {
   private UserDtoV1 verifiedBy;
   @JsonProperty("verifiedAt")
   private Long verifiedAt;
+  @JsonProperty("verificationComment")
+  private String verificationComment;
 
   @JsonProperty("closedBy")
   private UserDtoV1 closedBy;
   @JsonProperty("closedAt")
   private Long closedAt;
+  @JsonProperty("closeComment")
+  private String closeComment;
 
 }

@@ -1,1 +1,2 @@
-ALTER TABLE task ADD COLUMN verification_comment varchar(65535) DEFAULT NULL;
+ALTER TABLE task ADD COLUMN verification_comment TEXT;
+ALTER TABLE task ADD COLUMN close_comment TEXT;

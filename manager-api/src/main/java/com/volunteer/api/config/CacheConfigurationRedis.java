@@ -1,10 +1,14 @@
 package com.volunteer.api.config;
 
+import com.volunteer.api.service.VerificationCodeCache;
+import com.volunteer.api.service.VerificationCodeGenerator;
+import com.volunteer.api.service.impl.VerificationCodeRedisCacheImpl;
 import java.time.Duration;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +18,24 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@ConditionalOnProperty(name = "vp.cachetype", havingValue = "redis", matchIfMissing = false)
+@ConditionalOnProperty(name = "cache.type", havingValue = "redis")
 @Configuration
 @EnableCaching
-public class CachingConfig {
+public class CacheConfigurationRedis {
 
   public static final String VERIFICATION_CODES_CACHE_NAME = "verificationCodesCache";
-  @Value("${vp.verificationcodes.ttlmin:10}")
-  private Integer verificationCodesCacheTtlMin = 10;
+
+  @Value("${cache.verification-code-ttl:10m}")
+  private Duration verificationCodeTtl;
+
+  @Bean
+  public VerificationCodeCache verificationCodeCache(final CacheManager cacheManager,
+      final VerificationCodeGenerator generator) {
+    return new VerificationCodeRedisCacheImpl(
+        cacheManager.getCache(VERIFICATION_CODES_CACHE_NAME),
+        generator
+    );
+  }
 
   @Bean
   public RedisCacheManagerBuilderCustomizer redisCacheManagerBuilderCustomizer(
@@ -30,12 +44,14 @@ public class CachingConfig {
         RedisCacheConfiguration.defaultCacheConfig()
             .serializeValuesWith(SerializationPair.fromSerializer(new StringRedisSerializer()))
             .computePrefixWith(keyPrefix)
-            .entryTtl(Duration.ofMinutes(verificationCodesCacheTtlMin)));
+            .entryTtl(verificationCodeTtl));
   }
 
   @Bean
-  public RedisCacheConfiguration cacheConfiguration(CacheKeyPrefix keyPrefix) {
-    return RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ZERO)
+  public RedisCacheConfiguration cacheConfiguration(
+      CacheKeyPrefix keyPrefix) {
+    return RedisCacheConfiguration.defaultCacheConfig()
+        .entryTtl(Duration.ZERO)
         .computePrefixWith(keyPrefix).disableCachingNullValues().serializeValuesWith(
             SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
   }

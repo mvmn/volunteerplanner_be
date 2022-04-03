@@ -1,8 +1,8 @@
 package com.volunteer.api.service.impl;
 
+import com.volunteer.api.service.VerificationCodeGenerator;
 import java.security.SecureRandom;
 import org.springframework.stereotype.Service;
-import com.volunteer.api.service.VerificationCodeGenerator;
 
 @Service
 public class VerificationCodeGeneratorImpl implements VerificationCodeGenerator {
@@ -13,4 +13,5 @@ public class VerificationCodeGeneratorImpl implements VerificationCodeGenerator 
   public String generateRandomCode() {
     return String.format("%06d", SECURE_RANDOM.nextInt(1000000));
   }
+
 }

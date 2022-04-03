@@ -60,12 +60,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public Optional<VPUser> get(final String userName) {
-    return get(() -> repository.findByUserName(userName));
+  public Optional<VPUser> getByPrincipal(final String principal) {
+    return get(() -> repository.findByPhoneNumber(principal));
   }
 
   @Override
-  public String getCurrentUserName() {
+  public String getCurrentPrincipal() {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     return auth != null ? (String) auth.getPrincipal() : null;
   }
@@ -80,19 +80,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   @Override
   // moved here to avoid circular dependencies
   public VPUser getCurrentUser() {
-    String userName = getCurrentUserName();
-    if (StringUtils.isEmpty(userName)) {
-      throw new IllegalStateException("Username is missed in security context");
+    final String principal = getCurrentPrincipal();
+    if (StringUtils.isEmpty(principal)) {
+      throw new IllegalStateException("Principal is missed in security context");
     }
 
-    return get(userName).orElseThrow(() -> new ObjectNotFoundException("Missing user " + userName));
+    return getByPrincipal(principal).orElseThrow(() -> new ObjectNotFoundException(
+        "Missing user " + principal));
   }
 
   @Override
-  public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
-    final VPUser user = get(username).orElseThrow(
+  public UserDetails loadUserByUsername(final String principal) throws UsernameNotFoundException {
+    final VPUser user = getByPrincipal(principal).orElseThrow(
         () -> new UsernameNotFoundException(String.format(
-            "User with name '%s' does not exist", username)));
+            "User with principal '%s' does not exist", principal)));
 
     final Collection<SimpleGrantedAuthority> authorities;
     if (isVerified(user)) {
@@ -104,7 +105,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       authorities = Collections.emptySet();
     }
 
-    return new User(user.getUserName(), user.getPassword(), true, true,
+    return new User(user.getPhoneNumber(), user.getPassword(), true, true,
         true, !user.isLocked(), authorities);
   }
 
@@ -123,6 +124,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     user.setPassword(passwordEncoder.encode(user.getPassword()));
+    user.setRating(0);
 
     VPUser result = repository.save(user);
     if (!isRootUser) {
@@ -143,17 +145,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public VPUser update(final VPUser user) {
     final VPUser current = getCurrentUser();
 
-    if (!Objects.equals(current.getUserName(), user.getUserName())) {
-      throw new IllegalArgumentException("username change is not allowed");
-    }
-
     if (!Objects.equals(current.getPhoneNumber(), user.getPhoneNumber())) {
       current.setPhoneNumber(user.getPhoneNumber());
       current.setPhoneNumberVerified(false);
     }
 
-    current.setFullName(user.getFullName());
-    current.setEmail(user.getEmail());
+    current.setDisplayName(user.getDisplayName());
+    current.setOrganization(user.getOrganization());
 
     return repository.save(current);
   }
@@ -239,7 +237,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public void passwordReset(final String username) {
+  public void passwordReset(final String principal) {
     // final VPUser source = get(username).orElseThrow(() -> new ObjectNotFoundException(
     // String.format("User '%s' does not exist yet")));
 
@@ -268,7 +266,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     final VPUser current = getCurrentUser();
 
     // get code from cache & compare
-    if (!verificationCodeService.matches(current, code, VerificationCodeType.PHONE)) {
+    if (!verificationCodeService.matches(current, VerificationCodeType.PHONE, code)) {
       throw new IllegalArgumentException("Verification code doesn't match");
     }
     current.setPhoneNumberVerified(true);

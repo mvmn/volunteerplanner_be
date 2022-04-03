@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.security.model.AuthenticationRequest;
 import com.volunteer.api.security.model.AuthenticationResponse;
-import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.UserService;
 import java.io.IOException;
@@ -31,6 +30,8 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
 
   private static final AtomicInteger PHONE_NUM = new AtomicInteger();
 
+  protected static VPUser SYSTEM_USER;
+
   @Autowired
   protected MockMvc mockMvc;
   @Autowired
@@ -40,41 +41,54 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
   protected UserService userService;
   @Autowired
   protected RoleService roleService;
-  @Autowired
-  protected AddressService addressService;
 
   @BeforeAll
-  public static void init(@Autowired UserService userService, @Autowired RoleService roleService,
-      @Autowired AddressService addressService) {
-    createUser("op", "pass", "operator", userService, roleService, addressService);
+  public static void init(@Autowired UserService userService, @Autowired RoleService roleService) {
+    SYSTEM_USER = createUser(generatePhoneNumber(), "pass", "operator", userService,
+        roleService);
   }
 
-  protected static VPUser createUser(String userName, String password, String role,
-      UserService userService, RoleService roleService, AddressService addressService) {
-    Optional<VPUser> existingUser = userService.get(userName);
+  protected static String generatePhoneNumber() {
+    return String.format("%12d", PHONE_NUM.incrementAndGet());
+  }
+
+  protected static VPUser createUser(String phoneNumber, String password, String role,
+      UserService userService, RoleService roleService) {
+    Optional<VPUser> existingUser = userService.getByPrincipal(phoneNumber);
     if (existingUser.isPresent()) {
-      return existingUser.get();
+      final VPUser result = existingUser.get();
+      result.setPassword(password);
+
+      return result;
     }
+
     VPUser user = new VPUser();
-    user.setUserName(userName);
-    user.setFullName(userName);
-    user.setPhoneNumber(String.format("%09d", PHONE_NUM.incrementAndGet()));
+    user.setPhoneNumber(phoneNumber);
+    user.setDisplayName("u-" + phoneNumber);
     user.setUserVerified(true);
     user.setPhoneNumberVerified(true);
     user.setPassword(password);
     user.setRole(roleService.get(role));
-    return userService.create(user);
+
+    final VPUser result = userService.create(user);
+    result.setPassword(password);
+
+    return result;
   }
 
-  protected VPUser createUser(String userName, String password, String role) {
-    return createUser(userName, password, role, userService, roleService, addressService);
+  protected VPUser createUser(String phoneNumber, String password, String role) {
+    return createUser(phoneNumber, password, role, userService, roleService);
   }
 
-  public AuthenticationResponse login(String userName, String password) throws Exception {
+  public AuthenticationResponse login() throws Exception {
+    return login(SYSTEM_USER.getPhoneNumber(), SYSTEM_USER.getPassword());
+  }
+
+  public AuthenticationResponse login(String principal, String password) throws Exception {
     byte[] authResponseBytes = mockMvc
         .perform(MockMvcRequestBuilders.post("/authenticate")
             .content(objectMapper.writeValueAsBytes(
-                AuthenticationRequest.builder().userName(userName).password(password).build()))
+                AuthenticationRequest.builder().principal(principal).password(password).build()))
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(MockMvcResultMatchers.status().isOk()).andReturn().getResponse()
         .getContentAsByteArray();

@@ -1,14 +1,14 @@
 package com.volunteer.api.data.user.service.impl;
 
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.Assert;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
-import com.volunteer.api.service.VerificationCodesCache;
+import com.volunteer.api.service.VerificationCodeCache;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.Assert;
 
-public abstract class AbstractVerificationCodesCacheImplTest {
+public abstract class AbstractVerificationCodeCacheImplTest {
 
-  public void testCacheFunctionality(VPUser user, VerificationCodesCache unit) {
+  public void testCacheFunctionality(VPUser user, VerificationCodeCache unit) {
     Assert.assertTrue(unit.getCode(user, VerificationCodeType.PHONE).isEmpty());
     Assert.assertTrue(unit.getCode(user, VerificationCodeType.EMAIL).isEmpty());
 
@@ -24,4 +24,5 @@ public abstract class AbstractVerificationCodesCacheImplTest {
     unit.delete(user, VerificationCodeType.PHONE);
     Assert.assertTrue(unit.getCode(user, VerificationCodeType.PHONE).isEmpty());
   }
+
 }

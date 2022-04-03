@@ -37,7 +37,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   @Test
   public void testProductCrud() throws Exception {
-    String token = login("op", "pass").getRefreshToken();
+    String token = login().getRefreshToken();
 
     mockMvc
         .perform(

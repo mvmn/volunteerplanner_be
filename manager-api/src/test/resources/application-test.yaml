@@ -18,3 +18,13 @@ spring:
 springdoc:
   api-docs:
     enabled: false
+
+security:
+  jwt:
+    secret: "secret"
+    access-token-ttl: 1m
+    refresh-token-ttl: 5m
+
+cache:
+  type: "db"
+  verification-code-ttl: 1m

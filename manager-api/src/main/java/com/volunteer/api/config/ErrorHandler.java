@@ -25,7 +25,7 @@ public class ErrorHandler {
   private static final Map<String, String> CONSTRAINS_I18N_MAP = new HashMap<>();
 
   static {
-    CONSTRAINS_I18N_MAP.put("un_user_user_name", "user.userName");
+    CONSTRAINS_I18N_MAP.put("un_user_display_name", "user.displayName");
     CONSTRAINS_I18N_MAP.put("un_user_phone_number", "user.phoneNumber");
     CONSTRAINS_I18N_MAP.put("un_category", "category.name");
   }

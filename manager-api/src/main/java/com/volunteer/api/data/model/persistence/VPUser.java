@@ -36,24 +36,24 @@ public class VPUser implements Serializable {
   @Column(name = "version_num")
   private Integer version;
 
-  @Column(name = "user_name")
-  private String userName;
-
-  @Column(name = "phone_number")
+  @Column(name = "phone_number", nullable = false)
   private String phoneNumber;
 
-  @Column(name = "password")
+  @Column(name = "password", nullable = false)
   private String password;
 
   @ManyToOne(fetch = FetchType.EAGER, optional = false)
   @JoinColumn(name = "role_id")
   private Role role;
 
-  @Column(name = "full_name")
-  private String fullName;
+  @Column(name = "display_name", nullable = false)
+  private String displayName;
 
-  @Column(name = "email")
-  private String email;
+  @Column(name = "organization")
+  private String organization;
+
+  @Column(name = "rating", nullable = false)
+  private Integer rating;
 
   @Column(name = "phone_number_verified")
   private boolean phoneNumberVerified;

@@ -1,37 +1,30 @@
 package com.volunteer.api.service.impl;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import org.apache.commons.lang3.tuple.Pair;
-import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.stereotype.Service;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.persistence.VerificationCode;
 import com.volunteer.api.data.model.persistence.VerificationCode.VerificationCodeType;
 import com.volunteer.api.data.repository.VerificationCodeRepository;
+import com.volunteer.api.service.VerificationCodeCache;
 import com.volunteer.api.service.VerificationCodeGenerator;
-import com.volunteer.api.service.VerificationCodesCache;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.tuple.Pair;
+import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.dao.DataIntegrityViolationException;
 
-@ConditionalOnProperty(name = "vp.cachetype", havingValue = "db", matchIfMissing = true)
-@Service
 @RequiredArgsConstructor
-public class VerificationCodesDbCacheImpl implements VerificationCodesCache {
+public class VerificationCodeDbCacheImpl implements VerificationCodeCache {
 
-  protected final VerificationCodeGenerator generator;
-  protected final VerificationCodeRepository repo;
+  private final Duration valueTtl;
+  private final VerificationCodeRepository repository;
 
-  @Value("${vp.verificationcodes.ttlmin:10}")
-  private Integer verificationCodesCacheTtlMin = 10;
+  private final VerificationCodeGenerator generator;
 
   @Override
   public Optional<String> getCode(VPUser user, VerificationCodeType type) {
-    return repo
+    return repository
         .findByTypeAndUserAndCreatedAtGreaterThan(type, user, getTimestampValidityThreshold())
         .map(VerificationCode::getCode);
   }
@@ -43,14 +36,16 @@ public class VerificationCodesDbCacheImpl implements VerificationCodesCache {
       return Pair.of(false, existingCode.get());
     }
     try {
-      VerificationCode code = new VerificationCode();
-      code.setType(type);
-      code.setUser(user);
-      code.setCode(generator.generateRandomCode());
-      code.setCreatedAt(ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond());
-      repo.deleteByTypeAndUserAndCreatedAtLessThan(type, user, getTimestampValidityThreshold());
-      code = repo.save(code);
-      return Pair.of(true, code.getCode());
+      VerificationCode entity = new VerificationCode();
+      entity.setType(type);
+      entity.setUser(user);
+      entity.setCode(generator.generateRandomCode());
+      entity.setCreatedAt(Instant.now().getEpochSecond());
+
+      repository.deleteByTypeAndUserAndCreatedAtLessThan(type, user,
+          getTimestampValidityThreshold());
+      entity = repository.save(entity);
+      return Pair.of(true, entity.getCode());
     } catch (DataIntegrityViolationException exception) {
       if (exception.getCause() != null
           && exception.getCause() instanceof ConstraintViolationException) {
@@ -65,12 +60,11 @@ public class VerificationCodesDbCacheImpl implements VerificationCodesCache {
   }
 
   protected long getTimestampValidityThreshold() {
-    return ZonedDateTime.now(ZoneOffset.UTC).minus(verificationCodesCacheTtlMin, ChronoUnit.MINUTES)
-        .toEpochSecond();
+    return Instant.now().minus(valueTtl).getEpochSecond();
   }
 
   @Override
   public void delete(VPUser user, VerificationCodeType type) {
-    repo.deleteByTypeAndUser(type, user);
+    repository.deleteByTypeAndUser(type, user);
   }
 }

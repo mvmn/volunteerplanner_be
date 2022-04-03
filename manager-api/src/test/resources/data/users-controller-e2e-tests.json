@@ -6,11 +6,11 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "userName": "root",
-          "phoneNumber": "111",
+          "phoneNumber": "1111111111",
           "password": "root",
           "role": "root",
-          "fullName": "FN root"
+          "displayName": "FN root",
+          "organization": "O root"
         }
       }
     },
@@ -18,11 +18,12 @@
       "status": 201,
       "body": {
         "id": 1,
-        "userName": "root",
-        "phoneNumber": "111",
+        "phoneNumber": "1111111111",
         "password": "******",
         "role": "root",
-        "fullName": "FN root",
+        "displayName": "FN root",
+        "organization": "O root",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -38,11 +39,10 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "userName": "operator",
-          "phoneNumber": "222",
+          "phoneNumber": "2222222222",
           "password": "operator",
           "role": "operator",
-          "fullName": "FN operator"
+          "displayName": "FN operator"
         }
       }
     },
@@ -50,11 +50,11 @@
       "status": 201,
       "body": {
         "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
+        "phoneNumber": "2222222222",
         "password": "******",
         "role": "operator",
-        "fullName": "FN operator",
+        "displayName": "FN operator",
+        "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -65,7 +65,7 @@
     "name": "operator: verify himself",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -81,7 +81,7 @@
     "name": "verify user: operator",
     "given": {
       "auth": {
-        "userName": "root",
+        "principal": "1111111111",
         "password": "root"
       },
       "request": {
@@ -93,11 +93,11 @@
       "status": 200,
       "body": {
         "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
+        "phoneNumber": "2222222222",
         "password": "******",
         "role": "operator",
-        "fullName": "FN operator",
+        "displayName": "FN operator",
+        "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -110,7 +110,7 @@
     "name": "verify phone: operator",
     "given": {
       "auth": {
-        "userName": "root",
+        "principal": "1111111111",
         "password": "root"
       },
       "request": {
@@ -122,11 +122,11 @@
       "status": 200,
       "body": {
         "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
+        "phoneNumber": "2222222222",
         "password": "******",
         "role": "operator",
-        "fullName": "FN operator",
+        "displayName": "FN operator",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -142,11 +142,10 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "userName": "volunteer",
-          "phoneNumber": "333",
+          "phoneNumber": "3333333333",
           "password": "volunteer",
           "role": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer"
         }
       }
     },
@@ -154,11 +153,11 @@
       "status": 201,
       "body": {
         "id": 3,
-        "userName": "volunteer",
-        "phoneNumber": "333",
+        "phoneNumber": "3333333333",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer",
+        "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -169,7 +168,7 @@
     "name": "verify user: volunteer",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -181,11 +180,11 @@
       "status": 200,
       "body": {
         "id": 3,
-        "userName": "volunteer",
-        "phoneNumber": "333",
+        "phoneNumber": "3333333333",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer",
+        "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -198,7 +197,7 @@
     "name": "verify phone: volunteer",
     "given": {
       "auth": {
-        "userName": "root",
+        "principal": "1111111111",
         "password": "root"
       },
       "request": {
@@ -210,11 +209,11 @@
       "status": 200,
       "body": {
         "id": 3,
-        "userName": "volunteer",
-        "phoneNumber": "333",
+        "phoneNumber": "3333333333",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -227,7 +226,7 @@
     "name": "get myself",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer"
       },
       "request": {
@@ -239,11 +238,11 @@
       "status": 200,
       "body": {
         "id": 3,
-        "userName": "volunteer",
-        "phoneNumber": "333",
+        "phoneNumber": "3333333333",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 2,
@@ -256,7 +255,7 @@
     "name": "password change for valid password",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer"
       },
       "request": {
@@ -276,7 +275,7 @@
     "name": "password change for invalid password",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -296,39 +295,16 @@
     }
   },
   {
-    "name": "duplicate username",
-    "given": {
-      "request": {
-        "endpoint": "/users",
-        "method": "POST",
-        "body": {
-          "userName": "root",
-          "phoneNumber": "222",
-          "password": "root",
-          "role": "volunteer",
-          "fullName": "FN duplicate"
-        }
-      }
-    },
-    "expected": {
-      "status": 409,
-      "body": {
-        "errorMessage": "user.userName is not unique"
-      }
-    }
-  },
-  {
     "name": "duplicate phone number",
     "given": {
       "request": {
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "userName": "vivo",
-          "phoneNumber": "222",
+          "phoneNumber": "2222222222",
           "password": "vivo",
           "role": "volunteer",
-          "fullName": "FN duplicate"
+          "displayName": "FN duplicate"
         }
       }
     },
@@ -343,7 +319,7 @@
     "name": "operator: get by id",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -355,11 +331,12 @@
       "status": 200,
       "body": {
         "id": 1,
-        "userName": "root",
-        "phoneNumber": "111",
+        "phoneNumber": "1111111111",
         "password": "******",
         "role": "root",
-        "fullName": "FN root",
+        "displayName": "FN root",
+        "organization": "O root",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -372,7 +349,7 @@
     "name": "volunteer: get by id",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -388,7 +365,7 @@
     "name": "root: lock",
     "given": {
       "auth": {
-        "userName": "root",
+        "principal": "1111111111",
         "password": "root"
       },
       "request": {
@@ -400,11 +377,11 @@
       "status": 200,
       "body": {
         "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
+        "phoneNumber": "2222222222",
         "password": "******",
         "role": "operator",
-        "fullName": "FN operator",
+        "displayName": "FN operator",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -419,7 +396,7 @@
     "name": "root: unlock",
     "given": {
       "auth": {
-        "userName": "root",
+        "principal": "1111111111",
         "password": "root"
       },
       "request": {
@@ -431,11 +408,11 @@
       "status": 200,
       "body": {
         "id": 2,
-        "userName": "operator",
-        "phoneNumber": "222",
+        "phoneNumber": "2222222222",
         "password": "******",
         "role": "operator",
-        "fullName": "FN operator",
+        "displayName": "FN operator",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
         "userVerifiedByUserId": 1,
@@ -448,7 +425,7 @@
     "name": "search",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -474,11 +451,11 @@
         "items": [
           {
             "id": 3,
-            "userName": "volunteer",
-            "phoneNumber": "333",
+            "phoneNumber": "3333333333",
             "password": "******",
             "role": "volunteer",
-            "fullName": "FN volunteer",
+            "displayName": "FN volunteer",
+            "rating": 0,
             "phoneNumberVerified": true,
             "userVerified": true,
             "userVerifiedByUserId": 2,
@@ -496,23 +473,22 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "userName": "volunteer2",
-          "phoneNumber": "123",
+          "phoneNumber": "4444444444",
           "password": "volunteer2",
           "role": "volunteer",
-          "fullName": "FN volunteer"
+          "displayName": "FN volunteer2"
         }
       }
     },
     "expected": {
       "status": 201,
       "body": {
-        "id": 6,
-        "userName": "volunteer2",
-        "phoneNumber": "123",
+        "id": 5,
+        "phoneNumber": "4444444444",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer2",
+        "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": false,
         "locked": false
@@ -523,7 +499,7 @@
     "name": "sms start verification",
     "given": {
       "auth": {
-        "userName": "volunteer2",
+        "principal": "4444444444",
         "password": "volunteer2"
       },
       "request": {
@@ -539,7 +515,7 @@
     "name": "sms fail verification",
     "given": {
       "auth": {
-        "userName": "volunteer2",
+        "principal": "4444444444",
         "password": "volunteer2"
       },
       "request": {
@@ -561,7 +537,7 @@
     "name": "sms success verification",
     "given": {
       "auth": {
-        "userName": "volunteer2",
+        "principal": "4444444444",
         "password": "volunteer2"
       },
       "request": {
@@ -575,12 +551,12 @@
     "expected": {
       "status": 200,
       "body": {
-        "id": 6,
-        "userName": "volunteer2",
-        "phoneNumber": "123",
+        "id": 5,
+        "phoneNumber": "4444444444",
         "password": "******",
         "role": "volunteer",
-        "fullName": "FN volunteer",
+        "displayName": "FN volunteer2",
+        "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": false,
         "locked": false

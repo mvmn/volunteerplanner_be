@@ -29,6 +29,26 @@ public abstract class TaskViewDtoV1Mapper {
       }
     }
 
+    // process comments
+    if (!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_VERIFY, authentication)) {
+      result.setVerificationComment(null);
+    }
+
+    switch (result.getStatus()) {
+      case REJECTED:
+        if ((!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_REJECT, authentication))
+            || (!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_REJECT_MINE,
+            authentication))) {
+          result.setCloseComment(null);
+        }
+        break;
+      case COMPLETED:
+        if (!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_COMPLETE, authentication)) {
+          result.setCloseComment(null);
+        }
+        break;
+    }
+
     return result;
   }
 

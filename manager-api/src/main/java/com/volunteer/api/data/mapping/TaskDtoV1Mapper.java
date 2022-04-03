@@ -19,8 +19,10 @@ public interface TaskDtoV1Mapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "verifiedBy", ignore = true)
   @Mapping(target = "verifiedAt", ignore = true)
+  @Mapping(target = "verificationComment", ignore = true)
   @Mapping(target = "closedBy", ignore = true)
   @Mapping(target = "closedAt", ignore = true)
+  @Mapping(target = "closeComment", ignore = true)
   Task map(final TaskDtoV1 dto);
 
 

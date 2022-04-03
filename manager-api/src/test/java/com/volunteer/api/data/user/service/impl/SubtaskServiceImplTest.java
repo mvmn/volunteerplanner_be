@@ -77,10 +77,10 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     product = productRepository.save(product);
 
     VPUser user = new VPUser();
-    user.setPhoneNumber("1234567");
+    user.setPhoneNumber("123456789");
     user.setRole(roleService.get("operator"));
-    user.setUserName("u1");
     user.setPassword("pwd");
+    user.setDisplayName("u-123456789");
     user = userService.create(user);
 
     Task task = new Task();
@@ -92,10 +92,10 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
     task.setVolunteerStore(volunteerStore);
     task.setCustomerStore(customerStore);
     SecurityContextHolder.getContext()
-        .setAuthentication(new TestingAuthenticationToken(user.getUserName(), null));
+        .setAuthentication(new TestingAuthenticationToken(user.getPhoneNumber(), null));
 
     task = taskService.create(task);
-    taskService.changeStatus(task.getId(), TaskStatus.VERIFIED, null);
+    taskService.changeStatus(task.getId(), TaskStatus.VERIFIED, null, false);
 
     // Create
     Subtask subtask1 =

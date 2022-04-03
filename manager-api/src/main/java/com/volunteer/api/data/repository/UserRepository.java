@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository
     extends JpaRepository<VPUser, Integer>, JpaSpecificationExecutor<VPUser> {
 
-  VPUser findByUserName(final String userName);
+  VPUser findByPhoneNumber(final String phoneNumber);
 
   @Query("select case when count(u) > 0 then true else false end from User u where u.role.name = ?1")
   boolean existsWithRole(final String roleName);

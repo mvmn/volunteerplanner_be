@@ -3,7 +3,7 @@
     "name": "create dummy store",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -43,7 +43,7 @@
     "name": "update dummy store",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -83,7 +83,7 @@
     "name": "delete dummy store",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -99,7 +99,7 @@
     "name": "create public store",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -139,7 +139,7 @@
     "name": "create private store",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -179,7 +179,7 @@
     "name": "get public store by id - operator",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -210,7 +210,7 @@
     "name": "get public store by id - volunteer",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -241,7 +241,7 @@
     "name": "get private store by id - operator",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -272,7 +272,7 @@
     "name": "get private store by id - volunteer",
     "given": {
       "auth": {
-        "userName": "volunteer",
+        "principal": "3333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -288,7 +288,7 @@
     "name": "POST: search by name",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {
@@ -360,7 +360,7 @@
     "name": "GET: search by city",
     "given": {
       "auth": {
-        "userName": "operator",
+        "principal": "2222222222",
         "password": "operator"
       },
       "request": {

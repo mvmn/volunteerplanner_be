@@ -37,16 +37,12 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
   protected Specification<VPUser> buildFilterSpecification(final ValueTextFilterDto source) {
     final String value = source.getValue().strip();
     switch (source.getField().toLowerCase()) {
-      case "username":
-        return UserSearchSpecifications.byUserName(value);
       case "phone":
         return UserSearchSpecifications.byPhoneNumber(value);
       case "role.name":
         return UserSearchSpecifications.byRoleName(value);
-      case "fullname":
-        return UserSearchSpecifications.byFullName(value);
-      case "email":
-        return UserSearchSpecifications.byEmail(value);
+      case "displayname":
+        return UserSearchSpecifications.byDisplayName(value);
     }
 
     return super.buildFilterSpecification(source);
@@ -55,25 +51,19 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
   @Override
   protected Sort buildSort(final SortParameters sort) {
     if (Objects.isNull(sort)) {
-      return Sort.by(Order.asc("userName"));
+      return Sort.by(Order.asc("displayName"));
     }
 
     final String entityField;
     switch (sort.getField().toLowerCase()) {
-      case "username":
-        entityField = "userName";
-        break;
       case "role.name":
         entityField = "role.name";
         break;
-      case "fullname":
-        entityField = "fullName";
+      case "displayname":
+        entityField = "displayName";
         break;
-      case "address.region":
-        entityField = "address.region";
-        break;
-      case "address.city":
-        entityField = "address.city";
+      case "rating":
+        entityField = "rating";
         break;
       default:
         throw new IllegalArgumentException(String.format(
