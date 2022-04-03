@@ -98,11 +98,17 @@ public class Task implements Serializable {
   @Column(name = "verified_at")
   private ZonedDateTime verifiedAt;
 
-  @ManyToOne(optional = true, fetch = FetchType.LAZY)
+  @Column(name = "verification_comment")
+  private String verificationComment;
+
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "closed_by")
   private VPUser closedBy;
 
   @Column(name = "closed_at")
   private ZonedDateTime closedAt;
+
+  @Column(name = "close_comment")
+  private String closeComment;
 
 }

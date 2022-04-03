@@ -95,7 +95,7 @@ public class SubtaskServiceImplTest extends AbstractTestWithPersistence {
         .setAuthentication(new TestingAuthenticationToken(user.getPhoneNumber(), null));
 
     task = taskService.create(task);
-    taskService.changeStatus(task.getId(), TaskStatus.VERIFIED, false);
+    taskService.changeStatus(task.getId(), TaskStatus.VERIFIED, null, false);
 
     // Create
     Subtask subtask1 =

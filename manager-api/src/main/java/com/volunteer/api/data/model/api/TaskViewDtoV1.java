@@ -63,10 +63,14 @@ public class TaskViewDtoV1 {
   private UserDtoV1 verifiedBy;
   @JsonProperty("verifiedAt")
   private Long verifiedAt;
+  @JsonProperty("verificationComment")
+  private String verificationComment;
 
   @JsonProperty("closedBy")
   private UserDtoV1 closedBy;
   @JsonProperty("closedAt")
   private Long closedAt;
+  @JsonProperty("closeComment")
+  private String closeComment;
 
 }

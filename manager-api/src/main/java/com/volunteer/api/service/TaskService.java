@@ -30,9 +30,10 @@ public interface TaskService {
 
   BigDecimal subtractRemainingQuantity(final Task task, final BigDecimal delta);
 
-  void changeStatus(final Integer taskId, final TaskStatus status, final boolean onlyMine);
+  void changeStatus(final Integer taskId, final TaskStatus status, final String comment,
+      final boolean onlyMine);
 
   void changeStatus(final Collection<Integer> taskIds, final TaskStatus status,
-      final boolean onlyMine);
+      final String comment, final boolean onlyMine);
 
 }

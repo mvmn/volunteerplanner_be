@@ -5,16 +5,19 @@ import com.volunteer.api.data.mapping.TaskDtoV1Mapper;
 import com.volunteer.api.data.mapping.TaskViewDtoV1Mapper;
 import com.volunteer.api.data.model.TaskStatus;
 import com.volunteer.api.data.model.UserAuthority;
+import com.volunteer.api.data.model.api.BatchTaskStatusChangeDtoV1;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
+import com.volunteer.api.data.model.api.TaskStatusChangeDtoV1;
 import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Task;
 import com.volunteer.api.security.utils.AuthenticationUtils;
 import com.volunteer.api.service.TaskService;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
@@ -107,45 +110,52 @@ public class TaskControllerV1 {
 
   @PreAuthorize("hasAuthority('TASKS_VERIFY')")
   @PostMapping("/{taskId}/verify")
-  public void verify(@PathVariable("taskId") Integer taskId) {
-    taskService.changeStatus(taskId, TaskStatus.VERIFIED, false);
+  public void verify(@PathVariable("taskId") Integer taskId,
+      @RequestBody(required = false) @Valid TaskStatusChangeDtoV1 dto) {
+    taskService.changeStatus(taskId, TaskStatus.VERIFIED,
+        Objects.isNull(dto) ? null : dto.getComment(), false);
   }
 
   @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
   @PostMapping("/{taskId}/complete")
-  public void complete(@PathVariable("taskId") Integer taskId) {
-    taskService.changeStatus(taskId, TaskStatus.COMPLETED, false);
+  public void complete(@PathVariable("taskId") Integer taskId,
+      @RequestBody(required = false) @Valid TaskStatusChangeDtoV1 dto) {
+    taskService.changeStatus(taskId, TaskStatus.COMPLETED,
+        Objects.isNull(dto) ? null : dto.getComment(), false);
   }
 
   @PreAuthorize("hasAuthority('TASKS_REJECT') or hasAuthority('TASKS_REJECT_MINE')")
   @PostMapping("/{taskId}/reject")
-  public void reject(@PathVariable("taskId") Integer taskId, final Authentication authentication) {
-    final boolean rejectAny = AuthenticationUtils.hasAuthority(
-        UserAuthority.TASKS_REJECT, authentication);
-
-    taskService.changeStatus(taskId, TaskStatus.REJECTED, !rejectAny);
-  }
-
-  @PreAuthorize("hasAuthority('TASKS_VERIFY')")
-  @PostMapping("/batch/verify")
-  public void batchVerify(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.VERIFIED, false);
-  }
-
-  @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
-  @PostMapping("/batch/complete")
-  public void batchComplete(@RequestBody GenericCollectionDtoV1<Integer> taskIds) {
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.COMPLETED, false);
-  }
-
-  @PreAuthorize("hasAuthority('TASKS_REJECT') or hasAuthority('TASKS_REJECT_MINE')")
-  @PostMapping("/batch/reject")
-  public void batchReject(@RequestBody GenericCollectionDtoV1<Integer> taskIds,
+  public void reject(@PathVariable("taskId") Integer taskId,
+      @RequestBody(required = false) @Valid TaskStatusChangeDtoV1 dto,
       final Authentication authentication) {
     final boolean rejectAny = AuthenticationUtils.hasAuthority(
         UserAuthority.TASKS_REJECT, authentication);
 
-    taskService.changeStatus(taskIds.getItems(), TaskStatus.REJECTED, !rejectAny);
+    taskService.changeStatus(taskId, TaskStatus.REJECTED,
+        Objects.isNull(dto) ? null : dto.getComment(), !rejectAny);
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_VERIFY')")
+  @PostMapping("/batch/verify")
+  public void batchVerify(@RequestBody @Valid BatchTaskStatusChangeDtoV1 dto) {
+    taskService.changeStatus(dto.getItems(), TaskStatus.VERIFIED, dto.getComment(), false);
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_COMPLETE')")
+  @PostMapping("/batch/complete")
+  public void batchComplete(@RequestBody @Valid BatchTaskStatusChangeDtoV1 dto) {
+    taskService.changeStatus(dto.getItems(), TaskStatus.COMPLETED, dto.getComment(), false);
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_REJECT') or hasAuthority('TASKS_REJECT_MINE')")
+  @PostMapping("/batch/reject")
+  public void batchReject(@RequestBody @Valid BatchTaskStatusChangeDtoV1 dto,
+      final Authentication authentication) {
+    final boolean rejectAny = AuthenticationUtils.hasAuthority(
+        UserAuthority.TASKS_REJECT, authentication);
+
+    taskService.changeStatus(dto.getItems(), TaskStatus.REJECTED, dto.getComment(), !rejectAny);
   }
 
   @PreAuthorize("hasAuthority('TASKS_VIEW')")

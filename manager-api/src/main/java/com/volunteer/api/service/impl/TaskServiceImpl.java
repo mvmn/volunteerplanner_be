@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -186,16 +187,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void changeStatus(final Integer taskId, final TaskStatus status, final boolean onlyMine) {
+  public void changeStatus(final Integer taskId, final TaskStatus status, final String comment,
+      final boolean onlyMine) {
     final Optional<Task> result = prepareStatusChange(taskId, status, userService.getCurrentUser(),
-        ZonedDateTime.now(), onlyMine);
+        ZonedDateTime.now(), comment, onlyMine);
     result.ifPresent(repository::save);
   }
 
   @Override
   @Transactional
   public void changeStatus(final Collection<Integer> taskIds, final TaskStatus status,
-      final boolean onlyMine) {
+      final String comment, final boolean onlyMine) {
     if (CollectionUtils.isEmpty(taskIds)) {
       return;
     }
@@ -204,7 +206,8 @@ public class TaskServiceImpl implements TaskService {
     final ZonedDateTime currentTime = ZonedDateTime.now();
 
     final List<Task> result = taskIds.stream()
-        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime, onlyMine))
+        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime, comment,
+            onlyMine))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
@@ -284,7 +287,8 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Optional<Task> prepareStatusChange(final int taskId, final TaskStatus status,
-      final VPUser currentUser, final ZonedDateTime currentTime, final Boolean onlyMine) {
+      final VPUser currentUser, final ZonedDateTime currentTime, final String comment,
+      final Boolean onlyMine) {
     final Task task = get(taskId);
     if (task.getStatus() == status) {
       return Optional.empty();
@@ -297,13 +301,13 @@ public class TaskServiceImpl implements TaskService {
 
     switch (status) {
       case VERIFIED:
-        prepareStatusChangeVerified(task, currentUser, currentTime);
+        prepareStatusChangeVerified(task, currentUser, currentTime, comment);
         break;
       case COMPLETED:
-        prepareStatusChangeCompleted(task, currentUser, currentTime);
+        prepareStatusChangeCompleted(task, currentUser, currentTime, comment);
         break;
       case REJECTED:
-        prepareStatusChangeRejected(task, currentUser, currentTime);
+        prepareStatusChangeRejected(task, currentUser, currentTime, comment);
         break;
       default:
         throw new InvalidStatusException(String.format(
@@ -314,7 +318,7 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private void prepareStatusChangeVerified(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.NEW) {
       throw new IllegalStateException(String.format("Cannot verify task in status '%s'",
           task.getStatus()));
@@ -328,10 +332,11 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.VERIFIED);
     task.setVerifiedBy(currentUser);
     task.setVerifiedAt(currentTime);
+    task.setVerificationComment(comment);
   }
 
   private void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.VERIFIED) {
       throw new IllegalStateException(String.format("Cannot complete task in status '%s'",
           task.getStatus()));
@@ -340,10 +345,11 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.COMPLETED);
     task.setClosedBy(currentUser);
     task.setClosedAt(currentTime);
+    task.setCloseComment(comment);
   }
 
   private void prepareStatusChangeRejected(final Task task, final VPUser currentUser,
-      final ZonedDateTime currentTime) {
+      final ZonedDateTime currentTime, final String comment) {
     // Disallow rejecting completed
     if (task.getStatus() == TaskStatus.COMPLETED) {
       throw new IllegalStateException("Cannot reject task in status " + task.getStatus());
@@ -352,6 +358,7 @@ public class TaskServiceImpl implements TaskService {
     task.setStatus(TaskStatus.REJECTED);
     task.setClosedBy(currentUser);
     task.setClosedAt(currentTime);
+    task.setCloseComment(comment);
 
     // consider to reject all subtasks which are in progress yet
     // later we could add SMS notification like stop working on it, task has been rejected

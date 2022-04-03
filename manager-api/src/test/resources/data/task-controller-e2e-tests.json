@@ -332,7 +332,8 @@
       },
       "request": {
         "endpoint": "/tasks/1/verify",
-        "method": "POST"
+        "method": "POST",
+        "body": {}
       }
     },
     "expected": {
@@ -429,7 +430,8 @@
       },
       "request": {
         "endpoint": "/tasks/1/reject",
-        "method": "POST"
+        "method": "POST",
+        "body": {}
       }
     },
     "expected": {

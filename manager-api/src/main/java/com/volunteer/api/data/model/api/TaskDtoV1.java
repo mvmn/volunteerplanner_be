@@ -3,7 +3,6 @@ package com.volunteer.api.data.model.api;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.math.BigDecimal;
@@ -18,9 +17,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonPropertyOrder({"id", "volunteerStoreId", "customerStoreId", "productId",
-    "quantity", "productMeasure", "priority", "deadlineDate", "note", "statusId", "createdByUserId",
-    "createdAt", "verifiedByUserId", "verifiedAt", "closedByUserId", "closedAt", "quantityLeft"})
 @JsonInclude(Include.NON_NULL)
 public class TaskDtoV1 {
 
