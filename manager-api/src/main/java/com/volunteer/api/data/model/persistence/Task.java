@@ -105,4 +105,6 @@ public class Task implements Serializable {
   @Column(name = "closed_at")
   private ZonedDateTime closedAt;
 
+  @Column(name = "verification_comment")
+  private String verificationComment;
 }

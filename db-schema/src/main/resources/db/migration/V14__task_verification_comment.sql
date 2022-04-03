@@ -1,0 +1,1 @@
+ALTER TABLE task ADD COLUMN verification_comment varchar(4096) DEFAULT NULL;
