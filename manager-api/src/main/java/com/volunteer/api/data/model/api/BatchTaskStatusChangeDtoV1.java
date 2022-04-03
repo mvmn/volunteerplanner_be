@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BatchTaskStatusChangeDtoV1 {
 
-  @Size(max = 4000)
+  @Size(max = 65000)
   private String comment;
 
   @NotEmpty(message = "cannot be empty")

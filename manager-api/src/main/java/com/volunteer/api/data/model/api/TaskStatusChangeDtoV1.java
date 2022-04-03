@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TaskStatusChangeDtoV1 {
 
-  @Size(max = 4000)
+  @Size(max = 65000)
   private String comment;
 }
