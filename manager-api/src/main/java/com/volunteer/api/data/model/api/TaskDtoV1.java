@@ -56,4 +56,6 @@ public class TaskDtoV1 {
   @JsonProperty("status")
   private TaskStatus status;
 
+  @JsonProperty("verificationComment")
+  private String verificationComment;
 }

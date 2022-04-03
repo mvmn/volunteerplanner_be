@@ -2,10 +2,12 @@ package com.volunteer.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.api.BatchTaskStatusChangeDtoV1;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.TaskDtoV1;
 import com.volunteer.api.data.model.api.TaskSearchDtoV1;
+import com.volunteer.api.data.model.api.TaskStatusChangeDtoV1;
 import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Product;
@@ -132,9 +134,11 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId).getStatus());
 
     // Verify task
-    post(token3, "/tasks/" + taskId + "/verify", null)
-        .andExpect(MockMvcResultMatchers.status().isOk());
+    post(token3, "/tasks/" + taskId + "/verify",
+        TaskStatusChangeDtoV1.builder().comment("comment here").build())
+            .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.get(taskId).getStatus());
+    Assert.assertEquals("comment here", taskService.get(taskId).getVerificationComment());
 
     // Complete task
     post(token1, "/tasks/" + taskId + "/complete", null)
@@ -150,21 +154,24 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     // Batch complete on new unverified task should be rejected
     post(token1, "/tasks/batch/complete",
-        GenericCollectionDtoV1.<Integer>builder().items(List.of(taskId2, taskId3)).build())
+        BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3)).build())
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId2).getStatus());
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId3).getStatus());
 
     // Batch verify tasks
     post(token2, "/tasks/batch/verify",
-        GenericCollectionDtoV1.<Integer>builder().items(List.of(taskId2, taskId3)).build())
-        .andExpect(MockMvcResultMatchers.status().isOk());
+        BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3))
+            .comment("verify comment").build())
+                .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.get(taskId2).getStatus());
+    Assert.assertEquals("verify comment", taskService.get(taskId2).getVerificationComment());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.get(taskId3).getStatus());
+    Assert.assertEquals("verify comment", taskService.get(taskId3).getVerificationComment());
 
     // Batch complete tasks
     post(token3, "/tasks/batch/complete",
-        GenericCollectionDtoV1.<Integer>builder().items(List.of(taskId2, taskId3)).build())
+        BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3)).build())
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.get(taskId2).getStatus());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.get(taskId3).getStatus());
@@ -178,7 +185,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         taskService.get(batchCreatedTasks2.get(0).getId()).getStatus());
 
     post(token2, "/tasks/batch/reject",
-        GenericCollectionDtoV1.<Integer>builder().items(batchCreatedTasks2.stream()
+        BatchTaskStatusChangeDtoV1.builder().items(batchCreatedTasks2.stream()
             .map(TaskViewDtoV1::getId).collect(Collectors.toList())).build())
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.REJECTED,

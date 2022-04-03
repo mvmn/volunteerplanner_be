@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -171,15 +172,17 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void changeStatus(final Integer taskId, final TaskStatus status) {
+  public void changeStatus(final Integer taskId, final TaskStatus status,
+      final String taskVerificationComment) {
     final Optional<Task> result = prepareStatusChange(taskId, status, userService.getCurrentUser(),
-        ZonedDateTime.now());
+        ZonedDateTime.now(), taskVerificationComment);
     result.ifPresent(repository::save);
   }
 
   @Override
   @Transactional
-  public void changeStatus(final Collection<Integer> taskIds, final TaskStatus status) {
+  public void changeStatus(final Collection<Integer> taskIds, final TaskStatus status,
+      final String taskVerificationComment) {
     if (CollectionUtils.isEmpty(taskIds)) {
       return;
     }
@@ -188,7 +191,8 @@ public class TaskServiceImpl implements TaskService {
     final ZonedDateTime currentTime = ZonedDateTime.now();
 
     final List<Task> result = taskIds.stream()
-        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime))
+        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime,
+            taskVerificationComment))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .collect(Collectors.toList());
@@ -268,12 +272,15 @@ public class TaskServiceImpl implements TaskService {
   }
 
   private Optional<Task> prepareStatusChange(final int taskId, final TaskStatus status,
-      final VPUser currentUser, final ZonedDateTime currentTime) {
+      final VPUser currentUser, final ZonedDateTime currentTime, final String taskVerificationComment) {
     final Task task = get(taskId);
     if (task.getStatus() == status) {
       return Optional.empty();
     }
 
+    if (StringUtils.isNotBlank(taskVerificationComment)) {
+      task.setVerificationComment(taskVerificationComment);
+    }
     switch (status) {
       case VERIFIED:
         prepareStatusChangeVerified(task, currentUser, currentTime);
