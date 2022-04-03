@@ -75,6 +75,13 @@ public class UserControllerV1 {
     return userMapper.map(service.get(userId));
   }
 
+  @PreAuthorize("hasAuthority('USERS_RATING_RESET')")
+  @PutMapping("/{id}/rating/reset")
+  @ResponseStatus(HttpStatus.OK)
+  public UserDtoV1 ratingReset(@PathVariable("id") final Integer userId) {
+    return userMapper.map(service.ratingReset(userId));
+  }
+
   @PreAuthorize("hasAuthority('USERS_VERIFY')")
   @PutMapping("/{id}/verify/phone")
   @ResponseStatus(HttpStatus.OK)

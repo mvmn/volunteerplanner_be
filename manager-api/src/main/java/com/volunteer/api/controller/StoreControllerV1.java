@@ -10,7 +10,7 @@ import com.volunteer.api.data.model.api.search.SearchDto;
 import com.volunteer.api.data.model.api.search.filter.FilterDto;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.data.repository.search.impl.StoreQueryBuilder;
-import com.volunteer.api.security.utils.AuthenticationUtils;
+import com.volunteer.api.utils.AuthenticationUtils;
 import com.volunteer.api.service.StoreService;
 import java.util.Collection;
 import javax.validation.Valid;

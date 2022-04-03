@@ -13,6 +13,7 @@ import com.volunteer.api.error.ObjectNotFoundException;
 import com.volunteer.api.service.SubtaskService;
 import com.volunteer.api.service.TaskService;
 import com.volunteer.api.service.UserService;
+import com.volunteer.api.utils.UserRatingUtils;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -69,12 +70,16 @@ public class SubtaskServiceImpl implements SubtaskService {
   public Subtask create(final Subtask subtask) {
     validateQuantity(subtask.getQuantity());
 
+    final VPUser user = userService.getCurrentUser();
+    if (UserRatingUtils.hasDisasterRating(user)) {
+      throw new AuthorizationServiceException(
+          "You are not allowed to create subtask. Your rating is too bad");
+    }
+
     final Task task = taskService.get(subtask.getTask().getId());
 
     final BigDecimal delta = taskService.subtractRemainingQuantity(task, subtask.getQuantity());
     validateRemainingQuantity(delta);
-
-    final VPUser user = userService.getCurrentUser();
 
     subtask.setQuantity(delta);
     subtask.setTask(task);
@@ -113,6 +118,7 @@ public class SubtaskServiceImpl implements SubtaskService {
   }
 
   @Override
+  @Transactional
   public Subtask complete(final Integer subtaskId) {
     final Subtask subtask = getById(subtaskId, false);
     switch (subtask.getStatus()) {
@@ -125,6 +131,10 @@ public class SubtaskServiceImpl implements SubtaskService {
         subtask.setClosedBy(user);
         subtask.setClosedAt(ZonedDateTime.now());
 
+        userService.ratingUpdate(
+            subtask.getCreatedBy(),
+            UserRatingUtils.calculateDelta(SubtaskStatus.COMPLETED, 1)
+        );
         return repository.save(subtask);
       default:
         throw new InvalidStatusException(String.format(
@@ -148,6 +158,10 @@ public class SubtaskServiceImpl implements SubtaskService {
         subtask.setClosedBy(user);
         subtask.setClosedAt(ZonedDateTime.now());
 
+        userService.ratingUpdate(
+            subtask.getCreatedBy(),
+            UserRatingUtils.calculateDelta(SubtaskStatus.REJECTED, 1)
+        );
         return repository.save(subtask);
       default:
         throw new InvalidStatusException(String.format(

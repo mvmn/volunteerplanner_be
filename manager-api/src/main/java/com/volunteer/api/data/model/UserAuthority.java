@@ -4,6 +4,7 @@ public enum UserAuthority {
 
   USERS_VIEW,
   USERS_VERIFY,
+  USERS_RATING_RESET,
   USERS_LOCK,
 
   CATEGORIES_VIEW,

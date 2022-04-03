@@ -13,7 +13,7 @@ import com.volunteer.api.data.model.api.TaskSearchDtoV1;
 import com.volunteer.api.data.model.api.TaskStatusChangeDtoV1;
 import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.security.utils.AuthenticationUtils;
+import com.volunteer.api.utils.AuthenticationUtils;
 import com.volunteer.api.service.TaskService;
 import java.util.Collection;
 import java.util.List;

@@ -12,6 +12,7 @@ import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
 import com.volunteer.api.service.VerificationCodeService;
+import com.volunteer.api.utils.UserRatingUtils;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -105,8 +106,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       authorities = Collections.emptySet();
     }
 
+    // we are going to block users either locked manually or with poor rating
+    // for unlock operator has to unlock manually or reset rating
+    final boolean isLocked = user.isLocked() || UserRatingUtils.hasDisasterRating(user);
+
     return new User(user.getPhoneNumber(), user.getPassword(), true, true,
-        true, !user.isLocked(), authorities);
+        true, !isLocked, authorities);
   }
 
   @Override
@@ -154,6 +159,26 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     current.setOrganization(user.getOrganization());
 
     return repository.save(current);
+  }
+
+  @Override
+  public void ratingUpdate(final VPUser user, final int delta) {
+    if (delta == 0) {
+      return;
+    }
+
+    repository.updateRating(user.getId(), delta);
+  }
+
+  @Override
+  public VPUser ratingReset(final Integer id) {
+    final VPUser source = get(id);
+    if (source.getRating() == 0) {
+      return source;
+    }
+
+    source.setRating(0);
+    return repository.save(source);
   }
 
   @Override
