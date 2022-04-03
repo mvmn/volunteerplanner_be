@@ -4,7 +4,7 @@ import com.volunteer.api.data.model.UserAuthority;
 import com.volunteer.api.data.model.api.StoreDtoV1;
 import com.volunteer.api.data.model.api.TaskViewDtoV1;
 import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.security.utils.AuthenticationUtils;
+import com.volunteer.api.utils.AuthenticationUtils;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;

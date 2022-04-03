@@ -10,7 +10,7 @@ import com.volunteer.api.data.model.api.search.SearchDto;
 import com.volunteer.api.data.model.api.search.filter.FilterDto;
 import com.volunteer.api.data.model.persistence.Subtask;
 import com.volunteer.api.data.repository.search.impl.SubtaskQueryBuilder;
-import com.volunteer.api.security.utils.AuthenticationUtils;
+import com.volunteer.api.utils.AuthenticationUtils;
 import com.volunteer.api.service.SubtaskService;
 import java.util.Collection;
 import javax.validation.Valid;
