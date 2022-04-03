@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class BatchTaskVerificationDtoV1 {
+public class BatchTaskStatusChangeDtoV1 {
 
   @Size(max = 4000)
-  private String verificationComment;
+  private String comment;
 
   @NotEmpty(message = "cannot be empty")
   @Builder.Default

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TaskVerificationDtoV1 {
+public class TaskStatusChangeDtoV1 {
 
   @Size(max = 4000)
-  private String verificationComment;
+  private String comment;
 }
