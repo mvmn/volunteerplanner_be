@@ -1,7 +1,8 @@
 package com.volunteer.api.config;
 
 import com.volunteer.api.service.VerificationCodeCache;
-import com.volunteer.api.service.impl.VerificationCodesRedisCacheImpl;
+import com.volunteer.api.service.VerificationCodeGenerator;
+import com.volunteer.api.service.impl.VerificationCodeRedisCacheImpl;
 import java.time.Duration;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,9 +29,11 @@ public class CacheConfigurationRedis {
   private Duration verificationCodeTtl;
 
   @Bean
-  public VerificationCodeCache verificationCodeCache(final CacheManager cacheManager) {
-    return new VerificationCodesRedisCacheImpl(
-        cacheManager.getCache(VERIFICATION_CODES_CACHE_NAME)
+  public VerificationCodeCache verificationCodeCache(final CacheManager cacheManager,
+      final VerificationCodeGenerator generator) {
+    return new VerificationCodeRedisCacheImpl(
+        cacheManager.getCache(VERIFICATION_CODES_CACHE_NAME),
+        generator
     );
   }
 

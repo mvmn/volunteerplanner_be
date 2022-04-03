@@ -3,7 +3,7 @@ package com.volunteer.api.data.user.service.impl;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.RoleRepository;
 import com.volunteer.api.service.UserService;
-import com.volunteer.api.service.impl.VerificationCodesDbCacheImpl;
+import com.volunteer.api.service.impl.VerificationCodeDbCacheImpl;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @ActiveProfiles("test")
 @TestPropertySource(properties = "cache.type=db")
-public class VerificationCodesDbCacheImplTest extends AbstractVerificationCodesCacheImplTest {
+public class VerificationCodeDbCacheImplTest extends AbstractVerificationCodeCacheImplTest {
 
   @Autowired
-  private VerificationCodesDbCacheImpl unit;
+  private VerificationCodeDbCacheImpl unit;
 
   @Autowired
   private UserService userService;

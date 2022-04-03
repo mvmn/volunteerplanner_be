@@ -2,7 +2,8 @@ package com.volunteer.api.config;
 
 import com.volunteer.api.data.repository.VerificationCodeRepository;
 import com.volunteer.api.service.VerificationCodeCache;
-import com.volunteer.api.service.impl.VerificationCodesDbCacheImpl;
+import com.volunteer.api.service.VerificationCodeGenerator;
+import com.volunteer.api.service.impl.VerificationCodeDbCacheImpl;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,8 +18,9 @@ public class CacheConfigurationDb {
   private Duration verificationCodeTtl;
 
   @Bean
-  public VerificationCodeCache verificationCodeCache(final VerificationCodeRepository repository) {
-    return new VerificationCodesDbCacheImpl(verificationCodeTtl, repository);
+  public VerificationCodeCache verificationCodeCache(final VerificationCodeRepository repository,
+      final VerificationCodeGenerator generator) {
+    return new VerificationCodeDbCacheImpl(verificationCodeTtl, repository, generator);
   }
 
 }
