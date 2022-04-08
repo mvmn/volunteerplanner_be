@@ -8,4 +8,4 @@ phases:
   build:
     commands:
      - echo Build started on `date`
-     - gradle build
+     - ./gradlew build
