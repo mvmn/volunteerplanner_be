@@ -8,4 +8,8 @@ phases:
   build:
     commands:
      - echo Build started on `date`
+     - cd ./manager-api
      - ./gradlew build
+     - docker build -t volunteer-ua .
+     - docker tag volunteer-ua:latest 649662587083.dkr.ecr.eu-west-1.amazonaws.com/volunteer-ua:latest
+     - docker push 649662587083.dkr.ecr.eu-west-1.amazonaws.com/volunteer-ua:latest
