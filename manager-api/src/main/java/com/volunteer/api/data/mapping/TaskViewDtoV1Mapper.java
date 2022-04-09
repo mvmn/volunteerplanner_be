@@ -38,7 +38,7 @@ public abstract class TaskViewDtoV1Mapper {
       case REJECTED:
         if ((!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_REJECT, authentication))
             || (!AuthenticationUtils.hasAuthority(UserAuthority.TASKS_REJECT_MINE,
-            authentication))) {
+                authentication))) {
           result.setCloseComment(null);
         }
         break;
@@ -47,6 +47,7 @@ public abstract class TaskViewDtoV1Mapper {
           result.setCloseComment(null);
         }
         break;
+      default:
     }
 
     return result;
