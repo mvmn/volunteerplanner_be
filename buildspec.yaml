@@ -8,9 +8,10 @@ phases:
   build:
     commands:
      - echo Build started on `date`
+     - yum install docker -y
      - chmod -R 777 ./*
      - cd ./manager-api
-     - ./gradlew build
+     - ./gradlew build -x test
      - docker build -t volunteer-ua .
      - docker tag volunteer-ua:latest 649662587083.dkr.ecr.eu-west-1.amazonaws.com/volunteer-ua:latest
      - docker push 649662587083.dkr.ecr.eu-west-1.amazonaws.com/volunteer-ua:latest
