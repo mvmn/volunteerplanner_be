@@ -30,8 +30,7 @@ public class SmsServiceImpl implements SmsService {
 
   @Override
   public void send(final VPUser user, final String message) {
-    // FIXME: Remove and implement functionality
-    LOG.info("SMS to " + user.getDisplayName() + ": " + message);
+    LOG.info("Sending verification code SMS to {}", user.getDisplayName());
     // TODO: Error handling
     TurboSmsResponse result = turboSms.send(
         TurboSmsSendRequest.builder().recipients(Arrays.asList(user.getPhoneNumber()))
