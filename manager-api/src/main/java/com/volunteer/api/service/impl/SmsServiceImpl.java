@@ -10,6 +10,7 @@ import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.model.turbosms.TurboSmsMessageData;
 import com.volunteer.api.data.model.turbosms.TurboSmsResponse;
 import com.volunteer.api.data.model.turbosms.TurboSmsSendRequest;
+import com.volunteer.api.error.SmsServiceCommunicationException;
 import com.volunteer.api.error.TurboSmsSendFailureException;
 import com.volunteer.api.feign.TurboSmsFeignClient;
 import com.volunteer.api.service.SmsService;
@@ -30,13 +31,20 @@ public class SmsServiceImpl implements SmsService {
 
   @Override
   public void send(final VPUser user, final String message) {
-    LOG.info("Sending verification code SMS to {}", user.getDisplayName());
-    // TODO: Error handling
-    TurboSmsResponse result = turboSms.send(
-        TurboSmsSendRequest.builder().recipients(Arrays.asList(user.getPhoneNumber()))
-            .sms(TurboSmsMessageData.builder().sender(senderId).text(message).build()).build(),
-        auth);
-    if (result != null && result.getResponseCode() != 0) {
+    TurboSmsResponse result;
+    try {
+      result = turboSms.send(
+          TurboSmsSendRequest.builder().recipients(Arrays.asList(user.getPhoneNumber()))
+              .sms(TurboSmsMessageData.builder().sender(senderId).text(message).build()).build(),
+          auth);
+    } catch (Exception e) {
+      LOG.error("SMS service communication failure", e);
+      throw new SmsServiceCommunicationException(e);
+    }
+    // See https://turbosms.ua/ua/api.html for response codes
+    if (result != null && result.getResponseCode() != 0 && result.getResponseCode() != 800
+        && result.getResponseCode() != 801) {
+      LOG.error("SMS send failure: {}", result);
       throw new TurboSmsSendFailureException(result);
     }
   }

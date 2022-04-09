@@ -25,6 +25,8 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
@@ -42,6 +44,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
+
+  private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
@@ -282,6 +286,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     if (verificationCode.getKey()) {
       // Only send if it's newly created. Don't send same code twice
       try {
+        LOG.info("Sending verification code SMS to user {} '{}'", current.getId(), current.getDisplayName());
         smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
       } catch (Throwable fail) {
         // Remove code if send failed
