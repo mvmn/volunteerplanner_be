@@ -1,5 +1,6 @@
 package com.volunteer.api.config;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -10,10 +11,10 @@ import com.volunteer.api.audit.AuditInterceptor;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Autowired
-  private AuditInterceptor auditInterceptor;
+  private ObjectProvider<AuditInterceptor> auditInterceptor;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(auditInterceptor);
+    registry.addInterceptor(auditInterceptor.getIfUnique());
   }
 }

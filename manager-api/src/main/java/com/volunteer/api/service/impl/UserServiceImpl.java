@@ -281,7 +281,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         verificationCodeService.getOrCreate(current, VerificationCodeType.PHONE);
     if (verificationCode.getKey()) {
       // Only send if it's newly created. Don't send same code twice
-      smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
+      try {
+        smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
+      } catch (Throwable fail) {
+        // Remove code if send failed
+        verificationCodeService.cleanup(current, VerificationCodeType.PHONE);
+        throw fail;
+      }
     }
   }
 

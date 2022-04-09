@@ -36,6 +36,8 @@ dependencies {
     implementation 'org.postgresql:postgresql:42.3.3'
 
     implementation project(':db-schema')
+    
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.1'
 
     // spring doc
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
