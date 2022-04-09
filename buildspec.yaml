@@ -9,6 +9,7 @@ phases:
     commands:
      - echo Build started on `date`
      - yum install docker -y
+     - systemctl start docker
      - chmod -R 777 ./*
      - cd ./manager-api
      - ./gradlew build -x test
