@@ -65,5 +65,5 @@ security:
     refresh-token-ttl: 1h
 
 cache:
-  type: "redis"
+  type: "db"
   verification-code-ttl: 10m
