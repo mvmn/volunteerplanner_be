@@ -52,6 +52,10 @@ cache:
   type: "db"
   verification-code-ttl: 10m
 
+cors:
+  enable: true
+  origins: 'https://editor.swagger.io'
+
 ---
 spring:
   profiles: aws
@@ -69,3 +73,7 @@ security:
 cache:
   type: "db"
   verification-code-ttl: 10m
+
+cors:
+  enable: true
+  origins: 'https://editor.swagger.io'

@@ -35,6 +35,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Value("${security.jwt.secret}")
   private String secret;
+  
+  @Value("${cors.enable:false}")
+  private boolean enableCors;
 
   @Value("${security.jwt.access-token-ttl:1m}")
   private Duration accessTokenTtl;
@@ -57,13 +60,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(final HttpSecurity http) throws Exception {
     http.csrf().disable();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    configureOpenApi(http.authorizeRequests()
-        .antMatchers("/actuator/**").permitAll()
-        .antMatchers("/authenticate").permitAll()
-        .antMatchers(HttpMethod.GET, "/address/**").permitAll()
-        .antMatchers(HttpMethod.POST, "/users").permitAll()
-        .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll())
-        .anyRequest().authenticated();
+    ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry urlAuthConf =
+        http.authorizeRequests()
+            .antMatchers("/actuator/**").permitAll()
+            .antMatchers("/authenticate").permitAll()
+            .antMatchers(HttpMethod.GET, "/address/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/users").permitAll()
+            .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll();
+    if(enableCors) {
+      urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
+    }
+    configureOpenApi(urlAuthConf).anyRequest().authenticated();
 
     http.addFilterBefore(new JWTAuthorizationFilter(jwtService()),
         UsernamePasswordAuthenticationFilter.class);
