@@ -19,10 +19,12 @@ spring:
     active: local
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: 'startup'
+  health:
+    enabled: true
+    db:
+      enabled: false
+    redis:
+      enabled: false
 
 server:
   port: 8080

@@ -14,12 +14,15 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
+@RequestMapping(value = "/error", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ErrorHandler {
 
   private static final Map<String, String> CONSTRAINS_I18N_MAP = new HashMap<>();
@@ -74,7 +77,8 @@ public class ErrorHandler {
         .build();
   }
 
-  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class, EmptyResultDataAccessException.class})
+  @ExceptionHandler({ObjectNotFoundException.class, EntityNotFoundException.class,
+      EmptyResultDataAccessException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
