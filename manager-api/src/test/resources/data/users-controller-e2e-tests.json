@@ -6,7 +6,7 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "phoneNumber": "1111111111",
+          "phoneNumber": "111111111111",
           "password": "root",
           "role": "root",
           "displayName": "FN root",
@@ -18,7 +18,7 @@
       "status": 201,
       "body": {
         "id": 1,
-        "phoneNumber": "1111111111",
+        "phoneNumber": "111111111111",
         "password": "******",
         "role": "root",
         "displayName": "FN root",
@@ -39,7 +39,7 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "phoneNumber": "2222222222",
+          "phoneNumber": "222222222222",
           "password": "operator",
           "role": "operator",
           "displayName": "FN operator"
@@ -50,7 +50,7 @@
       "status": 201,
       "body": {
         "id": 2,
-        "phoneNumber": "2222222222",
+        "phoneNumber": "222222222222",
         "password": "******",
         "role": "operator",
         "displayName": "FN operator",
@@ -65,7 +65,7 @@
     "name": "operator: verify himself",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -81,7 +81,7 @@
     "name": "verify user: operator",
     "given": {
       "auth": {
-        "principal": "1111111111",
+        "principal": "111111111111",
         "password": "root"
       },
       "request": {
@@ -93,7 +93,7 @@
       "status": 200,
       "body": {
         "id": 2,
-        "phoneNumber": "2222222222",
+        "phoneNumber": "222222222222",
         "password": "******",
         "role": "operator",
         "displayName": "FN operator",
@@ -110,7 +110,7 @@
     "name": "verify phone: operator",
     "given": {
       "auth": {
-        "principal": "1111111111",
+        "principal": "111111111111",
         "password": "root"
       },
       "request": {
@@ -122,7 +122,7 @@
       "status": 200,
       "body": {
         "id": 2,
-        "phoneNumber": "2222222222",
+        "phoneNumber": "222222222222",
         "password": "******",
         "role": "operator",
         "displayName": "FN operator",
@@ -168,7 +168,7 @@
     "name": "verify user: volunteer",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -197,7 +197,7 @@
     "name": "verify phone: volunteer",
     "given": {
       "auth": {
-        "principal": "1111111111",
+        "principal": "111111111111",
         "password": "root"
       },
       "request": {
@@ -301,7 +301,7 @@
         "endpoint": "/users",
         "method": "POST",
         "body": {
-          "phoneNumber": "2222222222",
+          "phoneNumber": "222222222222",
           "password": "vivo",
           "role": "volunteer",
           "displayName": "FN duplicate"
@@ -319,7 +319,7 @@
     "name": "operator: get by id",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -331,7 +331,7 @@
       "status": 200,
       "body": {
         "id": 1,
-        "phoneNumber": "1111111111",
+        "phoneNumber": "111111111111",
         "password": "******",
         "role": "root",
         "displayName": "FN root",
@@ -365,7 +365,7 @@
     "name": "root: lock",
     "given": {
       "auth": {
-        "principal": "1111111111",
+        "principal": "111111111111",
         "password": "root"
       },
       "request": {
@@ -377,7 +377,7 @@
       "status": 200,
       "body": {
         "id": 2,
-        "phoneNumber": "2222222222",
+        "phoneNumber": "222222222222",
         "password": "******",
         "role": "operator",
         "displayName": "FN operator",
@@ -396,7 +396,7 @@
     "name": "root: unlock",
     "given": {
       "auth": {
-        "principal": "1111111111",
+        "principal": "111111111111",
         "password": "root"
       },
       "request": {
@@ -408,7 +408,7 @@
       "status": 200,
       "body": {
         "id": 2,
-        "phoneNumber": "2222222222",
+        "phoneNumber": "222222222222",
         "password": "******",
         "role": "operator",
         "displayName": "FN operator",
@@ -425,7 +425,7 @@
     "name": "search",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
