@@ -29,22 +29,30 @@ public class SmsServiceImpl implements SmsService {
   @Value("Bearer ${turbosms.authtoken:}")
   private String auth;
 
+  @Value("${turbosms.enabled:false}")
+  private boolean enabled;
+
   @Override
   public void send(final VPUser user, final String message) {
+    if (!enabled) {
+      LOG.info("SMS send disabled. SMS to {}: {}", user.getPhoneNumber(), message);
+      return;
+    }
     TurboSmsResponse result;
     try {
+      LOG.info("Sending SMS message to {}", user.getPhoneNumber());
       result = turboSms.send(
           TurboSmsSendRequest.builder().recipients(Arrays.asList(user.getPhoneNumber()))
               .sms(TurboSmsMessageData.builder().sender(senderId).text(message).build()).build(),
           auth);
     } catch (Exception e) {
-      LOG.error("SMS service communication failure", e);
+      LOG.error("SMS service communication failure when sending to " + user.getPhoneNumber(), e);
       throw new SmsServiceCommunicationException(e);
     }
     // See https://turbosms.ua/ua/api.html for response codes
     if (result != null && result.getResponseCode() != 0 && result.getResponseCode() != 800
         && result.getResponseCode() != 801) {
-      LOG.error("SMS send failure: {}", result);
+      LOG.error("SMS send to {} failure: {}", user.getPhoneNumber(), result);
       throw new TurboSmsSendFailureException(result);
     }
   }
