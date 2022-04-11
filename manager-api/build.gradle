@@ -1,6 +1,7 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.4'
+    id 'org.springframework.boot' version '2.6.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id "com.gorylenko.gradle-git-properties" version "2.4.0"
     id 'java'
     id 'jacoco'
 }
@@ -19,6 +20,10 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+ext {
+    set('tomcat.version', '9.0.62')
 }
 
 dependencies {
@@ -52,8 +57,9 @@ dependencies {
     // common
     implementation 'org.apache.commons:commons-lang3:3.12.0'
     implementation 'org.apache.commons:commons-collections4:4.4'
+    implementation 'org.apache.commons:commons-text:1.8'
 
-	// cache
+    // cache
     implementation 'org.springframework.boot:spring-boot-starter-cache'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
@@ -81,6 +87,10 @@ jar {
     enabled = false
 }
 
+springBoot {
+    buildInfo()
+}
+
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
@@ -99,3 +109,6 @@ jacocoTestReport {
                 excludes: ['**/test/**', '**/model/**']))
     }
 }
+
+bootBuildInfo.mustRunAfter processResources
+generateGitProperties.mustRunAfter processResources

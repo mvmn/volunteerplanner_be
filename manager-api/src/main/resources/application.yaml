@@ -18,13 +18,26 @@ spring:
   profiles:
     active: local
 
+info:
+  application:
+    name: ${spring.application.name}
+    environment: ${spring.profiles.active}
+
 management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "health"
+          - "info"
   health:
-    enabled: true
     db:
       enabled: false
     redis:
       enabled: false
+  info:
+    env:
+      enabled: true
 
 server:
   port: 8080

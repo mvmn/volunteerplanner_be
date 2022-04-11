@@ -1,12 +1,12 @@
 package com.volunteer.api.config;
 
+import com.volunteer.api.audit.AuditInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import com.volunteer.api.audit.AuditInterceptor;
 
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
