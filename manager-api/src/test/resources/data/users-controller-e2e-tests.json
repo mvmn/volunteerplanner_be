@@ -3,7 +3,7 @@
     "name": "create root",
     "given": {
       "request": {
-        "endpoint": "/users",
+        "endpoint": "/api/v1/users",
         "method": "POST",
         "body": {
           "phoneNumber": "1111111111",
@@ -36,7 +36,7 @@
     "name": "create operator",
     "given": {
       "request": {
-        "endpoint": "/users",
+        "endpoint": "/api/v1/users",
         "method": "POST",
         "body": {
           "phoneNumber": "2222222222",
@@ -69,7 +69,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/users/2/verify/user",
+        "endpoint": "/api/v1/users/2/verify/user",
         "method": "PUT"
       }
     },
@@ -85,7 +85,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/2/verify/user",
+        "endpoint": "/api/v1/users/2/verify/user",
         "method": "PUT"
       }
     },
@@ -114,7 +114,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/2/verify/phone",
+        "endpoint": "/api/v1/users/2/verify/phone",
         "method": "PUT"
       }
     },
@@ -139,7 +139,7 @@
     "name": "create volunteer",
     "given": {
       "request": {
-        "endpoint": "/users",
+        "endpoint": "/api/v1/users",
         "method": "POST",
         "body": {
           "phoneNumber": "3333333333",
@@ -172,7 +172,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/users/3/verify/user",
+        "endpoint": "/api/v1/users/3/verify/user",
         "method": "PUT"
       }
     },
@@ -201,7 +201,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/3/verify/phone",
+        "endpoint": "/api/v1/users/3/verify/phone",
         "method": "PUT"
       }
     },
@@ -230,7 +230,7 @@
         "password": "volunteer"
       },
       "request": {
-        "endpoint": "/users/current",
+        "endpoint": "/api/v1/users/current",
         "method": "GET"
       }
     },
@@ -259,7 +259,7 @@
         "password": "volunteer"
       },
       "request": {
-        "endpoint": "/users/current/password/change",
+        "endpoint": "/api/v1/users/current/password/change",
         "method": "PUT",
         "body": {
           "old": "volunteer",
@@ -279,7 +279,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/users/current/password/change",
+        "endpoint": "/api/v1/users/current/password/change",
         "method": "PUT",
         "body": {
           "old": "volunteer",
@@ -298,7 +298,7 @@
     "name": "duplicate phone number",
     "given": {
       "request": {
-        "endpoint": "/users",
+        "endpoint": "/api/v1/users",
         "method": "POST",
         "body": {
           "phoneNumber": "2222222222",
@@ -323,7 +323,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/users/1",
+        "endpoint": "/api/v1/users/1",
         "method": "GET"
       }
     },
@@ -353,7 +353,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/users/1",
+        "endpoint": "/api/v1/users/1",
         "method": "GET"
       }
     },
@@ -369,7 +369,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/2/lock",
+        "endpoint": "/api/v1/users/2/lock",
         "method": "PUT"
       }
     },
@@ -400,7 +400,7 @@
         "password": "root"
       },
       "request": {
-        "endpoint": "/users/2/unlock",
+        "endpoint": "/api/v1/users/2/unlock",
         "method": "PUT"
       }
     },
@@ -429,7 +429,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/users/search",
+        "endpoint": "/api/v1/users/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -470,7 +470,7 @@
     "name": "create volunteer 2",
     "given": {
       "request": {
-        "endpoint": "/users",
+        "endpoint": "/api/v1/users",
         "method": "POST",
         "body": {
           "phoneNumber": "4444444444",
@@ -503,7 +503,7 @@
         "password": "volunteer2"
       },
       "request": {
-        "endpoint": "/users/current/sms",
+        "endpoint": "/api/v1/users/current/sms",
         "method": "GET"
       }
     },
@@ -519,7 +519,7 @@
         "password": "volunteer2"
       },
       "request": {
-        "endpoint": "/users/current/sms",
+        "endpoint": "/api/v1/users/current/sms",
         "method": "POST",
         "body": {
           "code": "000000"
@@ -541,7 +541,7 @@
         "password": "volunteer2"
       },
       "request": {
-        "endpoint": "/users/current/sms",
+        "endpoint": "/api/v1/users/current/sms",
         "method": "POST",
         "body": {
           "code": "123456"

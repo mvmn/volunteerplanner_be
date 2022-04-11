@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping(path = "/stores", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1/stores", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class StoreControllerV1 {
 

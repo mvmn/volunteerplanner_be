@@ -91,7 +91,7 @@ public class AbstractRestTemplateTest extends AbstractTestWithPersistence {
       return Optional.empty();
     }
 
-    final ResponseEntity<JsonNode> response = executeRequest("/authenticate",
+    final ResponseEntity<JsonNode> response = executeRequest("/api/v1/authenticate",
         HttpMethod.POST.name(), Optional.empty(), request);
 
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

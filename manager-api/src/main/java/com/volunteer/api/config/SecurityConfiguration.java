@@ -63,10 +63,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry urlAuthConf =
         http.authorizeRequests()
             .antMatchers("/actuator/**").permitAll()
-            .antMatchers("/authenticate").permitAll()
-            .antMatchers(HttpMethod.GET, "/address/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/users").permitAll()
-            .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll();
+            .antMatchers("/api/v1/authenticate").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/address/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/users/password/reset").permitAll();
     if(enableCors) {
       urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }

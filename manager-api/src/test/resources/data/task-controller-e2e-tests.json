@@ -7,7 +7,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks",
+        "endpoint": "/api/v1/tasks",
         "method": "POST",
         "body": {
           "volunteerStoreId": 2,
@@ -92,7 +92,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1",
+        "endpoint": "/api/v1/tasks/1",
         "method": "GET"
       }
     },
@@ -167,7 +167,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/search?ids=1",
+        "endpoint": "/api/v1/tasks/search?ids=1",
         "method": "GET"
       }
     },
@@ -246,7 +246,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1",
+        "endpoint": "/api/v1/tasks/1",
         "method": "PUT",
         "body": {
           "volunteerStoreId": 2,
@@ -331,7 +331,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1/verify",
+        "endpoint": "/api/v1/tasks/1/verify",
         "method": "POST",
         "body": {}
       }
@@ -348,7 +348,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1",
+        "endpoint": "/api/v1/tasks/1",
         "method": "GET"
       }
     },
@@ -429,7 +429,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1/reject",
+        "endpoint": "/api/v1/tasks/1/reject",
         "method": "POST",
         "body": {}
       }
@@ -446,7 +446,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/1",
+        "endpoint": "/api/v1/tasks/1",
         "method": "GET"
       }
     },
@@ -533,7 +533,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/batch",
+        "endpoint": "/api/v1/tasks/batch",
         "method": "POST",
         "body": {
           "items": [
@@ -695,7 +695,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/tasks/batch/verify",
+        "endpoint": "/api/v1/tasks/batch/verify",
         "method": "POST",
         "body": {
           "items": [
@@ -717,7 +717,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -783,7 +783,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks",
+        "endpoint": "/api/v1/subtasks",
         "method": "POST",
         "body": {
           "taskId": 2,
@@ -819,7 +819,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -885,7 +885,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks/1",
+        "endpoint": "/api/v1/subtasks/1",
         "method": "PUT",
         "body": {
           "taskId": 2,
@@ -921,7 +921,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -987,7 +987,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks/1",
+        "endpoint": "/api/v1/subtasks/1",
         "method": "PUT",
         "body": {
           "taskId": 2,
@@ -1023,7 +1023,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -1089,7 +1089,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/subtasks",
+        "endpoint": "/api/v1/subtasks",
         "method": "POST",
         "body": {
           "taskId": 2,
@@ -1125,7 +1125,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -1191,7 +1191,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks/1/reject",
+        "endpoint": "/api/v1/subtasks/1/reject",
         "method": "PUT"
       }
     },
@@ -1227,7 +1227,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/tasks/2",
+        "endpoint": "/api/v1/tasks/2",
         "method": "GET"
       }
     },
@@ -1293,7 +1293,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/subtasks/search?taskId=2",
+        "endpoint": "/api/v1/subtasks/search?taskId=2",
         "method": "GET"
       }
     },
@@ -1347,7 +1347,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks/search?taskId=2",
+        "endpoint": "/api/v1/subtasks/search?taskId=2",
         "method": "GET"
       }
     },
@@ -1401,7 +1401,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/subtasks/search",
+        "endpoint": "/api/v1/subtasks/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -1453,7 +1453,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/subtasks/search",
+        "endpoint": "/api/v1/subtasks/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -1510,7 +1510,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/subtasks/search",
+        "endpoint": "/api/v1/subtasks/search",
         "method": "POST",
         "body": {
           "page": 1,
