@@ -210,7 +210,7 @@
     "name": "get public store by id - volunteer",
     "given": {
       "auth": {
-        "principal": "3333333333",
+        "principal": "333333333333",
         "password": "volunteer1"
       },
       "request": {
@@ -272,7 +272,7 @@
     "name": "get private store by id - volunteer",
     "given": {
       "auth": {
-        "principal": "3333333333",
+        "principal": "333333333333",
         "password": "volunteer1"
       },
       "request": {
