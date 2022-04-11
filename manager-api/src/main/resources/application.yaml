@@ -26,7 +26,7 @@ management:
 
 server:
   port: 8080
-
+  
 ---
 spring:
   profiles: local
@@ -67,3 +67,8 @@ security:
 cache:
   type: "redis"
   verification-code-ttl: 10m
+  
+turbosms:
+  sender: '${TURBOSMS_SENDER}'
+  authtoken: '${TURBOSMS_TOKEN}'
+  enabled: true

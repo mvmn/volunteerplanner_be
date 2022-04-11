@@ -20,7 +20,7 @@ public class UserDtoV1 {
   private Integer id;
 
   @NotBlank
-  @Pattern(regexp = "^[0-9]{9,15}$")
+  @Pattern(regexp = "^[0-9]{12}$")
   @JsonProperty("phoneNumber")
   private String phoneNumber;
   @JsonProperty("password")

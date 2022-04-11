@@ -287,7 +287,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       // Only send if it's newly created. Don't send same code twice
       try {
         LOG.info("Sending verification code SMS to user {} '{}'", current.getId(), current.getDisplayName());
-        smsService.send(current, "Kod veryfikatsiji: " + verificationCode.getValue());
+        smsService.send(current, verificationCode.getValue());
       } catch (Throwable fail) {
         // Remove code if send failed
         verificationCodeService.cleanup(current, VerificationCodeType.PHONE);
