@@ -1,6 +1,7 @@
 package com.volunteer.api.data.model.turbosms;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +20,5 @@ public class TurboSmsResponse {
   private String responseStatus;
 
   @JsonProperty("response_result")
-  private String responseResult;
+  private JsonNode responseResult;
 }

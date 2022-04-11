@@ -39,20 +39,24 @@ public class SmsServiceImpl implements SmsService {
       return;
     }
     TurboSmsResponse result;
+    String phoneNum = user.getPhoneNumber();
+    if (phoneNum.length() < 11) {
+      phoneNum = "38" + phoneNum;
+    }
     try {
-      LOG.info("Sending SMS message to {}", user.getPhoneNumber());
+      LOG.info("Sending SMS message to {}", phoneNum);
       result = turboSms.send(
-          TurboSmsSendRequest.builder().recipients(Arrays.asList(user.getPhoneNumber()))
+          TurboSmsSendRequest.builder().recipients(Arrays.asList(phoneNum))
               .sms(TurboSmsMessageData.builder().sender(senderId).text(message).build()).build(),
           auth);
     } catch (Exception e) {
-      LOG.error("SMS service communication failure when sending to " + user.getPhoneNumber(), e);
+      LOG.error("SMS service communication failure when sending to " + phoneNum, e);
       throw new SmsServiceCommunicationException(e);
     }
     // See https://turbosms.ua/ua/api.html for response codes
     if (result != null && result.getResponseCode() != 0 && result.getResponseCode() != 800
         && result.getResponseCode() != 801) {
-      LOG.error("SMS send to {} failure: {}", user.getPhoneNumber(), result);
+      LOG.error("SMS send to {} failure: {}", phoneNum, result);
       throw new TurboSmsSendFailureException(result);
     }
   }
