@@ -39,3 +39,4 @@ out/
 ### VS Code ###
 .vscode/
 
+manager-api/src/main/resources/application-local*.yaml
