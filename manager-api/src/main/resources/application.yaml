@@ -67,7 +67,10 @@ cache:
 
 cors:
   enable: true
-  origins: 'https://editor.swagger.io'
+  origins: '*'
+
+swagger:
+  enable: true
 
 ---
 spring:
@@ -95,3 +98,6 @@ turbosms:
   sender: '${VOLUNTEER_SMS_SENDER}'
   authtoken: '${VOLUNTEER_SMS_TOKEN}'
   enabled: true
+
+swagger:
+  enable: true

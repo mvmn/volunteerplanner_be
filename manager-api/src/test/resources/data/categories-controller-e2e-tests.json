@@ -7,7 +7,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories",
+        "endpoint": "/api/v1/categories",
         "method": "POST",
         "body": {
           "name": "dummy",
@@ -32,7 +32,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/1",
+        "endpoint": "/api/v1/categories/1",
         "method": "PUT",
         "body": {
           "name": "dummy - update",
@@ -57,7 +57,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/1",
+        "endpoint": "/api/v1/categories/1",
         "method": "DELETE"
       }
     },
@@ -73,7 +73,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories",
+        "endpoint": "/api/v1/categories",
         "method": "POST",
         "body": {
           "name": "root-2"
@@ -96,7 +96,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories",
+        "endpoint": "/api/v1/categories",
         "method": "POST",
         "body": {
           "parent": {
@@ -126,7 +126,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories",
+        "endpoint": "/api/v1/categories",
         "method": "POST",
         "body": {
           "name": "root-4"
@@ -149,7 +149,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories",
+        "endpoint": "/api/v1/categories",
         "method": "POST",
         "body": {
           "parent": {
@@ -179,7 +179,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/5",
+        "endpoint": "/api/v1/categories/5",
         "method": "GET"
       }
     },
@@ -203,7 +203,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/roots",
+        "endpoint": "/api/v1/categories/roots",
         "method": "GET"
       }
     },
@@ -231,7 +231,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/4/children",
+        "endpoint": "/api/v1/categories/4/children",
         "method": "GET"
       }
     },
@@ -259,7 +259,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/categories/search?name=root-4-child-5",
+        "endpoint": "/api/v1/categories/search?name=root-4-child-5",
         "method": "GET"
       }
     },

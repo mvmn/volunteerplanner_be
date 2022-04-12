@@ -7,7 +7,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products",
+        "endpoint": "/api/v1/products",
         "method": "POST",
         "body": {
           "name": "dummy",
@@ -43,7 +43,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/1",
+        "endpoint": "/api/v1/products/1",
         "method": "PUT",
         "body": {
           "name": "dummy update",
@@ -79,7 +79,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/1",
+        "endpoint": "/api/v1/products/1",
         "method": "GET"
       }
     },
@@ -108,7 +108,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/1",
+        "endpoint": "/api/v1/products/1",
         "method": "DELETE"
       }
     },
@@ -124,7 +124,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products",
+        "endpoint": "/api/v1/products",
         "method": "POST",
         "body": {
           "name": "product-2",
@@ -158,7 +158,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products",
+        "endpoint": "/api/v1/products",
         "method": "POST",
         "body": {
           "name": "product-3",
@@ -192,7 +192,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/search",
+        "endpoint": "/api/v1/products/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -252,7 +252,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/search",
+        "endpoint": "/api/v1/products/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -300,7 +300,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/search?category.id=2",
+        "endpoint": "/api/v1/products/search?category.id=2",
         "method": "GET"
       }
     },
@@ -332,7 +332,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/products/search",
+        "endpoint": "/api/v1/products/search",
         "method": "POST",
         "body": {
           "page": 1,

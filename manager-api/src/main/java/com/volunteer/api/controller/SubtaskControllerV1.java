@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping(path = "/subtasks", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1/subtasks", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class SubtaskControllerV1 {
 

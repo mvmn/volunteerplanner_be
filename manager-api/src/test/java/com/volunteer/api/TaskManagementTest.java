@@ -77,14 +77,14 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     // Test get and search by ids of non-existing tasks
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/tasks/search?ids=1,2,3")
+        .perform(MockMvcRequestBuilders.get("/api/v1/tasks/search?ids=1,2,3")
             .header("Authorization", "Bearer " + token1))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.isA(List.class)))
         .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.hasSize(0)));
 
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/tasks/1").header("Authorization", "Bearer " + token1))
+        .perform(MockMvcRequestBuilders.get("/api/v1/tasks/1").header("Authorization", "Bearer " + token1))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     // Test create task
@@ -96,7 +96,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     // Get existing task
     int taskId = response.getId();
     byte[] responseBodyGetTask = mockMvc
-        .perform(MockMvcRequestBuilders.get("/tasks/" + taskId).header("Authorization",
+        .perform(MockMvcRequestBuilders.get("/api/v1/tasks/" + taskId).header("Authorization",
             "Bearer " + token1))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.notNullValue())).andReturn()
@@ -116,7 +116,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     int taskId3 = batchCreatedTasks.get(1).getId();
 
     mockMvc
-        .perform(MockMvcRequestBuilders.get("/tasks/search?ids=" +
+        .perform(MockMvcRequestBuilders.get("/api/v1/tasks/search?ids=" +
                 Stream.of(taskId, taskId2, taskId3)
                     .map(String::valueOf)
                     .collect(Collectors.joining(",")))
@@ -126,38 +126,38 @@ public class TaskManagementTest extends AbstractMockMvcTest {
         .andExpect(MockMvcResultMatchers.jsonPath("$.items", Matchers.hasSize(3)));
 
     // Complete on new unverified task should be rejected
-    post(token1, "/tasks/" + taskId + "/complete", null)
+    post(token1, "/api/v1/tasks/" + taskId + "/complete", null)
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId).getStatus());
 
     // Verify task
-    post(token3, "/tasks/" + taskId + "/verify",
+    post(token3, "/api/v1/tasks/" + taskId + "/verify",
         TaskStatusChangeDtoV1.builder().comment("comment here").build())
             .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.VERIFIED, taskService.get(taskId).getStatus());
     Assert.assertEquals("comment here", taskService.get(taskId).getVerificationComment());
 
     // Complete task
-    post(token1, "/tasks/" + taskId + "/complete", null)
+    post(token1, "/api/v1/tasks/" + taskId + "/complete", null)
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.get(taskId).getStatus());
 
     // Reject task
     TaskViewDtoV1 task4 = createTask(token1);
-    post(token1, "/tasks/" + task4.getId() + "/reject", null)
+    post(token1, "/api/v1/tasks/" + task4.getId() + "/reject", null)
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.REJECTED,
         taskService.get(task4.getId()).getStatus());
 
     // Batch complete on new unverified task should be rejected
-    post(token1, "/tasks/batch/complete",
+    post(token1, "/api/v1/tasks/batch/complete",
         BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3)).build())
         .andExpect(MockMvcResultMatchers.status().isBadRequest());
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId2).getStatus());
     Assert.assertEquals(TaskStatus.NEW, taskService.get(taskId3).getStatus());
 
     // Batch verify tasks
-    post(token2, "/tasks/batch/verify",
+    post(token2, "/api/v1/tasks/batch/verify",
         BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3))
             .comment("verify comment").build())
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -167,7 +167,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     Assert.assertEquals("verify comment", taskService.get(taskId3).getVerificationComment());
 
     // Batch complete tasks
-    post(token3, "/tasks/batch/complete",
+    post(token3, "/api/v1/tasks/batch/complete",
         BatchTaskStatusChangeDtoV1.builder().items(List.of(taskId2, taskId3)).build())
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.COMPLETED, taskService.get(taskId2).getStatus());
@@ -176,12 +176,12 @@ public class TaskManagementTest extends AbstractMockMvcTest {
     // Batch reject tasks
     List<TaskViewDtoV1> batchCreatedTasks2 =
         batchCreateTasks(token1).stream().collect(Collectors.toList());
-    post(token1, "/tasks/" + batchCreatedTasks2.get(0).getId() + "/verify", null)
+    post(token1, "/api/v1/tasks/" + batchCreatedTasks2.get(0).getId() + "/verify", null)
         .andExpect(MockMvcResultMatchers.status().isOk());
     Assert.assertEquals(TaskStatus.VERIFIED,
         taskService.get(batchCreatedTasks2.get(0).getId()).getStatus());
 
-    post(token2, "/tasks/batch/reject",
+    post(token2, "/api/v1/tasks/batch/reject",
         BatchTaskStatusChangeDtoV1.builder().items(batchCreatedTasks2.stream()
             .map(TaskViewDtoV1::getId).collect(Collectors.toList())).build())
         .andExpect(MockMvcResultMatchers.status().isOk());
@@ -230,7 +230,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
   protected TaskViewDtoV1 createTask(String token) throws Exception {
     return getResponseAs(mockMvc
-        .perform(MockMvcRequestBuilders.post("/tasks").header("Authorization", "Bearer " + token)
+        .perform(MockMvcRequestBuilders.post("/api/v1/tasks").header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(TaskDtoV1.builder()
                 .customerStoreId(store.getId()).volunteerStoreId(store.getId())
@@ -255,7 +255,7 @@ public class TaskManagementTest extends AbstractMockMvcTest {
 
     return getResponseAs(
         mockMvc
-            .perform(MockMvcRequestBuilders.post("/tasks/batch")
+            .perform(MockMvcRequestBuilders.post("/api/v1/tasks/batch")
                 .header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE).content(
                     objectMapper.writeValueAsBytes(GenericCollectionDtoV1.builder()
@@ -268,9 +268,8 @@ public class TaskManagementTest extends AbstractMockMvcTest {
   protected GenericPageDtoV1<TaskViewDtoV1> search(String token, TaskSearchDtoV1 query)
       throws Exception {
     return getResponseAs(
-        post(token, "/tasks/search", query).andExpect(MockMvcResultMatchers.status().isOk()),
+        post(token, "/api/v1/tasks/search", query).andExpect(MockMvcResultMatchers.status().isOk()),
         new TypeReference<GenericPageDtoV1<TaskViewDtoV1>>() {
         });
   }
-
 }

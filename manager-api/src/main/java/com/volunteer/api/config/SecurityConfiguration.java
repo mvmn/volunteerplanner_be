@@ -8,13 +8,11 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import java.time.Duration;
-import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -39,6 +37,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Value("${cors.enable:false}")
   private boolean enableCors;
 
+  @Value("${swagger.enable:false}")
+  private boolean enableSwagger;
+
   @Value("${security.jwt.access-token-ttl:1m}")
   private Duration accessTokenTtl;
   @Value("${security.jwt.refresh-token-ttl:5m}")
@@ -48,8 +49,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   private PasswordEncoder passwordEncoder;
   @Autowired
   private UserDetailsService userService;
-  @Autowired
-  private Environment environment;
 
   @Override
   protected void configure(final AuthenticationManagerBuilder builder) throws Exception {
@@ -63,10 +62,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry urlAuthConf =
         http.authorizeRequests()
             .antMatchers("/actuator/**").permitAll()
-            .antMatchers("/authenticate").permitAll()
-            .antMatchers(HttpMethod.GET, "/address/**").permitAll()
-            .antMatchers(HttpMethod.POST, "/users").permitAll()
-            .antMatchers(HttpMethod.GET, "/users/password/reset").permitAll();
+            .antMatchers("/api/v1/authenticate").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/address/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+            .antMatchers(HttpMethod.GET, "/api/v1/users/password/reset").permitAll();
     if(enableCors) {
       urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }
@@ -99,12 +98,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry configureOpenApi(
       ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry urlRegistry) {
-    if (Set.of(environment.getActiveProfiles()).contains("local")) {
+    if (enableSwagger) {
       return urlRegistry.antMatchers("/swagger-ui/**").permitAll()
           .antMatchers("/swagger-ui.html").permitAll()
           .antMatchers("/v3/**").permitAll();
     }
     return urlRegistry;
   }
-
 }

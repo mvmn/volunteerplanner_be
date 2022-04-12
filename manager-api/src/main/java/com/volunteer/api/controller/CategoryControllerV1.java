@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Validated
 @RestController
-@RequestMapping(path = "/categories", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "/api/v1/categories", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class CategoryControllerV1 {
 
