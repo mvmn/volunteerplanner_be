@@ -89,4 +89,4 @@ cache:
 
 cors:
   enable: true
-  origins: 'https://editor.swagger.io'
+  origins: '*'
