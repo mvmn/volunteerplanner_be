@@ -90,3 +90,8 @@ cache:
 cors:
   enable: true
   origins: '*'
+
+turbosms:
+  sender: '${TURBOSMS_SENDER}'
+  authtoken: '${TURBOSMS_TOKEN}'
+  enabled: true

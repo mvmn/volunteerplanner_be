@@ -1,10 +1,5 @@
 package com.volunteer.api.config;
 
-import com.volunteer.api.data.model.api.ErrorResponse;
-import com.volunteer.api.error.InvalidPasswordException;
-import com.volunteer.api.error.InvalidQuantityException;
-import com.volunteer.api.error.InvalidStatusException;
-import com.volunteer.api.error.ObjectNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,6 +15,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.volunteer.api.data.model.api.ErrorResponse;
+import com.volunteer.api.error.InvalidPasswordException;
+import com.volunteer.api.error.InvalidQuantityException;
+import com.volunteer.api.error.InvalidStatusException;
+import com.volunteer.api.error.ObjectNotFoundException;
+import com.volunteer.api.error.SmsServiceCommunicationException;
+import com.volunteer.api.error.TurboSmsSendFailureException;
 
 @RestControllerAdvice
 @RequestMapping(value = "/error", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -90,5 +92,17 @@ public class ErrorHandler {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 
+  @ExceptionHandler(TurboSmsSendFailureException.class)
+  @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+  public ErrorResponse handleTurboSmsSendFailureException(TurboSmsSendFailureException exception) {
+    return ErrorResponse.builder().errorMessage("SMS sending failed").build();
+  }
 
+  @ExceptionHandler(SmsServiceCommunicationException.class)
+  @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
+  public ErrorResponse handleSmsServiceCommunicationException(
+      SmsServiceCommunicationException exception) {
+    return ErrorResponse.builder().errorMessage("SMS sending service communication failure")
+        .build();
+  }
 }

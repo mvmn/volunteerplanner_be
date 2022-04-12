@@ -1,6 +1,7 @@
 package com.volunteer.api.config;
 
 import com.volunteer.api.audit.AuditInterceptor;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Autowired
-  private AuditInterceptor auditInterceptor;
+  private ObjectProvider<AuditInterceptor> auditInterceptor;
 
   @Value("${cors.enable:false}")
   private boolean enableCors;
@@ -31,7 +32,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
-    registry.addInterceptor(auditInterceptor);
+    registry.addInterceptor(auditInterceptor.getIfUnique());
   }
 
   @Override
