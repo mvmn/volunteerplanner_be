@@ -3,7 +3,7 @@
     "name": "get all regions",
     "given": {
       "request": {
-        "endpoint": "/address/regions",
+        "endpoint": "/api/v1/address/regions",
         "method": "GET"
       }
     },
@@ -115,7 +115,7 @@
     "name": "get region by id",
     "given": {
       "request": {
-        "endpoint": "/address/regions/12",
+        "endpoint": "/api/v1/address/regions/12",
         "method": "GET"
       }
     },
@@ -131,7 +131,7 @@
     "name": "get all region cities",
     "given": {
       "request": {
-        "endpoint": "/address/regions/12/cities",
+        "endpoint": "/api/v1/address/regions/12/cities",
         "method": "GET"
       }
     },
@@ -731,7 +731,7 @@
     "name": "get city by id",
     "given": {
       "request": {
-        "endpoint": "/address/cities/523",
+        "endpoint": "/api/v1/address/cities/523",
         "method": "GET"
       }
     },
@@ -751,7 +751,7 @@
     "name": "get all region cities by missed id",
     "given": {
       "request": {
-        "endpoint": "/address/regions/999/cities",
+        "endpoint": "/api/v1/address/regions/999/cities",
         "method": "GET"
       }
     },
@@ -766,7 +766,7 @@
     "name": "get region by missed id",
     "given": {
       "request": {
-        "endpoint": "/address/regions/999",
+        "endpoint": "/api/v1/address/regions/999",
         "method": "GET"
       }
     },
@@ -781,7 +781,7 @@
     "name": "get city by missed id",
     "given": {
       "request": {
-        "endpoint": "/address/cities/99999",
+        "endpoint": "/api/v1/address/cities/99999",
         "method": "GET"
       }
     },

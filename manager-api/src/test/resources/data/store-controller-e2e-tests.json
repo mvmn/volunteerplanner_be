@@ -7,7 +7,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores",
+        "endpoint": "/api/v1/stores",
         "method": "POST",
         "body": {
           "name": "dummy",
@@ -47,7 +47,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/1",
+        "endpoint": "/api/v1/stores/1",
         "method": "PUT",
         "body": {
           "name": "dummy u",
@@ -87,7 +87,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/1",
+        "endpoint": "/api/v1/stores/1",
         "method": "DELETE"
       }
     },
@@ -103,7 +103,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores",
+        "endpoint": "/api/v1/stores",
         "method": "POST",
         "body": {
           "name": "public store",
@@ -143,7 +143,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores",
+        "endpoint": "/api/v1/stores",
         "method": "POST",
         "body": {
           "name": "private store",
@@ -183,7 +183,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/2",
+        "endpoint": "/api/v1/stores/2",
         "method": "GET"
       }
     },
@@ -214,7 +214,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/stores/2",
+        "endpoint": "/api/v1/stores/2",
         "method": "GET"
       }
     },
@@ -245,7 +245,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/3",
+        "endpoint": "/api/v1/stores/3",
         "method": "GET"
       }
     },
@@ -276,7 +276,7 @@
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/stores/3",
+        "endpoint": "/api/v1/stores/3",
         "method": "GET"
       }
     },
@@ -292,7 +292,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/search",
+        "endpoint": "/api/v1/stores/search",
         "method": "POST",
         "body": {
           "page": 1,
@@ -364,7 +364,7 @@
         "password": "operator"
       },
       "request": {
-        "endpoint": "/stores/search?city.id=15",
+        "endpoint": "/api/v1/stores/search?city.id=15",
         "method": "GET"
       }
     },

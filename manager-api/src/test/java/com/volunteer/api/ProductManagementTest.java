@@ -41,7 +41,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
     mockMvc
         .perform(
-            MockMvcRequestBuilders.get("/products/1").header("Authorization", "Bearer " + token))
+            MockMvcRequestBuilders.get("/api/v1/products/1").header("Authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isNotFound());
 
     // Create
@@ -115,7 +115,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   private ProductDtoV1 update(String token, ProductDtoV1 product) throws Exception {
     byte[] responseBody = mockMvc
-        .perform(MockMvcRequestBuilders.put("/products/" + product.getId())
+        .perform(MockMvcRequestBuilders.put("/api/v1/products/" + product.getId())
             .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(product)))
@@ -126,7 +126,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   private void delete(String token, ProductDtoV1 product) throws Exception {
     mockMvc
-        .perform(MockMvcRequestBuilders.delete("/products/" + product.getId())
+        .perform(MockMvcRequestBuilders.delete("/api/v1/products/" + product.getId())
             .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE))
         .andExpect(MockMvcResultMatchers.status().isNoContent());
@@ -134,7 +134,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   private ProductDtoV1 getById(String token, ProductDtoV1 product) throws Exception {
     byte[] responseBody = mockMvc
-        .perform(MockMvcRequestBuilders.get("/products/" + product.getId())
+        .perform(MockMvcRequestBuilders.get("/api/v1/products/" + product.getId())
             .header("Authorization", "Bearer " + token))
         .andExpect(MockMvcResultMatchers.status().isOk())
         .andReturn().getResponse()
@@ -144,7 +144,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
 
   private ProductDtoV1 create(String token, CategoryDtoV1 category) throws Exception {
     byte[] responseBody = mockMvc
-        .perform(MockMvcRequestBuilders.post("/products")
+        .perform(MockMvcRequestBuilders.post("/api/v1/products")
             .header("Authorization", "Bearer " + token)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsBytes(ProductDtoV1.builder()
@@ -161,7 +161,7 @@ public class ProductManagementTest extends AbstractMockMvcTest {
       final SearchDto<FilterDto> productSearch) throws Exception {
     try {
       final byte[] responseBody = mockMvc
-          .perform(MockMvcRequestBuilders.post("/products/search")
+          .perform(MockMvcRequestBuilders.post("/api/v1/products/search")
               .header("Authorization", "Bearer " + token)
               .contentType(MediaType.APPLICATION_JSON_VALUE)
               .content(objectMapper.writerFor(new TypeReference<SearchDto<FilterDto>>() {

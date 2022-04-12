@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Lazy
 @Validated
 @RestController
-@RequestMapping(value = "/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/authenticate", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class AuthenticateController {
 
