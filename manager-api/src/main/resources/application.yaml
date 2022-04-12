@@ -92,6 +92,6 @@ cors:
   origins: '*'
 
 turbosms:
-  sender: '${SMS_SENDER}'
-  authtoken: '${SMS_TOKEN}'
+  sender: '${VOLUNTEER_SMS_SENDER}'
+  authtoken: '${VOLUNTEER_SMS_TOKEN}'
   enabled: true
