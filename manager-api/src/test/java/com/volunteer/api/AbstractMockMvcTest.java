@@ -86,7 +86,7 @@ public class AbstractMockMvcTest extends AbstractTestWithPersistence {
 
   public AuthenticationResponse login(String principal, String password) throws Exception {
     byte[] authResponseBytes = mockMvc
-        .perform(MockMvcRequestBuilders.post("/authenticate")
+        .perform(MockMvcRequestBuilders.post("/api/v1/authenticate")
             .content(objectMapper.writeValueAsBytes(
                 AuthenticationRequest.builder().principal(principal).password(password).build()))
             .contentType(MediaType.APPLICATION_JSON_VALUE))
