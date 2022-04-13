@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import javax.annotation.RegEx;
 import javax.persistence.Column;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -21,7 +20,7 @@ public class UserDtoV1 {
   private Integer id;
 
   @NotBlank
-  @Pattern(regexp = "^[0-9]{9,15}$")
+  @Pattern(regexp = "^[0-9]{12}$")
   @JsonProperty("phoneNumber")
   private String phoneNumber;
   @JsonProperty("password")

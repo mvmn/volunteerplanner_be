@@ -3,7 +3,7 @@
     "name": "create dummy product",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -39,7 +39,7 @@
     "name": "update dummy product",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -75,7 +75,7 @@
     "name": "get dummy product by id",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -104,7 +104,7 @@
     "name": "delete dummy product",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -120,7 +120,7 @@
     "name": "create product-2",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -154,7 +154,7 @@
     "name": "create product-3",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -188,7 +188,7 @@
     "name": "search by name",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -248,7 +248,7 @@
     "name": "POST search by category",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -296,7 +296,7 @@
     "name": "GET search by category",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {
@@ -328,7 +328,7 @@
     "name": "search by name or category",
     "given": {
       "auth": {
-        "principal": "2222222222",
+        "principal": "222222222222",
         "password": "operator"
       },
       "request": {

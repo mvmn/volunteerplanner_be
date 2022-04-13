@@ -3,7 +3,6 @@ package com.volunteer.api.security;
 import com.volunteer.api.security.model.AuthenticationRequest;
 import com.volunteer.api.security.model.AuthenticationResponse;
 import com.volunteer.api.service.JWTService;
-import com.volunteer.api.service.impl.JWTServiceImpl;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
