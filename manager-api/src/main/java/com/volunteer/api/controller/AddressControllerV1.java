@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
 @RequestMapping(path = "/api/v1/address", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AddressControllerV1 {
 
@@ -26,7 +27,6 @@ public class AddressControllerV1 {
   private final RegionDtoMapper regionDtoMapper;
   private final CityDtoMapper cityDtoMapper;
 
-  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<RegionDtoV1> getRegions() {
@@ -35,14 +35,12 @@ public class AddressControllerV1 {
         .build();
   }
 
-  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions/{region-id}")
   @ResponseStatus(HttpStatus.OK)
   public RegionDtoV1 getRegion(@PathVariable("region-id") final Integer regionId) {
     return regionDtoMapper.map(addressService.getRegionById(regionId));
   }
 
-  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions/{region-id}/cities")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<CityDtoV1> getRegionCities(
@@ -52,7 +50,6 @@ public class AddressControllerV1 {
         .build();
   }
 
-  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/cities/{city-id}")
   @ResponseStatus(HttpStatus.OK)
   public CityDtoV1 getCity(@PathVariable("city-id") final Integer cityId) {

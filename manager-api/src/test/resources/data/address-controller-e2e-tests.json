@@ -1,5 +1,17 @@
 [
   {
+    "name": "get all regions - non auth",
+    "given": {
+      "request": {
+        "endpoint": "/api/v1/address/regions",
+        "method": "GET"
+      }
+    },
+    "expected": {
+      "status": 403
+    }
+  },
+  {
     "name": "get all regions",
     "given": {
       "auth": {
