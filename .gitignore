@@ -39,4 +39,9 @@ out/
 ### VS Code ###
 .vscode/
 
+### Auto generated source ###
+**/src/main/generated/
+**/src/test/generated/
+
+### Local config ###
 manager-api/src/main/resources/application-local*.yaml
