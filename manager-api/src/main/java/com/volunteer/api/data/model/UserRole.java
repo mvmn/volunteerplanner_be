@@ -20,6 +20,8 @@ public enum UserRole {
       UserAuthority.CATEGORIES_VIEW,
       UserAuthority.CATEGORIES_MODIFY,
 
+      UserAuthority.ADDRESSES_VIEW,
+
       UserAuthority.STORES_VIEW_PUBLIC,
       UserAuthority.STORES_VIEW_CONFIDENTIAL,
       UserAuthority.STORES_MODIFY,
@@ -42,6 +44,8 @@ public enum UserRole {
       UserAuthority.CATEGORIES_VIEW,
       UserAuthority.CATEGORIES_MODIFY,
 
+      UserAuthority.ADDRESSES_VIEW,
+
       UserAuthority.STORES_VIEW_PUBLIC,
       UserAuthority.STORES_VIEW_CONFIDENTIAL,
       UserAuthority.STORES_MODIFY,
@@ -59,6 +63,8 @@ public enum UserRole {
   )),
   VOLUNTEER("volunteer", Set.of(
       UserAuthority.CATEGORIES_VIEW,
+
+      UserAuthority.ADDRESSES_VIEW,
 
       UserAuthority.STORES_VIEW_PUBLIC,
 

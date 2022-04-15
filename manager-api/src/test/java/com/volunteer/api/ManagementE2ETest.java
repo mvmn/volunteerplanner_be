@@ -30,21 +30,21 @@ public class ManagementE2ETest extends AbstractRestTemplateTest {
   private static final String TASKS_CONTROLLER_TEST_CASES_FLP = "data/task-controller-e2e-tests.json";
 
   @ParameterizedTest()
-  @MethodSource("loadAddressControllerTestCases")
-  @Order(1)
-  @DisplayName("address-controller")
-  public void addressControllerTest(final String testName, final JsonNode given,
-      final JsonNode expected) {
-    endpointTest(testName, given, expected, Collections.emptySet());
-  }
-
-  @ParameterizedTest()
   @MethodSource("loadUsersControllerTestCases")
-  @Order(2)
+  @Order(1)
   @DisplayName("users-controller")
   public void usersControllerTest(final String testName, final JsonNode given,
       final JsonNode expected) {
     endpointTest(testName, given, expected, Set.of("userVerifiedAt", "lockedAt"));
+  }
+
+  @ParameterizedTest()
+  @MethodSource("loadAddressControllerTestCases")
+  @Order(2)
+  @DisplayName("address-controller")
+  public void addressControllerTest(final String testName, final JsonNode given,
+      final JsonNode expected) {
+    endpointTest(testName, given, expected, Collections.emptySet());
   }
 
   @ParameterizedTest()

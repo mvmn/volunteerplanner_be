@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Profile("!test")
 @EnableFeignClients(basePackages = "com.volunteer.api.feign")
-public class FeignConfig {
+public class FeignConfiguration {
 
 }

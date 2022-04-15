@@ -9,6 +9,7 @@ import com.volunteer.api.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class AddressControllerV1 {
   private final RegionDtoMapper regionDtoMapper;
   private final CityDtoMapper cityDtoMapper;
 
-  // access for anybody
+  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<RegionDtoV1> getRegions() {
@@ -34,12 +35,14 @@ public class AddressControllerV1 {
         .build();
   }
 
+  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions/{region-id}")
   @ResponseStatus(HttpStatus.OK)
   public RegionDtoV1 getRegion(@PathVariable("region-id") final Integer regionId) {
     return regionDtoMapper.map(addressService.getRegionById(regionId));
   }
 
+  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/regions/{region-id}/cities")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<CityDtoV1> getRegionCities(
@@ -49,6 +52,7 @@ public class AddressControllerV1 {
         .build();
   }
 
+  @PreAuthorize("hasAuthority('ADDRESSES_VIEW')")
   @GetMapping(path = "/cities/{city-id}")
   @ResponseStatus(HttpStatus.OK)
   public CityDtoV1 getCity(@PathVariable("city-id") final Integer cityId) {

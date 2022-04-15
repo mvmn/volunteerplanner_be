@@ -2,6 +2,10 @@
   {
     "name": "get all regions",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/regions",
         "method": "GET"
@@ -114,6 +118,10 @@
   {
     "name": "get region by id",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/regions/12",
         "method": "GET"
@@ -130,6 +138,10 @@
   {
     "name": "get all region cities",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/regions/12/cities",
         "method": "GET"
@@ -730,6 +742,10 @@
   {
     "name": "get city by id",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/cities/523",
         "method": "GET"
@@ -750,6 +766,10 @@
   {
     "name": "get all region cities by missed id",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/regions/999/cities",
         "method": "GET"
@@ -765,6 +785,10 @@
   {
     "name": "get region by missed id",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/regions/999",
         "method": "GET"
@@ -780,6 +804,10 @@
   {
     "name": "get city by missed id",
     "given": {
+      "auth": {
+        "principal": "222222222222",
+        "password": "operator"
+      },
       "request": {
         "endpoint": "/api/v1/address/cities/99999",
         "method": "GET"

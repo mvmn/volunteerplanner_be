@@ -13,6 +13,6 @@ public interface TurboSmsFeignClient {
 
   @PostMapping(value = "/message/send.json", consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
-  public TurboSmsResponse send(@RequestBody TurboSmsSendRequest request,
+  TurboSmsResponse send(@RequestBody TurboSmsSendRequest request,
       @RequestHeader("Authorization") String auth);
 }
