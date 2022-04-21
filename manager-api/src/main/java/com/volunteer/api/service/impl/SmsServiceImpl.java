@@ -12,7 +12,7 @@ import com.volunteer.api.data.model.turbosms.TurboSmsResponse;
 import com.volunteer.api.data.model.turbosms.TurboSmsSendRequest;
 import com.volunteer.api.error.SmsServiceCommunicationException;
 import com.volunteer.api.error.TurboSmsSendFailureException;
-import com.volunteer.api.feign.TurboSmsFeignClient;
+import com.volunteer.api.feign.TurboSmsClient;
 import com.volunteer.api.service.SmsService;
 
 @Service
@@ -21,7 +21,7 @@ public class SmsServiceImpl implements SmsService {
   private static final Logger LOG = LoggerFactory.getLogger(SmsServiceImpl.class);
 
   @Autowired
-  private TurboSmsFeignClient turboSms;
+  private TurboSmsClient turboSms;
 
   @Value("${turbosms.sender:}")
   private String senderId;

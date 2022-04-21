@@ -9,7 +9,7 @@ import com.volunteer.api.data.model.turbosms.TurboSmsResponse;
 import com.volunteer.api.data.model.turbosms.TurboSmsSendRequest;
 
 @FeignClient(name = "turboSms", url = "${turbosms.baseurl:https://api.turbosms.ua}")
-public interface TurboSmsFeignClient {
+public interface TurboSmsClient {
 
   @PostMapping(value = "/message/send.json", consumes = MediaType.APPLICATION_JSON_VALUE,
       produces = MediaType.APPLICATION_JSON_VALUE)
