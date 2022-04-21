@@ -141,7 +141,7 @@ public class UserControllerV1 {
     service.passwordChange(source.getOldPassword(), source.getNewPassword());
   }
 
-  @Parameter(in = ParameterIn.HEADER, description = "Custom Header To be Pass",
+  @Parameter(in = ParameterIn.HEADER, description = "Captcha",
       name = CaptchaService.CAPTCHA_HEADER_NAME)
   @GetMapping("/current/sms")
   @ResponseStatus(HttpStatus.NO_CONTENT)
