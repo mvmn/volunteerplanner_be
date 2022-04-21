@@ -2,21 +2,25 @@ package com.volunteer.api.data.user.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.volunteer.api.AbstractTestWithPersistence;
+import com.volunteer.api.config.MockSecurityConfiguration;
+import com.volunteer.api.data.model.persistence.Category;
+import com.volunteer.api.service.CategoryService;
 import java.util.List;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import com.volunteer.api.AbstractTestWithPersistence;
-import com.volunteer.api.data.model.persistence.Category;
-import com.volunteer.api.service.CategoryService;
 
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
+@Import({MockSecurityConfiguration.class})
 public class CategoryServiceImplTest extends AbstractTestWithPersistence {
 
   @Autowired

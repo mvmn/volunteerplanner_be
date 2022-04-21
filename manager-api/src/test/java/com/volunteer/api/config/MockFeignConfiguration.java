@@ -1,13 +1,13 @@
 package com.volunteer.api.config;
 
+import com.volunteer.api.data.model.turbosms.TurboSmsResponse;
+import com.volunteer.api.feign.TurboSmsFeignClient;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.volunteer.api.data.model.turbosms.TurboSmsResponse;
-import com.volunteer.api.feign.TurboSmsFeignClient;
 
 @Configuration
-public class MockFeignConfig {
+public class MockFeignConfiguration {
 
   @Bean
   public TurboSmsFeignClient turboSmsMock() {
@@ -16,4 +16,5 @@ public class MockFeignConfig {
         .thenReturn(TurboSmsResponse.builder().responseCode(0).build());
     return mock;
   }
+
 }

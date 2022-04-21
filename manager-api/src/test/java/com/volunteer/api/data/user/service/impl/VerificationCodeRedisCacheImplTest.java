@@ -1,6 +1,7 @@
 package com.volunteer.api.data.user.service.impl;
 
 import com.volunteer.api.config.CacheTestConfigurationRedis;
+import com.volunteer.api.config.MockSecurityConfiguration;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.service.impl.VerificationCodeRedisCacheImpl;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
-@Import(CacheTestConfigurationRedis.class)
+@Import({CacheTestConfigurationRedis.class, MockSecurityConfiguration.class})
 @TestPropertySource(properties = "cache.type=redis")
 public class VerificationCodeRedisCacheImplTest extends AbstractVerificationCodeCacheImplTest {
 

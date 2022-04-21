@@ -3,18 +3,21 @@ package com.volunteer.api.data.user.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.volunteer.api.AbstractTestWithPersistence;
+import com.volunteer.api.config.MockSecurityConfiguration;
 import com.volunteer.api.data.model.persistence.Store;
 import com.volunteer.api.service.AddressService;
 import com.volunteer.api.service.StoreService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Testcontainers
 @ActiveProfiles("test")
+@Import({MockSecurityConfiguration.class})
 public class StoreServiceImpTest extends AbstractTestWithPersistence {
 
   @Autowired

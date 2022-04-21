@@ -50,8 +50,8 @@ public class UserControllerV1 {
 
   @PutMapping("/password/reset")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void passwordReset(@NotBlank @RequestParam(name = "userName") final String username) {
-    service.passwordReset(username);
+  public void passwordReset(@NotBlank @RequestParam(name = "principal") final String principal) {
+    service.passwordReset(principal);
   }
 
   @PreAuthorize("hasAuthority('USERS_VIEW')")
@@ -73,6 +73,15 @@ public class UserControllerV1 {
   @ResponseStatus(HttpStatus.OK)
   public UserDtoV1 getById(@PathVariable("id") final Integer userId) {
     return userMapper.map(service.get(userId));
+  }
+
+  @PreAuthorize("hasAuthority('USERS_MODIFY')")
+  @PutMapping("/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public UserDtoV1 update(@PathVariable("id") final Integer userId,
+      @Valid @RequestBody final UserDtoV1 source) {
+    source.setId(userId);
+    return userMapper.map(service.update(userMapper.map(source)));
   }
 
   @PreAuthorize("hasAuthority('USERS_RATING_RESET')")
@@ -119,8 +128,8 @@ public class UserControllerV1 {
 
   @PutMapping("/current")
   @ResponseStatus(HttpStatus.OK)
-  public UserDtoV1 update(@Valid @RequestBody final UserDtoV1 source) {
-    return userMapper.map(service.update(userMapper.map(source)));
+  public UserDtoV1 updateCurrent(@Valid @RequestBody final UserDtoV1 source) {
+    return userMapper.map(service.updateCurrent(userMapper.map(source)));
   }
 
   @PutMapping("/current/password/change")

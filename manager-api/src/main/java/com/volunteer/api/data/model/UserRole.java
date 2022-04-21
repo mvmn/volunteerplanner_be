@@ -8,12 +8,14 @@ public enum UserRole {
   ROOT("root", Set.of(
       UserAuthority.USERS_VIEW,
       UserAuthority.USERS_VERIFY,
+      UserAuthority.USERS_MODIFY,
       UserAuthority.USERS_RATING_RESET,
       UserAuthority.USERS_LOCK
   )),
   OPERATOR("operator", Set.of(
       UserAuthority.USERS_VIEW,
       UserAuthority.USERS_VERIFY,
+      UserAuthority.USERS_MODIFY,
       UserAuthority.USERS_RATING_RESET,
       UserAuthority.USERS_LOCK,
 

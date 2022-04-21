@@ -3,6 +3,7 @@ package com.volunteer.api.data.model;
 public enum UserAuthority {
 
   USERS_VIEW,
+  USERS_MODIFY,
   USERS_VERIFY,
   USERS_RATING_RESET,
   USERS_LOCK,

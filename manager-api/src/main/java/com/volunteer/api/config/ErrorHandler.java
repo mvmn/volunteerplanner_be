@@ -1,5 +1,13 @@
 package com.volunteer.api.config;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.volunteer.api.data.model.api.ErrorResponse;
+import com.volunteer.api.error.InvalidPasswordException;
+import com.volunteer.api.error.InvalidQuantityException;
+import com.volunteer.api.error.InvalidStatusException;
+import com.volunteer.api.error.ObjectNotFoundException;
+import com.volunteer.api.error.SmsServiceCommunicationException;
+import com.volunteer.api.error.TurboSmsSendFailureException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,13 +23,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.volunteer.api.data.model.api.ErrorResponse;
-import com.volunteer.api.error.InvalidPasswordException;
-import com.volunteer.api.error.InvalidQuantityException;
-import com.volunteer.api.error.InvalidStatusException;
-import com.volunteer.api.error.ObjectNotFoundException;
-import com.volunteer.api.error.SmsServiceCommunicationException;
-import com.volunteer.api.error.TurboSmsSendFailureException;
 
 @RestControllerAdvice
 @RequestMapping(value = "/error", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,6 +56,12 @@ public class ErrorHandler {
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse handle(InvalidPasswordException exception) {
     return ErrorResponse.builder().errorMessage("Old password does not match current one").build();
+  }
+
+  @ExceptionHandler({TokenExpiredException.class})
+  @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+  public ErrorResponse handle(final TokenExpiredException exception) {
+    return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 
   @ExceptionHandler(DataIntegrityViolationException.class)

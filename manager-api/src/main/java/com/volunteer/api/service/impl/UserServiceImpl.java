@@ -152,6 +152,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   @Override
   @Transactional
   public VPUser update(final VPUser user) {
+    final VPUser current = get(user.getId());
+
+    if (!Objects.equals(current.getPhoneNumber(), user.getPhoneNumber())) {
+      current.setPhoneNumber(user.getPhoneNumber());
+      current.setPhoneNumberVerified(false);
+    }
+
+    current.setRole(roleService.get(user.getRole().getName()));
+    current.setDisplayName(user.getDisplayName());
+    current.setOrganization(user.getOrganization());
+
+
+    return repository.save(current);
+  }
+
+  @Override
+  @Transactional
+  public VPUser updateCurrent(final VPUser user) {
     final VPUser current = getCurrentUser();
 
     if (!Objects.equals(current.getPhoneNumber(), user.getPhoneNumber())) {
@@ -161,6 +179,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     current.setDisplayName(user.getDisplayName());
     current.setOrganization(user.getOrganization());
+
 
     return repository.save(current);
   }
@@ -286,7 +305,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     if (verificationCode.getKey()) {
       // Only send if it's newly created. Don't send same code twice
       try {
-        LOG.info("Sending verification code SMS to user {} '{}'", current.getId(), current.getDisplayName());
+        LOG.info("Sending verification code SMS to user {} '{}'", current.getId(),
+            current.getDisplayName());
         smsService.send(current, verificationCode.getValue());
       } catch (Throwable fail) {
         // Remove code if send failed

@@ -17,6 +17,8 @@ public interface UserService extends AuthService {
 
   VPUser update(final VPUser user);
 
+  VPUser updateCurrent(final VPUser user);
+
   void ratingUpdate(final VPUser user, final int delta);
 
   VPUser ratingReset(final Integer id);

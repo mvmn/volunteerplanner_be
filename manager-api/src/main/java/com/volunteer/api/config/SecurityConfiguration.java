@@ -1,5 +1,6 @@
 package com.volunteer.api.config;
 
+import com.volunteer.api.security.filter.FilterChainExceptionHandler;
 import com.volunteer.api.security.filter.JWTAuthorizationFilter;
 import com.volunteer.api.service.JWTService;
 import com.volunteer.api.service.impl.JWTServiceImpl;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import java.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +26,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +36,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Value("${security.jwt.secret}")
   private String secret;
-  
+
   @Value("${cors.enable:false}")
   private boolean enableCors;
 
@@ -49,6 +53,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private UserDetailsService userService;
 
+  @Autowired
+  @Qualifier("handlerExceptionResolver")
+  private HandlerExceptionResolver exceptionResolver;
+
   @Override
   protected void configure(final AuthenticationManagerBuilder builder) throws Exception {
     builder.userDetailsService(userService).passwordEncoder(passwordEncoder);
@@ -64,13 +72,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/v1/authenticate").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
             .antMatchers(HttpMethod.GET, "/api/v1/users/password/reset").permitAll();
-    if(enableCors) {
+    if (enableCors) {
       urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }
     configureOpenApi(urlAuthConf).anyRequest().authenticated();
 
     http.addFilterBefore(new JWTAuthorizationFilter(jwtService()),
         UsernamePasswordAuthenticationFilter.class);
+
+    http.addFilterBefore(new FilterChainExceptionHandler(exceptionResolver), LogoutFilter.class);
   }
 
   @Bean
