@@ -10,7 +10,10 @@ import com.volunteer.api.data.model.api.search.SearchDto;
 import com.volunteer.api.data.model.api.search.filter.FilterDto;
 import com.volunteer.api.data.model.persistence.VPUser;
 import com.volunteer.api.data.repository.search.impl.UserQueryBuilder;
+import com.volunteer.api.service.CaptchaService;
 import com.volunteer.api.service.UserService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -138,6 +141,8 @@ public class UserControllerV1 {
     service.passwordChange(source.getOldPassword(), source.getNewPassword());
   }
 
+  @Parameter(in = ParameterIn.HEADER, description = "Captcha",
+      name = CaptchaService.CAPTCHA_HEADER_NAME)
   @GetMapping("/current/sms")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void verifyPhoneNumberStart() {

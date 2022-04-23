@@ -2,6 +2,7 @@ package com.volunteer.api.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.volunteer.api.data.model.api.ErrorResponse;
+import com.volunteer.api.error.InvalidCaptchaException;
 import com.volunteer.api.error.InvalidPasswordException;
 import com.volunteer.api.error.InvalidQuantityException;
 import com.volunteer.api.error.InvalidStatusException;
@@ -58,9 +59,9 @@ public class ErrorHandler {
     return ErrorResponse.builder().errorMessage("Old password does not match current one").build();
   }
 
-  @ExceptionHandler({TokenExpiredException.class})
+  @ExceptionHandler({TokenExpiredException.class, InvalidCaptchaException.class})
   @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
-  public ErrorResponse handle(final TokenExpiredException exception) {
+  public ErrorResponse handleUnauthorized(final Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 

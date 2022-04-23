@@ -38,6 +38,10 @@ management:
   info:
     env:
       enabled: true
+      
+captcha:
+  endpoints:
+    - 'GET UserControllerV1.verifyPhoneNumberStart'
 
 server:
   port: 8080
