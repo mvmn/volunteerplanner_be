@@ -1,6 +1,5 @@
 package com.volunteer.api.config;
 
-import com.volunteer.api.security.filter.FilterChainExceptionHandler;
 import com.volunteer.api.security.filter.JWTAuthorizationFilter;
 import com.volunteer.api.service.JWTService;
 import com.volunteer.api.service.impl.JWTServiceImpl;
@@ -26,7 +25,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 @Configuration
@@ -77,10 +75,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     configureOpenApi(urlAuthConf).anyRequest().authenticated();
 
-    http.addFilterBefore(new JWTAuthorizationFilter(jwtService()),
+    http.addFilterBefore(new JWTAuthorizationFilter(jwtService(), exceptionResolver),
         UsernamePasswordAuthenticationFilter.class);
-
-    http.addFilterBefore(new FilterChainExceptionHandler(exceptionResolver), LogoutFilter.class);
   }
 
   @Bean
