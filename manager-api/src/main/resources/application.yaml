@@ -105,3 +105,9 @@ turbosms:
 
 swagger:
   enable: true
+
+recaptcha:
+  secret: '${RECAPTCHA_SECRET}'
+
+captcha:
+  enable: ${ENABLE_CAPTCHA}
