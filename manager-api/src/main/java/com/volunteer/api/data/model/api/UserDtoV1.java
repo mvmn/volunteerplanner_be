@@ -11,8 +11,8 @@ import lombok.Data;
 
 @Data
 @JsonPropertyOrder({"id", "phoneNumber", "password", "role", "displayName", "organization",
-    "rating", "phoneNumberVerified", "userVerified", "userVerifiedByUserId", "userVerifiedAt",
-    "locked", "lockedByUserId", "lockedAt"})
+    "rating", "phoneNumberVerified", "userVerified", "userVerifiedBy", "userVerifiedByUserId",
+    "userVerifiedAt", "locked", "lockedByUserId", "lockedAt"})
 @JsonInclude(Include.NON_NULL)
 public class UserDtoV1 {
 
@@ -46,6 +46,8 @@ public class UserDtoV1 {
   private Boolean userVerified;
   @JsonProperty("userVerifiedByUserId")
   private Integer userVerifiedByUserId;
+  @JsonProperty("userVerifiedBy")
+  private String userVerifiedBy;
   @Column(name = "userVerifiedAt")
   private Long userVerifiedAt;
 

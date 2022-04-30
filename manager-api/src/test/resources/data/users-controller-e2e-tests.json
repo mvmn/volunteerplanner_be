@@ -26,6 +26,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any value",
         "locked": false
@@ -100,6 +101,7 @@
         "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any value",
         "locked": false
@@ -129,6 +131,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any value",
         "locked": false
@@ -187,6 +190,7 @@
         "rating": 0,
         "phoneNumberVerified": false,
         "userVerified": true,
+        "userVerifiedBy": "FN operator",
         "userVerifiedByUserId": 2,
         "userVerifiedAt": "any value",
         "locked": false
@@ -216,6 +220,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN operator",
         "userVerifiedByUserId": 2,
         "userVerifiedAt": "any value",
         "locked": false
@@ -245,6 +250,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN operator",
         "userVerifiedByUserId": 2,
         "userVerifiedAt": "any value",
         "locked": false
@@ -339,6 +345,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any string",
         "locked": false
@@ -384,6 +391,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",
         "locked": true,
@@ -415,6 +423,7 @@
         "rating": 0,
         "phoneNumberVerified": true,
         "userVerified": true,
+        "userVerifiedBy": "FN root",
         "userVerifiedByUserId": 1,
         "userVerifiedAt": "any-date",
         "locked": false
@@ -458,6 +467,7 @@
             "rating": 0,
             "phoneNumberVerified": true,
             "userVerified": true,
+	        "userVerifiedBy": "FN operator",
             "userVerifiedByUserId": 2,
             "userVerifiedAt": "any value",
             "locked": false
