@@ -74,8 +74,11 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
       case "locked":
         entityField = "locked";
         break;
-      case "userverifiedbyuserid":
+      case "userverifiedby":
         entityField = "userVerifiedBy.displayName";
+        break;
+      case "userverifiedbyuserid":
+        entityField = "userVerifiedByUserId";
         break;
       case "userverified":
         entityField = "userVerified";

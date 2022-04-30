@@ -12,8 +12,8 @@ public abstract class UserDtoV1Mapper {
 
   @Mapping(target = "role", source = "role.name")
   @Mapping(target = "password", constant = "******")
+  @Mapping(target = "userVerifiedBy", source = "userVerifiedBy.displayName")
   public abstract UserDtoV1 map(final VPUser dto);
-
 
   @Mapping(target = "version", ignore = true)
   @Mapping(target = "rating", ignore = true)

@@ -46,6 +46,8 @@ public class UserDtoV1 {
   private Boolean userVerified;
   @JsonProperty("userVerifiedByUserId")
   private Integer userVerifiedByUserId;
+  @JsonProperty("userVerifiedBy")
+  private String userVerifiedBy;
   @Column(name = "userVerifiedAt")
   private Long userVerifiedAt;
 
