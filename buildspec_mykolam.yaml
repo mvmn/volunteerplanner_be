@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+   commands:
+     - echo Logging in to Amazon ECR...
+     - aws --version
+     - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 032822407011.dkr.ecr.eu-west-1.amazonaws.com
+     - REPOSITORY_URI=032822407011.dkr.ecr.eu-west-1.amazonaws.com/vp
+     - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+     - IMAGE_TAG=${COMMIT_HASH:=latest}
+  build:
+    commands:
+     - echo Build started
+     - chmod -R 777 ./*
+     - cd ./manager-api
+     - ./gradlew build
+     - docker build -t $REPOSITORY_URI:latest .
+     - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - echo Build completed
+      - echo Pushing the Docker images...
+      - docker push $REPOSITORY_URI:latest
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
