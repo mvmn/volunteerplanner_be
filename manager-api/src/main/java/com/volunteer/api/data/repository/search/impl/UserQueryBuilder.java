@@ -56,7 +56,7 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
 
     final String entityField;
     switch (sort.getField().toLowerCase()) {
-      case "role.name":
+      case "role":
         entityField = "role.name";
         break;
       case "displayname":
@@ -64,6 +64,21 @@ public class UserQueryBuilder extends AbstractQueryBuilder<VPUser> {
         break;
       case "rating":
         entityField = "rating";
+        break;
+      case "phonenumber":
+        entityField = "phoneNumber";
+        break;
+      case "phonenumberverified":
+        entityField = "phoneNumberVerified";
+        break;
+      case "locked":
+        entityField = "locked";
+        break;
+      case "userverifiedbyuserid":
+        entityField = "userVerifiedByUserId";
+        break;
+      case "userverified":
+        entityField = "userVerified";
         break;
       default:
         throw new IllegalArgumentException(String.format(
