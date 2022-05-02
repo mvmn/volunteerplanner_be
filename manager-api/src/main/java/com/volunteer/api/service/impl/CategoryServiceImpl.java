@@ -79,4 +79,9 @@ public class CategoryServiceImpl implements CategoryService {
     return category.getParent().getPath() + category.getId() + "/";
   }
 
+  @Override
+  public List<Category> getAllSubcategories() {
+    return repository.findAllByParentIdNotNull();
+  }
+
 }
