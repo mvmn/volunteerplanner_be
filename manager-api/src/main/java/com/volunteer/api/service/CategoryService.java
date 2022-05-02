@@ -7,6 +7,8 @@ public interface CategoryService {
 
   List<Category> getRoots();
 
+  List<Category> getAllSubcategories();
+
   Category get(final Integer id);
 
   List<Category> getByParentId(final Integer parentId);
