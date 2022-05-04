@@ -297,7 +297,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     new SecureRandom().nextBytes(random);
     String password = Base64.getEncoder().encodeToString(random);
 
-    user.setPassword(password);
+    user.setPassword(passwordEncoder.encode(password));
     repository.save(user);
 
     smsService.send(user, password);
