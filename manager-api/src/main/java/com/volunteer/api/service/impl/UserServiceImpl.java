@@ -29,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
@@ -48,6 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+  
+  @Value("${randompass.length:16}")
+  private int randomPasswordLength = 16;
 
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
@@ -293,9 +297,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     final VPUser user = getByPrincipal(principal).orElseThrow(
         () -> new ObjectNotFoundException(String.format("User '%s' does not exist yet")));
 
-    byte[] random = new byte[32];
+    byte[] random = new byte[randomPasswordLength];
     new SecureRandom().nextBytes(random);
-    String password = Base64.getEncoder().encodeToString(random);
+    String password = Base64.getEncoder().encodeToString(random).substring(0, randomPasswordLength);
 
     user.setPassword(passwordEncoder.encode(password));
     repository.save(user);
