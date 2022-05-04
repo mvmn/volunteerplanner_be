@@ -290,7 +290,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // generate random password & change it
     // use sms to supply it to user
 
-    final VPUser user = repository.findByPhoneNumber(principal).orElseThrow(
+    final VPUser user = getByPrincipal(principal).orElseThrow(
         () -> new ObjectNotFoundException(String.format("User '%s' does not exist yet")));
 
     byte[] random = new byte[32];
