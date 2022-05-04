@@ -1,6 +1,6 @@
 package com.volunteer.api.data.repository;
 
-import com.volunteer.api.data.model.persistence.VPUser;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import com.volunteer.api.data.model.persistence.VPUser;
 
 @Repository
 public interface UserRepository
@@ -19,7 +20,7 @@ public interface UserRepository
   @EntityGraph(attributePaths = {"userVerifiedBy.displayName", "lockedBy.displayName"})
   Page<VPUser> findAll(@Nullable Specification<VPUser> spec, Pageable pageable);
 
-  VPUser findByPhoneNumber(final String phoneNumber);
+  Optional<VPUser> findByPhoneNumber(final String phoneNumber);
 
   @Query("select case when count(u) > 0 then true else false end from User u where u.role.name = ?1")
   boolean existsWithRole(final String roleName);
