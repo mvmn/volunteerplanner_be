@@ -39,6 +39,15 @@ public class CategoryControllerV1 {
   }
 
   @PreAuthorize("hasAuthority('CATEGORIES_VIEW')")
+  @GetMapping
+  @ResponseStatus(HttpStatus.OK)
+  public GenericCollectionDtoV1<CategoryDtoV1> getAll() {
+    return GenericCollectionDtoV1.<CategoryDtoV1>builder()
+        .items(categoryDtoMapper.map(categoryService.getAll()))
+        .build();
+  }
+
+  @PreAuthorize("hasAuthority('CATEGORIES_VIEW')")
   @GetMapping(path = "/roots")
   @ResponseStatus(HttpStatus.OK)
   public GenericCollectionDtoV1<CategoryDtoV1> getRoots() {

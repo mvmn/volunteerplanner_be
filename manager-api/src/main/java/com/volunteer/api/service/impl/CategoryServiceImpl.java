@@ -9,6 +9,8 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,6 +18,10 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
 
   private final CategoryRepository repository;
+
+  public List<Category> getAll() {
+    return repository.findAll(Sort.by(Order.asc("name")));
+  }
 
   @Override
   public List<Category> getRoots() {
