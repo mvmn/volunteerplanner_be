@@ -1,27 +1,13 @@
 package com.volunteer.api.controller;
 
-import com.volunteer.api.data.mapping.GenericPageDtoMapper;
-import com.volunteer.api.data.mapping.TaskDtoV1Mapper;
-import com.volunteer.api.data.mapping.TaskViewDtoV1Mapper;
-import com.volunteer.api.data.model.TaskStatus;
-import com.volunteer.api.data.model.UserAuthority;
-import com.volunteer.api.data.model.api.BatchTaskStatusChangeDtoV1;
-import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
-import com.volunteer.api.data.model.api.GenericPageDtoV1;
-import com.volunteer.api.data.model.api.TaskDtoV1;
-import com.volunteer.api.data.model.api.TaskSearchDtoV1;
-import com.volunteer.api.data.model.api.TaskStatusChangeDtoV1;
-import com.volunteer.api.data.model.api.TaskViewDtoV1;
-import com.volunteer.api.data.model.persistence.Task;
-import com.volunteer.api.utils.AuthenticationUtils;
-import com.volunteer.api.service.TaskService;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,6 +26,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import com.volunteer.api.data.mapping.GenericPageDtoMapper;
+import com.volunteer.api.data.mapping.TaskDtoV1Mapper;
+import com.volunteer.api.data.mapping.TaskViewDtoV1Mapper;
+import com.volunteer.api.data.model.TaskStatus;
+import com.volunteer.api.data.model.UserAuthority;
+import com.volunteer.api.data.model.api.BatchTaskStatusChangeDtoV1;
+import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
+import com.volunteer.api.data.model.api.GenericPageDtoV1;
+import com.volunteer.api.data.model.api.TaskDtoV1;
+import com.volunteer.api.data.model.api.TaskSearchDtoV1;
+import com.volunteer.api.data.model.api.TaskStatusChangeDtoV1;
+import com.volunteer.api.data.model.api.TaskViewDtoV1;
+import com.volunteer.api.data.model.persistence.Task;
+import com.volunteer.api.service.TaskExportService;
+import com.volunteer.api.service.TaskService;
+import com.volunteer.api.utils.AuthenticationUtils;
+import lombok.RequiredArgsConstructor;
 
 @Validated
 @RestController
@@ -48,7 +51,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskControllerV1 {
 
   private final TaskService taskService;
-
+  private final TaskExportService taskExportService;
+  
   private final TaskDtoV1Mapper taskMapper;
   private final TaskViewDtoV1Mapper taskViewMapper;
 
@@ -172,7 +176,23 @@ public class TaskControllerV1 {
   @PostMapping("search")
   public GenericPageDtoV1<TaskViewDtoV1> search(@RequestBody @Valid TaskSearchDtoV1 searchRequest,
       final Authentication authentication) {
+    Page<Task> searchResult = searchTasks(searchRequest);
 
+    return GenericPageDtoMapper.map(searchRequest.getPageNumber(), searchRequest.getPageSize(),
+        searchResult, task -> taskViewMapper.map(task, authentication));
+  }
+
+  @PreAuthorize("hasAuthority('TASKS_VIEW')")
+  @PostMapping(value = "export/xls",
+      produces = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+  public void exportXls(@RequestBody @Valid TaskSearchDtoV1 searchRequest,
+      final Authentication authentication, final HttpServletResponse response) throws IOException {
+    Page<Task> searchResult = searchTasks(searchRequest);
+    taskExportService
+        .exportTasks(searchResult.map(task -> taskViewMapper.map(task, authentication)), response);
+  }
+
+  private Page<Task> searchTasks(TaskSearchDtoV1 searchRequest) {
     Integer pageSize = searchRequest.getPageSize();
     Integer pageNumber = searchRequest.getPageNumber();
 
@@ -192,9 +212,6 @@ public class TaskControllerV1 {
         searchRequest.getCreatedByUserId(), searchRequest.getVerifiedByUserId(),
         searchRequest.getClosedByUserId(), PageRequest.of(pageNumber != null ? pageNumber : 0,
             pageSize != null ? pageSize : 10, order));
-
-    return GenericPageDtoMapper.map(searchRequest.getPageNumber(), searchRequest.getPageSize(),
-        searchResult, task -> taskViewMapper.map(task, authentication));
+    return searchResult;
   }
-
 }
