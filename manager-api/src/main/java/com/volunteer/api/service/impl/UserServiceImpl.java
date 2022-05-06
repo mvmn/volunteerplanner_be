@@ -13,7 +13,9 @@ import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
 import com.volunteer.api.service.VerificationCodeService;
 import com.volunteer.api.utils.UserRatingUtils;
+import java.security.SecureRandom;
 import java.time.ZonedDateTime;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -27,6 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.core.Authentication;
@@ -46,6 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
+  
+  @Value("${randompass.length:16}")
+  private int randomPasswordLength = 16;
 
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
@@ -66,7 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public Optional<VPUser> getByPrincipal(final String principal) {
-    return get(() -> repository.findByPhoneNumber(principal));
+    return repository.findByPhoneNumber(principal);
   }
 
   @Override
@@ -90,15 +96,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throw new IllegalStateException("Principal is missed in security context");
     }
 
-    return getByPrincipal(principal).orElseThrow(() -> new ObjectNotFoundException(
-        "Missing user " + principal));
+    return getByPrincipal(principal)
+        .orElseThrow(() -> new ObjectNotFoundException("Missing user " + principal));
   }
 
   @Override
   public UserDetails loadUserByUsername(final String principal) throws UsernameNotFoundException {
-    final VPUser user = getByPrincipal(principal).orElseThrow(
-        () -> new UsernameNotFoundException(String.format(
-            "User with principal '%s' does not exist", principal)));
+    final VPUser user = getByPrincipal(principal).orElseThrow(() -> new UsernameNotFoundException(
+        String.format("User with principal '%s' does not exist", principal)));
 
     final Collection<SimpleGrantedAuthority> authorities;
     if (isVerified(user)) {
@@ -114,8 +119,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     // for unlock operator has to unlock manually or reset rating
     final boolean isLocked = user.isLocked() || UserRatingUtils.hasDisasterRating(user);
 
-    return new User(user.getPhoneNumber(), user.getPassword(), true, true,
-        true, !isLocked, authorities);
+    return new User(user.getPhoneNumber(), user.getPassword(), true, true, true, !isLocked,
+        authorities);
   }
 
   @Override
@@ -286,11 +291,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
   @Override
   public void passwordReset(final String principal) {
-    // final VPUser source = get(username).orElseThrow(() -> new ObjectNotFoundException(
-    // String.format("User '%s' does not exist yet")));
-
     // generate random password & change it
     // use sms to supply it to user
+
+    final VPUser user = getByPrincipal(principal).orElseThrow(
+        () -> new ObjectNotFoundException(String.format("User '%s' does not exist yet")));
+
+    byte[] random = new byte[randomPasswordLength];
+    new SecureRandom().nextBytes(random);
+    String password = Base64.getEncoder().encodeToString(random).substring(0, randomPasswordLength);
+
+    user.setPassword(passwordEncoder.encode(password));
+    repository.save(user);
+
+    smsService.send(user, password);
   }
 
   @Override
