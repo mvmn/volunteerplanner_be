@@ -1,5 +1,6 @@
 package com.volunteer.api.data.model.persistence.specifications;
 
+import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.data.model.persistence.Task;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -7,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Subquery;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.jpa.domain.Specification;
 import com.volunteer.api.data.model.TaskStatus;
@@ -165,6 +167,21 @@ public class TaskSearchSpecifications {
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         return cb.equal(root.get("closedBy").get("id"), closedByUserId);
+      }
+    };
+  }
+
+  public static Specification<Task> byCategoryPath(String categoryPath) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = 8929316547592591148L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        Subquery<Category> categoriesSubquery = query.subquery(Category.class);
+        Root<Category> categoryRoot = categoriesSubquery.from(Category.class);
+        categoriesSubquery.select(categoryRoot.get("id"));
+        categoriesSubquery.where(cb.like(categoryRoot.get("path"), categoryPath + "%"));
+        return root.get("product").get("category").get("id").in(categoriesSubquery);
       }
     };
   }

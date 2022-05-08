@@ -32,6 +32,8 @@ public class TaskSearchDtoV1 {
   private Set<TaskStatus> statuses;
   @JsonProperty("categoryIds")
   private Set<Integer> categoryIds;
+  @JsonProperty("categoryPath")
+  private String categoryPath;
 
   @JsonProperty("remainingQuantityMoreThan")
   private Integer remainingQuantityMoreThan;
