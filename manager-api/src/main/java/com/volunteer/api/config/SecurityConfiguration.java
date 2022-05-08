@@ -75,7 +75,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
     configureOpenApi(urlAuthConf).anyRequest().authenticated();
 
-    http.addFilterBefore(new JWTAuthorizationFilter(jwtService(), exceptionResolver),
+    http.addFilterBefore(new JWTAuthorizationFilter(jwtService(), exceptionResolver, enableCors),
         UsernamePasswordAuthenticationFilter.class);
   }
 
