@@ -197,8 +197,34 @@ public class TaskControllerV1 {
     Integer pageNumber = searchRequest.getPageNumber();
 
     Sort order = Sort.by("deadlineDate").ascending();
-    if (searchRequest.getSortOrder() == TaskSearchDtoV1.SortOrder.PRIORITY) {
-      order = Sort.by("priority").descending();
+    if (searchRequest.getSortOrder() != null) {
+      switch (searchRequest.getSortOrder()) {
+        case DUEDATE:
+          order = Sort.by("deadlineDate").ascending();
+          break;
+        case PRIORITY:
+          order = Sort.by("priority").ascending();
+          break;
+        case QUANTITY_LEFT:
+          order = Sort.by("quantityLeft").ascending();
+          break;
+        case PRODUCT_NAME:
+          order = Sort.by("product.name").ascending();
+          break;
+        case STATUS:
+          order = Sort.by("status").ascending();
+          break;
+      }
+    }
+    if (searchRequest.getSortDirection() != null) {
+      switch (searchRequest.getSortDirection()) {
+        case ASC:
+          order = order.ascending();
+          break;
+        case DESC:
+          order = order.descending();
+          break;
+      }
     }
 
     Page<Task> searchResult = taskService.search(searchRequest.getCustomer(),

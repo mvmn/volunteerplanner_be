@@ -17,7 +17,11 @@ import lombok.NoArgsConstructor;
 public class TaskSearchDtoV1 {
 
   public static enum SortOrder {
-    PRIORITY, DUEDATE;
+    PRIORITY, DUEDATE, STATUS, PRODUCT_NAME, QUANTITY_LEFT;
+  }
+  
+  public static enum SortDirection {
+    ASC, DESC;
   }
 
   @JsonProperty("customer")
@@ -59,4 +63,6 @@ public class TaskSearchDtoV1 {
   private Integer pageSize;
   @JsonProperty("sortOrder")
   private SortOrder sortOrder;
+  @JsonProperty("sortDirection")
+  private SortDirection sortDirection;
 }
