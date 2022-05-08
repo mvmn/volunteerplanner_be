@@ -204,7 +204,8 @@ public class TaskControllerV1 {
     Page<Task> searchResult = taskService.search(searchRequest.getCustomer(),
         searchRequest.getProductId(), searchRequest.getVolunteerStoreId(),
         searchRequest.getCustomerStoreId(), searchRequest.getStatuses(),
-        searchRequest.getCategoryIds(), searchRequest.getRemainingQuantityMoreThan(),
+        searchRequest.getCategoryIds(), searchRequest.getCategoryPath(),
+        searchRequest.getRemainingQuantityMoreThan(),
         searchRequest.getZeroQuantity() != null ? searchRequest.getZeroQuantity().booleanValue()
             : false,
         searchRequest.getExcludeExpired() != null ? searchRequest.getExcludeExpired().booleanValue()

@@ -38,9 +38,9 @@ public class TaskServiceImpl implements TaskService {
   @Override
   public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
       Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
-      Integer remainingQuantityMoreThan, boolean zeroQuantity, boolean excludeExpired,
-      Integer createdByUserId, Integer verifiedByUserId, Integer closedByUserId,
-      Pageable pagingAndSorting) {
+      String categoryPath, Integer remainingQuantityMoreThan, boolean zeroQuantity,
+      boolean excludeExpired, Integer createdByUserId, Integer verifiedByUserId,
+      Integer closedByUserId, Pageable pagingAndSorting) {
     Specification<Task> searchSpec = null;
 
     if (customer != null) {
@@ -66,6 +66,10 @@ public class TaskServiceImpl implements TaskService {
     if (categoryIds != null && !categoryIds.isEmpty()) {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
           TaskSearchSpecifications.byCategories(categoryIds));
+    }
+    if (categoryPath != null) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byCategoryPath(categoryPath));
     }
     if (zeroQuantity) {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
