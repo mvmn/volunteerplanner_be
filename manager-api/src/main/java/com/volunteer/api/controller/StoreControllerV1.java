@@ -84,7 +84,7 @@ public class StoreControllerV1 {
   @PreAuthorize("hasAuthority('STORES_MODIFY')")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public StoreDtoV1 create(@RequestBody final StoreDtoV1 store) {
+  public StoreDtoV1 create(@RequestBody @Valid final StoreDtoV1 store) {
     return mapper.map(service.create(mapper.map(store)));
   }
 
@@ -92,7 +92,7 @@ public class StoreControllerV1 {
   @PutMapping(path = "/{store-id}")
   @ResponseStatus(HttpStatus.OK)
   public StoreDtoV1 update(@PathVariable("store-id") final Integer id,
-      @RequestBody final StoreDtoV1 store) {
+      @RequestBody @Valid final StoreDtoV1 store) {
     final Store entity = mapper.map(store);
     entity.setId(id);
 

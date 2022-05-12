@@ -7,6 +7,7 @@ import com.volunteer.api.data.model.TaskPriority;
 import com.volunteer.api.data.model.TaskStatus;
 import java.math.BigDecimal;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class TaskDtoV1 {
   @Min(value = 1, message = "cannot be less than one")
   @JsonProperty("quantity")
   private BigDecimal quantity;
-  @NotNull(message = "cannot be empty")
+  @NotBlank(message = "cannot be empty")
   @JsonProperty("productMeasure")
   private String productMeasure;
 
