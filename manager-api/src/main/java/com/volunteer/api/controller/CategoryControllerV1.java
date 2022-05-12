@@ -5,6 +5,7 @@ import com.volunteer.api.data.model.api.CategoryDtoV1;
 import com.volunteer.api.data.model.api.GenericCollectionDtoV1;
 import com.volunteer.api.data.model.persistence.Category;
 import com.volunteer.api.service.CategoryService;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -88,7 +89,7 @@ public class CategoryControllerV1 {
   @PreAuthorize("hasAuthority('CATEGORIES_MODIFY')")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public CategoryDtoV1 create(@RequestBody final CategoryDtoV1 category) {
+  public CategoryDtoV1 create(@RequestBody @Valid final CategoryDtoV1 category) {
     return categoryDtoMapper.map(categoryService.create(categoryDtoMapper.map(category)));
   }
 
@@ -96,7 +97,7 @@ public class CategoryControllerV1 {
   @PutMapping(path = "/{category-id}")
   @ResponseStatus(HttpStatus.OK)
   public CategoryDtoV1 update(@PathVariable("category-id") final Integer categoryId,
-      @RequestBody final CategoryDtoV1 category) {
+      @RequestBody @Valid final CategoryDtoV1 category) {
     final Category entity = categoryDtoMapper.map(category);
     entity.setId(categoryId);
 

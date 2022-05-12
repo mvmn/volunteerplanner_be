@@ -23,7 +23,6 @@ public class ProductDtoV1 {
   private CategoryDtoV1 category;
 
   @NotBlank(message = "cannot be blank")
-  @NotNull(message = "cannot be empty")
   private String name;
 
   private String note;
