@@ -22,8 +22,7 @@ public class StoreDtoV1 {
   @JsonProperty("id")
   private Integer id;
 
-  @NotNull
-  @NotBlank
+  @NotBlank(message = "cannot be empty")
   @JsonProperty("name")
   private String name;
 
