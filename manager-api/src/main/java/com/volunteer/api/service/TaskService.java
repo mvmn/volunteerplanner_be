@@ -14,11 +14,11 @@ public interface TaskService {
 
   Collection<Task> get(final Collection<Integer> taskIds);
 
-  Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
-      Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
-      String categoryPath, Integer remainingQuantityMoreThan, boolean zeroQuantity,
-      boolean excludeExpired, Integer createdByUserId, Integer verifiedByUserId,
-      Integer closedByUserId, Pageable pagingAndSorting);
+  Page<Task> search(String customer, String productName, String note, Integer productId,
+      Integer volunteerStoreId, Integer customerStoreId, Collection<TaskStatus> statuses,
+      Collection<Integer> categoryIds, String categoryPath, Integer remainingQuantityMoreThan,
+      boolean zeroQuantity, boolean excludeExpired, Integer createdByUserId,
+      Integer verifiedByUserId, Integer closedByUserId, Pageable pagingAndSorting);
 
   Task create(final Task task);
 

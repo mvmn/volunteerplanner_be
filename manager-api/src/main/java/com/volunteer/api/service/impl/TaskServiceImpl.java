@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,16 +37,24 @@ public class TaskServiceImpl implements TaskService {
   private final UserService userService;
 
   @Override
-  public Page<Task> search(String customer, Integer productId, Integer volunteerStoreId,
-      Integer customerStoreId, Collection<TaskStatus> statuses, Collection<Integer> categoryIds,
-      String categoryPath, Integer remainingQuantityMoreThan, boolean zeroQuantity,
-      boolean excludeExpired, Integer createdByUserId, Integer verifiedByUserId,
-      Integer closedByUserId, Pageable pagingAndSorting) {
+  public Page<Task> search(String customer, String productName, String note, Integer productId,
+      Integer volunteerStoreId, Integer customerStoreId, Collection<TaskStatus> statuses,
+      Collection<Integer> categoryIds, String categoryPath, Integer remainingQuantityMoreThan,
+      boolean zeroQuantity, boolean excludeExpired, Integer createdByUserId,
+      Integer verifiedByUserId, Integer closedByUserId, Pageable pagingAndSorting) {
     Specification<Task> searchSpec = null;
 
     if (customer != null) {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
           TaskSearchSpecifications.byCustomer(customer));
+    }
+    if (StringUtils.isNotBlank(productName)) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
+          TaskSearchSpecifications.byProductName(productName));
+    }
+    if (StringUtils.isNotBlank(note)) {
+      searchSpec =
+          TaskSearchSpecifications.addSpec(searchSpec, TaskSearchSpecifications.byNote(note));
     }
     if (productId != null) {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
@@ -124,14 +133,14 @@ public class TaskServiceImpl implements TaskService {
     final Task current = get(task.getId());
     // while status is NEW we could allow adjustments
     if (current.getStatus() != TaskStatus.NEW) {
-      throw new InvalidStatusException(String.format(
-          "Modification of task with status '%s' is prohibited", current.getStatus()));
+      throw new InvalidStatusException(String
+          .format("Modification of task with status '%s' is prohibited", current.getStatus()));
     }
 
     final VPUser currentUser = userService.getCurrentUser();
     if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
-      throw new AuthorizationServiceException(String.format(
-          "You are not allowed to modify task '%d'", task.getId()));
+      throw new AuthorizationServiceException(
+          String.format("You are not allowed to modify task '%d'", task.getId()));
     }
 
     validateDeadlineDate(task.getDeadlineDate());
@@ -159,14 +168,14 @@ public class TaskServiceImpl implements TaskService {
 
     final Task task = current.get();
     if (task.getStatus() != TaskStatus.NEW) {
-      throw new InvalidStatusException(String.format(
-          "Can't delete task with status '%s'", task.getStatus()));
+      throw new InvalidStatusException(
+          String.format("Can't delete task with status '%s'", task.getStatus()));
     }
 
     final VPUser currentUser = userService.getCurrentUser();
     if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
-      throw new AuthorizationServiceException(String.format(
-          "You are not allowed to delete task '%d'", task.getId()));
+      throw new AuthorizationServiceException(
+          String.format("You are not allowed to delete task '%d'", task.getId()));
     }
 
     repository.deleteById(taskId);
@@ -183,8 +192,7 @@ public class TaskServiceImpl implements TaskService {
     final ZonedDateTime currentTime = ZonedDateTime.now();
 
     final List<Task> result = tasks.stream()
-        .map(task -> prepareCreate(task, currentUser, currentTime))
-        .collect(Collectors.toList());
+        .map(task -> prepareCreate(task, currentUser, currentTime)).collect(Collectors.toList());
 
     return repository.saveAll(result);
   }
@@ -208,12 +216,10 @@ public class TaskServiceImpl implements TaskService {
     final VPUser currentUser = userService.getCurrentUser();
     final ZonedDateTime currentTime = ZonedDateTime.now();
 
-    final List<Task> result = taskIds.stream()
-        .map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime, comment,
-            onlyMine))
-        .filter(Optional::isPresent)
-        .map(Optional::get)
-        .collect(Collectors.toList());
+    final List<Task> result = taskIds
+        .stream().map(taskId -> prepareStatusChange(taskId, status, currentUser, currentTime,
+            comment, onlyMine))
+        .filter(Optional::isPresent).map(Optional::get).collect(Collectors.toList());
 
     repository.saveAll(result);
   }
@@ -262,8 +268,8 @@ public class TaskServiceImpl implements TaskService {
 
         break;
       default:
-        throw new InvalidStatusException(String.format("Task status '%s' is not supported",
-            task.getStatus()));
+        throw new InvalidStatusException(
+            String.format("Task status '%s' is not supported", task.getStatus()));
     }
 
     repository.save(task);
@@ -298,8 +304,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     if (onlyMine && !Objects.equals(task.getCreatedBy().getId(), currentUser.getId())) {
-      throw new AuthorizationServiceException(String.format(
-          "You are not allowed to change task '%d' status", taskId));
+      throw new AuthorizationServiceException(
+          String.format("You are not allowed to change task '%d' status", taskId));
     }
 
     switch (status) {
@@ -313,8 +319,8 @@ public class TaskServiceImpl implements TaskService {
         prepareStatusChangeRejected(task, currentUser, currentTime, comment);
         break;
       default:
-        throw new InvalidStatusException(String.format(
-            "Unsupported status '%s' for status change operation", status));
+        throw new InvalidStatusException(
+            String.format("Unsupported status '%s' for status change operation", status));
     }
 
     return Optional.of(task);
@@ -323,8 +329,8 @@ public class TaskServiceImpl implements TaskService {
   private void prepareStatusChangeVerified(final Task task, final VPUser currentUser,
       final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.NEW) {
-      throw new IllegalStateException(String.format("Cannot verify task in status '%s'",
-          task.getStatus()));
+      throw new IllegalStateException(
+          String.format("Cannot verify task in status '%s'", task.getStatus()));
     }
 
     // task could be created with valid deadline date
@@ -341,8 +347,8 @@ public class TaskServiceImpl implements TaskService {
   private void prepareStatusChangeCompleted(final Task task, final VPUser currentUser,
       final ZonedDateTime currentTime, final String comment) {
     if (task.getStatus() != TaskStatus.VERIFIED) {
-      throw new IllegalStateException(String.format("Cannot complete task in status '%s'",
-          task.getStatus()));
+      throw new IllegalStateException(
+          String.format("Cannot complete task in status '%s'", task.getStatus()));
     }
 
     task.setStatus(TaskStatus.COMPLETED);

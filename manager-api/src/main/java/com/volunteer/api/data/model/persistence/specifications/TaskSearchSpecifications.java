@@ -185,4 +185,29 @@ public class TaskSearchSpecifications {
       }
     };
   }
+
+  public static Specification<Task> byProductName(String productName) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = -1773760051893744509L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return StringUtils.isNotBlank(productName)
+            ? cb.like(root.get("product").get("name"), "%" + productName.trim() + "%")
+            : null;
+      }
+    };
+  }
+
+  public static Specification<Task> byNote(String note) {
+    return new Specification<Task>() {
+      private static final long serialVersionUID = 7609707639991817576L;
+
+      @Override
+      public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+        return StringUtils.isNotBlank(note) ? cb.like(root.get("note"), "%" + note.trim() + "%")
+            : null;
+      }
+    };
+  }
 }
