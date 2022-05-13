@@ -37,7 +37,7 @@ public class TaskServiceImpl implements TaskService {
   private final UserService userService;
 
   @Override
-  public Page<Task> search(String customer, String productName, String note, Integer productId,
+  public Page<Task> search(String customer, String searchText, Integer productId,
       Integer volunteerStoreId, Integer customerStoreId, Collection<TaskStatus> statuses,
       Collection<Integer> categoryIds, String categoryPath, Integer remainingQuantityMoreThan,
       boolean zeroQuantity, boolean excludeExpired, Integer createdByUserId,
@@ -48,13 +48,9 @@ public class TaskServiceImpl implements TaskService {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
           TaskSearchSpecifications.byCustomer(customer));
     }
-    if (StringUtils.isNotBlank(productName)) {
-      searchSpec = TaskSearchSpecifications.addSpec(searchSpec,
-          TaskSearchSpecifications.byProductName(productName));
-    }
-    if (StringUtils.isNotBlank(note)) {
-      searchSpec =
-          TaskSearchSpecifications.addSpec(searchSpec, TaskSearchSpecifications.byNote(note));
+    if (StringUtils.isNotBlank(searchText)) {
+      searchSpec = TaskSearchSpecifications.addSpec(searchSpec, TaskSearchSpecifications
+          .byProductName(searchText).or(TaskSearchSpecifications.byNote(searchText)));
     }
     if (productId != null) {
       searchSpec = TaskSearchSpecifications.addSpec(searchSpec,

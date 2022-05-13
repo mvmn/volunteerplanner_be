@@ -66,8 +66,6 @@ public class TaskSearchDtoV1 {
   @JsonProperty("sortDirection")
   private SortDirection sortDirection;
 
-  @JsonProperty("productName")
-  private String productName;
-  @JsonProperty("note")
-  private String note;
+  @JsonProperty("searchText")
+  private String searchText;
 }

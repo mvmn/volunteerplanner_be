@@ -228,7 +228,7 @@ public class TaskControllerV1 {
     }
 
     Page<Task> searchResult = taskService.search(searchRequest.getCustomer(),
-        searchRequest.getProductName(), searchRequest.getNote(), searchRequest.getProductId(),
+        searchRequest.getSearchText(), searchRequest.getProductId(),
         searchRequest.getVolunteerStoreId(), searchRequest.getCustomerStoreId(),
         searchRequest.getStatuses(), searchRequest.getCategoryIds(),
         searchRequest.getCategoryPath(), searchRequest.getRemainingQuantityMoreThan(),
