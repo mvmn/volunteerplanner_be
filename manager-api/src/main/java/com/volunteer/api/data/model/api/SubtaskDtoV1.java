@@ -50,4 +50,6 @@ public class SubtaskDtoV1 {
   @JsonProperty("closedAt")
   private Long closedAt;
 
+  @JsonProperty("dueDate")
+  private Long dueDate;
 }
