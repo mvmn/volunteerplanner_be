@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @JsonPropertyOrder({"id", "taskId", "quantity", "status", "note", "transportRequired",
-    "createdBy", "createdAt", "closedBy", "closedAt"})
+    "createdBy", "createdAt", "closedBy", "closedAt", "dueDate"})
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class SubtaskDtoV1 {
 
