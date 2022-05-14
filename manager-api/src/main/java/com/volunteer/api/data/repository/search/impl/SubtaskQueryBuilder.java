@@ -50,6 +50,8 @@ public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
     switch (source.getField().toLowerCase()) {
       case "status":
         return SubtaskSearchSpecifications.byStatus(value);
+      case "categoryPath":
+        return SubtaskSearchSpecifications.byCategoryPath(value);
     }
 
     return super.buildFilterSpecification(source);
