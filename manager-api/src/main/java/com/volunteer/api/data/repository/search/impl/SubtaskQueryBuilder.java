@@ -87,6 +87,9 @@ public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
       case "status":
         entityField = "status";
         break;
+      case "duedate":
+        entityField = "dueDate";
+        break;
       case "task.deadlinedate":
         entityField = "task.deadlineDate";
         break;
@@ -95,6 +98,9 @@ public class SubtaskQueryBuilder extends AbstractQueryBuilder<Subtask> {
         break;
       case "task.product.name":
         entityField = "task.product.name";
+        break;
+      case "quantity":
+        entityField = "quantity";
         break;
       default:
         throw new IllegalArgumentException(String.format(
