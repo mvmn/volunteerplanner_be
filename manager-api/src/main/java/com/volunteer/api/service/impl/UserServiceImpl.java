@@ -185,7 +185,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     current.setDisplayName(user.getDisplayName());
     current.setOrganization(user.getOrganization());
 
-
     return repository.save(current);
   }
 
