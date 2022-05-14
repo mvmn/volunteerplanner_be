@@ -5,6 +5,7 @@ import com.volunteer.api.data.mapping.UserDtoV1Mapper;
 import com.volunteer.api.data.model.api.GenericPageDtoV1;
 import com.volunteer.api.data.model.api.PasswordChangeDtoV1;
 import com.volunteer.api.data.model.api.PhoneVerificationDtoV1;
+import com.volunteer.api.data.model.api.UpdateCurrentUserDtoV1;
 import com.volunteer.api.data.model.api.UserDtoV1;
 import com.volunteer.api.data.model.api.search.SearchDto;
 import com.volunteer.api.data.model.api.search.filter.FilterDto;
@@ -131,7 +132,7 @@ public class UserControllerV1 {
 
   @PutMapping("/current")
   @ResponseStatus(HttpStatus.OK)
-  public UserDtoV1 updateCurrent(@Valid @RequestBody final UserDtoV1 source) {
+  public UserDtoV1 updateCurrent(@Valid @RequestBody final UpdateCurrentUserDtoV1 source) {
     return userMapper.map(service.updateCurrent(userMapper.map(source)));
   }
 
