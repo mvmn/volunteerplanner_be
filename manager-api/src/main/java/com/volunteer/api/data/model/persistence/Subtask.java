@@ -73,4 +73,6 @@ public class Subtask {
   @Column(name = "closed_at")
   private ZonedDateTime closedAt;
 
+  @Column(name = "due_date", nullable = false)
+  private ZonedDateTime dueDate;
 }

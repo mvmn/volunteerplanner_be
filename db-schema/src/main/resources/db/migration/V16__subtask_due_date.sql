@@ -1,0 +1,1 @@
+ALTER TABLE "subtask" ADD COLUMN due_date timestamp DEFAULT NULL;
