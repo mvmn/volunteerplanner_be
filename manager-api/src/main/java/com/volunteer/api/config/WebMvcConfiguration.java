@@ -34,6 +34,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
   @Value("${cors.methods:*}")
   private String corsAllowedMethods = "*";
 
+  @Value("${cors.exposeheaders:*}")
+  private String corsExposedHeaders = "*";
+
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(auditInterceptor.getIfUnique());
@@ -45,7 +48,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     if (enableCors) {
       registry.addMapping("/**").allowedOriginPatterns(corsAllowedOrigins)
           .allowCredentials(corsAllowCredentials).allowedHeaders(corsAllowedHeaders)
-          .allowedMethods(corsAllowedMethods);
+          .exposedHeaders(corsExposedHeaders).allowedMethods(corsAllowedMethods);
     }
   }
 }
