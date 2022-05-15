@@ -33,9 +33,15 @@ public class StoreQueryBuilder extends AbstractQueryBuilder<Store> {
   @Override
   protected Specification<Store> buildFilterSpecification(final ValueTextFilterDto source) {
     final String value = source.getValue().strip();
-    switch (source.getField().toLowerCase()) {
-      case "name":
-        return StoreSearchSpecifications.byName(value);
+    if (!value.isEmpty()) {
+      switch (source.getField().toLowerCase()) {
+        case "name":
+          return StoreSearchSpecifications.byName(value);
+        case "note":
+          return StoreSearchSpecifications.byNote(value);
+        case "address":
+          return StoreSearchSpecifications.byAddress(value);
+      }
     }
 
     return super.buildFilterSpecification(source);
