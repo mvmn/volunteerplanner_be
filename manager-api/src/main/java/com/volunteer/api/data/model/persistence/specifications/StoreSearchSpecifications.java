@@ -9,6 +9,14 @@ public final class StoreSearchSpecifications {
     return (root, query, builder) -> builder.like(root.get("name"), "%" + value + "%");
   }
 
+  public static Specification<Store> byAddress(final String value) {
+    return (root, query, builder) -> builder.like(root.get("address"), "%" + value + "%");
+  }
+
+  public static Specification<Store> byNote(final String value) {
+    return (root, query, builder) -> builder.like(root.get("note"), "%" + value + "%");
+  }
+
   public static Specification<Store> byRegion(final Number value) {
     return (root, query, builder) -> builder.equal(root.get("city").get("region").get("id"),
         value.intValue());
