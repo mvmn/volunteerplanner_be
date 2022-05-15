@@ -77,7 +77,9 @@ public class TaskExportServiceImpl implements TaskExportService {
         mapRow(row, taskView);
       });
 
-      outputResponse.setHeader("Content-Disposition", "attachment; filename=\"tasks.xlsx\"");
+      String filename =
+          String.format("tasks_page_%d_of_%d.xlsx", tasks.getNumber() + 1, tasks.getTotalPages());
+      outputResponse.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
       try (OutputStream out = outputResponse.getOutputStream()) {
         workbook.write(out);
         out.flush();
