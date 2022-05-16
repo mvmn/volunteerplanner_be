@@ -68,6 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
             .antMatchers("/actuator/**").permitAll()
             .antMatchers("/api/v1/authenticate").permitAll()
+            .antMatchers("/api/v1/config").permitAll()
             .antMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
             .antMatchers(HttpMethod.GET, "/api/v1/users/password/reset").permitAll();
     if (enableCors) {
