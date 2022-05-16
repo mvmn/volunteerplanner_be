@@ -108,6 +108,7 @@ swagger:
 
 recaptcha:
   secret: '${RECAPTCHA_SECRET}'
+  sitekey: '${RECAPTCHA_SITEKEY}'
 
 captcha:
   enable: ${ENABLE_CAPTCHA}
