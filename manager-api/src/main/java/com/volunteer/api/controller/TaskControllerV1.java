@@ -205,6 +205,9 @@ public class TaskControllerV1 {
         case PRIORITY:
           order = Sort.by("priority").ascending();
           break;
+        case QUANTITY:
+          order = Sort.by("quantity").ascending();
+          break;
         case QUANTITY_LEFT:
           order = Sort.by("quantityLeft").ascending();
           break;
