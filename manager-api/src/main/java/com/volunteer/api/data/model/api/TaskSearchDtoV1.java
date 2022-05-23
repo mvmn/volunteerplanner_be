@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class TaskSearchDtoV1 {
 
   public static enum SortOrder {
-    PRIORITY, DUEDATE, STATUS, PRODUCT_NAME, QUANTITY_LEFT;
+    PRIORITY, DUEDATE, STATUS, PRODUCT_NAME, QUANTITY, QUANTITY_LEFT;
   }
   
   public static enum SortDirection {
