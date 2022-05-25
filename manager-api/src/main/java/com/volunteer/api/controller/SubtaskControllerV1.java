@@ -89,7 +89,7 @@ public class SubtaskControllerV1 {
         mapper::map);
   }
 
-  @PreAuthorize("hasAuthority('SUBTASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('SUBTASKS_MODIFY') or hasAuthority('SUBTASKS_MODIFY_MINE')")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public SubtaskDtoV1 create(@RequestBody @Valid SubtaskDtoV1 subtask) {
