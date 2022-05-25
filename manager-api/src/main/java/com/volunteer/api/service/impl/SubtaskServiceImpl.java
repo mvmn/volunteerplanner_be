@@ -93,8 +93,8 @@ public class SubtaskServiceImpl implements SubtaskService {
 
   @Override
   @Transactional
-  public Subtask update(final Subtask subtask) {
-    final Subtask current = getById(subtask.getId(), true);
+  public Subtask update(final Subtask subtask, boolean onlyMine) {
+    final Subtask current = getById(subtask.getId(), onlyMine);
     final Task task = current.getTask();
 
     if (current.getStatus() != SubtaskStatus.IN_PROGRESS) {
@@ -105,6 +105,7 @@ public class SubtaskServiceImpl implements SubtaskService {
 
     current.setNote(subtask.getNote());
     current.setTransportRequired(subtask.isTransportRequired());
+    current.setDueDate(subtask.getDueDate());
 
     BigDecimal delta = subtask.getQuantity().subtract(current.getQuantity());
     if (delta.compareTo(BigDecimal.ZERO) != 0) {

@@ -47,7 +47,8 @@ public class ErrorHandler {
         .build();
   }
 
-  @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class})
+  @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class,
+      InvalidStatusException.class, InvalidQuantityException.class})
   @ResponseStatus(value = HttpStatus.BAD_REQUEST)
   public ErrorResponse handle(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
@@ -91,12 +92,6 @@ public class ErrorHandler {
       EmptyResultDataAccessException.class})
   @ResponseStatus(value = HttpStatus.NOT_FOUND)
   public ErrorResponse handleException(Exception exception) {
-    return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
-  }
-
-  @ExceptionHandler({InvalidStatusException.class, InvalidQuantityException.class})
-  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-  public ErrorResponse handleBadRequestException(Exception exception) {
     return ErrorResponse.builder().errorMessage(exception.getMessage()).build();
   }
 

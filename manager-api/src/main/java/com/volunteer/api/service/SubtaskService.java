@@ -15,7 +15,7 @@ public interface SubtaskService {
 
   Subtask create(final Subtask subtask);
 
-  Subtask update(final Subtask subtask);
+  Subtask update(final Subtask subtask, final boolean onlyMine);
 
   Subtask complete(final Integer subtaskId);
 

@@ -96,15 +96,17 @@ public class SubtaskControllerV1 {
     return mapper.map(service.create(mapper.map(subtask)));
   }
 
-  @PreAuthorize("hasAuthority('SUBTASKS_MODIFY')")
+  @PreAuthorize("hasAuthority('SUBTASKS_MODIFY') or hasAuthority('SUBTASKS_MODIFY_MINE')")
   @PutMapping("/{subtask-id}")
   @ResponseStatus(HttpStatus.OK)
   public SubtaskDtoV1 update(@PathVariable("subtask-id") final Integer subtaskId,
-      @RequestBody @Valid SubtaskDtoV1 subtask) {
+      @RequestBody @Valid SubtaskDtoV1 subtask, final Authentication authentication) {
     final SubtaskDtoV1 entity = subtask;
     subtask.setId(subtaskId);
 
-    return mapper.map(service.update(mapper.map(entity)));
+    final boolean modifyAny =
+        AuthenticationUtils.hasAuthority(UserAuthority.SUBTASKS_MODIFY, authentication);
+    return mapper.map(service.update(mapper.map(entity), !modifyAny));
   }
 
   @PreAuthorize("hasAuthority('SUBTASKS_COMPLETE')")
@@ -113,7 +115,7 @@ public class SubtaskControllerV1 {
   public SubtaskDtoV1 complete(@PathVariable("subtask-id") Integer subtaskId) {
     return mapper.map(service.complete(subtaskId));
   }
-
+  
   @PreAuthorize("hasAuthority('SUBTASKS_REJECT') or hasAuthority('SUBTASKS_REJECT_MINE')")
   @PutMapping("/{subtask-id}/reject")
   @ResponseStatus(HttpStatus.OK)
