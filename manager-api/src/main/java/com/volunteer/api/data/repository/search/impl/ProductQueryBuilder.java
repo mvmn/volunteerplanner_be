@@ -24,6 +24,8 @@ public class ProductQueryBuilder extends AbstractQueryBuilder<Product> {
     switch (source.getField().toLowerCase()) {
       case "name":
         return ProductSearchSpecifications.byName(value);
+      case "categorypath":
+        return ProductSearchSpecifications.byCategoryPath(value);
     }
 
     return super.buildFilterSpecification(source);
