@@ -77,7 +77,7 @@ public class SubtaskControllerV1 {
     return doSearch(false, body);
   }
 
-  @PreAuthorize("hasAuthority('SUBTASKS_VIEW_MINE')")
+  @PreAuthorize("hasAuthority('SUBTASKS_VIEW') or hasAuthority('SUBTASKS_VIEW_MINE')")
   @PostMapping("/search/my")
   @ResponseStatus(HttpStatus.OK)
   public GenericPageDtoV1<SubtaskDtoV1> searchOnlyMine(
