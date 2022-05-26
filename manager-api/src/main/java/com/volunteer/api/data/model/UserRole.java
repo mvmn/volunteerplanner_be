@@ -58,8 +58,8 @@ public enum UserRole {
       UserAuthority.TASKS_VIEW,
       UserAuthority.TASKS_MODIFY_MINE,
       UserAuthority.TASKS_REJECT_MINE,
-
-      UserAuthority.SUBTASKS_VIEW,
+      
+      UserAuthority.SUBTASKS_VIEW_MINE,
       UserAuthority.SUBTASKS_MODIFY,
       UserAuthority.SUBTASKS_REJECT_MINE
   )),
@@ -74,7 +74,7 @@ public enum UserRole {
 
       UserAuthority.TASKS_VIEW,
 
-      UserAuthority.SUBTASKS_VIEW,
+      UserAuthority.SUBTASKS_VIEW_MINE,
       UserAuthority.SUBTASKS_MODIFY,
       UserAuthority.SUBTASKS_REJECT_MINE
   ));

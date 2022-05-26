@@ -1340,7 +1340,7 @@
     }
   },
   {
-    "name": "volunteer: get all subtasks for task",
+    "name": "volunteer: get my subtasks for task",
     "given": {
       "auth": {
         "principal": "333333333333",
@@ -1355,20 +1355,6 @@
       "status": 200,
       "body": {
         "items": [
-          {
-            "id": 2,
-            "taskId": 2,
-            "quantity": 3.0,
-            "status": "IN_PROGRESS",
-            "note": "operator subtask",
-            "transportRequired": false,
-            "createdBy": {
-              "id": 2,
-              "displayName": "FN operator",
-              "rating": 0
-            },
-            "createdAt": 1649004935
-          },
           {
             "id": 1,
             "taskId": 2,
@@ -1503,14 +1489,14 @@
     }
   },
   {
-    "name": "volunteer: search all subtasks by task id and status",
+    "name": "volunteer: search my subtasks by task id and status",
     "given": {
       "auth": {
         "principal": "333333333333",
         "password": "volunteer1"
       },
       "request": {
-        "endpoint": "/api/v1/subtasks/search",
+        "endpoint": "/api/v1/subtasks/search/my",
         "method": "POST",
         "body": {
           "page": 1,
@@ -1522,7 +1508,7 @@
               {
                 "type": "text",
                 "field": "status",
-                "value": "IN_PROGRESS"
+                "value": "REJECTED"
               },
               {
                 "type": "number",
@@ -1542,18 +1528,24 @@
         "totalCount": 1,
         "items": [
           {
-            "id": 2,
+            "id": 1,
             "taskId": 2,
-            "quantity": 3.0,
-            "status": "IN_PROGRESS",
-            "note": "operator subtask",
-            "transportRequired": false,
+            "quantity": 7.5,
+            "status": "REJECTED",
+            "note": "my first subtask",
+            "transportRequired": true,
             "createdBy": {
-              "id": 2,
-              "displayName": "FN operator",
-              "rating": 0
+              "id": 3,
+              "displayName": "FN volunteer",
+              "rating": -10
             },
-            "createdAt": 1648929798
+            "createdAt": 1648929798,
+            "closedBy": {
+				"id": 3,
+				"displayName": "FN volunteer",
+				"rating": -10
+			},
+			"closedAt": 1653576809
           }
         ]
       }
