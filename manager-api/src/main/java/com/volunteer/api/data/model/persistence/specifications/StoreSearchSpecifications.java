@@ -6,15 +6,15 @@ import org.springframework.data.jpa.domain.Specification;
 public final class StoreSearchSpecifications {
 
   public static Specification<Store> byName(final String value) {
-    return (root, query, builder) -> builder.like(root.get("name"), "%" + value + "%");
+    return (root, query, builder) -> builder.like(builder.lower(root.get("name")), "%" + value.toLowerCase() + "%");
   }
 
   public static Specification<Store> byAddress(final String value) {
-    return (root, query, builder) -> builder.like(root.get("address"), "%" + value + "%");
+    return (root, query, builder) -> builder.like(builder.lower(root.get("address")), "%" + value.toLowerCase() + "%");
   }
 
   public static Specification<Store> byNote(final String value) {
-    return (root, query, builder) -> builder.like(root.get("note"), "%" + value + "%");
+    return (root, query, builder) -> builder.like(builder.lower(root.get("note")), "%" + value.toLowerCase() + "%");
   }
 
   public static Specification<Store> byRegion(final Number value) {
