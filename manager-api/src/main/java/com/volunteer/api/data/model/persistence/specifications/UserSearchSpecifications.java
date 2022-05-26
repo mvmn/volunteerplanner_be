@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 public final class UserSearchSpecifications {
 
   public static Specification<VPUser> byPhoneNumber(final String value) {
-    return (root, query, builder) -> builder.like(root.get("phoneNumber"), "%" + value + "%"
+    return (root, query, builder) -> builder.like(builder.lower(root.get("phoneNumber")), "%" + value.toLowerCase() + "%"
     );
   }
 
@@ -15,7 +15,7 @@ public final class UserSearchSpecifications {
   }
 
   public static Specification<VPUser> byDisplayName(final String value) {
-    return (root, query, builder) -> builder.like(root.get("displayName"), "%" + value + "%");
+    return (root, query, builder) -> builder.like(builder.lower(root.get("displayName")), "%" + value.toLowerCase() + "%");
   }
 
   public static Specification<VPUser> byPhoneNumberVerified(final Boolean value) {

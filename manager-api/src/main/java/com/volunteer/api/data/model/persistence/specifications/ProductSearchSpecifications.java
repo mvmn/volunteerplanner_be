@@ -19,7 +19,8 @@ public final class ProductSearchSpecifications {
   }
 
   public static Specification<Product> byName(final String value) {
-    return (root, query, builder) -> builder.like(root.get("name"), "%" + value + "%");
+    return (root, query, builder) -> builder.like(builder.lower(root.get("name")),
+        "%" + value.toLowerCase() + "%");
   }
 
   private ProductSearchSpecifications() {

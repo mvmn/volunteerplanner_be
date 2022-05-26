@@ -30,7 +30,7 @@ public class TaskSearchSpecifications {
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         return StringUtils.isNotBlank(customer)
-            ? cb.like(root.get("customer"), "%" + customer.trim() + "%")
+            ? cb.like(cb.lower(root.get("customer")), "%" + customer.trim().toLowerCase() + "%")
             : null;
       }
     };
@@ -193,7 +193,8 @@ public class TaskSearchSpecifications {
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         return StringUtils.isNotBlank(productName)
-            ? cb.like(root.get("product").get("name"), "%" + productName.trim() + "%")
+            ? cb.like(cb.lower(root.get("product").get("name")),
+                "%" + productName.trim().toLowerCase() + "%")
             : null;
       }
     };
@@ -205,7 +206,8 @@ public class TaskSearchSpecifications {
 
       @Override
       public Predicate toPredicate(Root<Task> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-        return StringUtils.isNotBlank(note) ? cb.like(root.get("note"), "%" + note.trim() + "%")
+        return StringUtils.isNotBlank(note)
+            ? cb.like(cb.lower(root.get("note")), "%" + note.trim().toLowerCase() + "%")
             : null;
       }
     };
