@@ -69,23 +69,30 @@ public class SubtaskControllerV1 {
         .build();
   }
 
-  @PreAuthorize("hasAuthority('SUBTASKS_VIEW') or hasAuthority('SUBTASKS_VIEW_MINE')")
+  @PreAuthorize("hasAuthority('SUBTASKS_VIEW')")
   @PostMapping("/search")
   @ResponseStatus(HttpStatus.OK)
-  public GenericPageDtoV1<SubtaskDtoV1> search(@RequestBody @Valid final SearchDto<FilterDto> body,
-      final Authentication authentication) {
-    final boolean showAny = AuthenticationUtils.hasAuthority(
-        UserAuthority.SUBTASKS_VIEW, authentication);
+  public GenericPageDtoV1<SubtaskDtoV1> search(
+      @RequestBody @Valid final SearchDto<FilterDto> body) {
+    return doSearch(false, body);
+  }
 
-    final Page<Subtask> result = service.getAll(queryBuilderFactory.getObject()
-        .withShowOnlyMine(!showAny)
-        .withPageNum(body.getPage())
-        .withPageSize(body.getPageSize())
-        .withFilter(body.getFilter())
-        .withSort(body.getSort())
-    );
+  @PreAuthorize("hasAuthority('SUBTASKS_VIEW_MINE')")
+  @PostMapping("/search/my")
+  @ResponseStatus(HttpStatus.OK)
+  public GenericPageDtoV1<SubtaskDtoV1> searchOnlyMine(
+      @RequestBody @Valid final SearchDto<FilterDto> body) {
+    return doSearch(true, body);
+  }
 
-    return GenericPageDtoMapper.map(body.getPage(), body.getPageSize(), result,
+  protected GenericPageDtoV1<SubtaskDtoV1> doSearch(boolean showOnlyMine,
+      SearchDto<FilterDto> searchRequest) {
+    final Page<Subtask> result =
+        service.getAll(queryBuilderFactory.getObject().withShowOnlyMine(showOnlyMine)
+            .withPageNum(searchRequest.getPage()).withPageSize(searchRequest.getPageSize())
+            .withFilter(searchRequest.getFilter()).withSort(searchRequest.getSort()));
+
+    return GenericPageDtoMapper.map(searchRequest.getPage(), searchRequest.getPageSize(), result,
         mapper::map);
   }
 
