@@ -38,6 +38,7 @@ public enum UserRole {
       UserAuthority.TASKS_REJECT,
 
       UserAuthority.SUBTASKS_VIEW,
+      UserAuthority.SUBTASKS_VIEW_MINE,
       UserAuthority.SUBTASKS_MODIFY,
       UserAuthority.SUBTASKS_COMPLETE,
       UserAuthority.SUBTASKS_REJECT
