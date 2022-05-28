@@ -101,10 +101,10 @@ cors:
 turbosms:
   sender: '${VOLUNTEER_SMS_SENDER}'
   authtoken: '${VOLUNTEER_SMS_TOKEN}'
-  enabled: true
+  enabled: ${ENABLE_SMS}
 
 swagger:
-  enable: true
+  enable: ${ENABLE_SWAGGER}
 
 recaptcha:
   secret: '${RECAPTCHA_SECRET}'
