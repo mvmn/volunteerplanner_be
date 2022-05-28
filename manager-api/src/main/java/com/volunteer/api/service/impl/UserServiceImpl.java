@@ -12,7 +12,6 @@ import com.volunteer.api.service.RoleService;
 import com.volunteer.api.service.SmsService;
 import com.volunteer.api.service.UserService;
 import com.volunteer.api.service.VerificationCodeService;
-import com.volunteer.api.utils.UserRatingUtils;
 import java.security.SecureRandom;
 import java.time.ZonedDateTime;
 import java.util.Base64;
@@ -52,6 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   
   @Value("${randompass.length:16}")
   private int randomPasswordLength = 16;
+
+  @Value("${rating.disasterRating:-50}")
+  private int disasterRating = -50;
 
   private final UserRepository repository;
   private final PasswordEncoder passwordEncoder;
@@ -117,10 +119,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     // we are going to block users either locked manually or with poor rating
     // for unlock operator has to unlock manually or reset rating
-    final boolean isLocked = user.isLocked() || UserRatingUtils.hasDisasterRating(user);
+    final boolean isLocked = user.isLocked() || hasDisasterRating(user);
 
     return new User(user.getPhoneNumber(), user.getPassword(), true, true, true, !isLocked,
         authorities);
+  }
+  
+  @Override
+  public boolean hasDisasterRating(VPUser user) {
+    return user.getRating() <= disasterRating;
   }
 
   @Override

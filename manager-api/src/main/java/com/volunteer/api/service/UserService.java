@@ -39,4 +39,6 @@ public interface UserService extends AuthService {
 
   VPUser verifyPhoneNumberComplete(final String code);
 
+  boolean hasDisasterRating(VPUser user);
+
 }
