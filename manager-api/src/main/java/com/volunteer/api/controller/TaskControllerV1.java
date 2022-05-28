@@ -217,6 +217,9 @@ public class TaskControllerV1 {
         case STATUS:
           order = Sort.by("status").ascending();
           break;
+        case ID:
+          order = Sort.by("id").ascending();
+          break;
       }
     }
     if (searchRequest.getSortDirection() != null) {
