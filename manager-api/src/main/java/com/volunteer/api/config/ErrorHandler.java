@@ -1,6 +1,8 @@
 package com.volunteer.api.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.volunteer.api.data.model.api.ErrorResponse;
 import com.volunteer.api.error.InvalidCaptchaException;
 import com.volunteer.api.error.InvalidPasswordException;
@@ -12,6 +14,7 @@ import com.volunteer.api.error.TurboSmsSendFailureException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.persistence.EntityNotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
@@ -45,6 +48,22 @@ public class ErrorHandler {
             .map(fieldError -> fieldError.getField() + " " + fieldError.getDefaultMessage())
             .collect(Collectors.joining(", ")))
         .build();
+  }
+  
+  @ExceptionHandler(InvalidFormatException.class)
+  @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+  public ErrorResponse handle(InvalidFormatException exception) {
+    StringBuilder errorMessage = new StringBuilder("Bad value '")
+        .append(exception.getValue() != null ? exception.getValue().toString() : "null")
+        .append("' for field '").append(exception.getPath().stream().map(Reference::getFieldName)
+            .collect(Collectors.joining("'.")))
+        .append(".");
+    if (exception.getTargetType().isEnum()) {
+      errorMessage.append(" Expected one of these values: ")
+          .append(Stream.of(exception.getTargetType().getEnumConstants())
+              .map(v -> ((Enum<?>) v).name()).collect(Collectors.joining(", ")));
+    }
+    return ErrorResponse.builder().errorMessage(errorMessage.toString()).build();
   }
 
   @ExceptionHandler({IllegalStateException.class, IllegalArgumentException.class,
