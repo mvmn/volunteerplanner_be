@@ -71,7 +71,7 @@ public class SubtaskServiceImpl implements SubtaskService {
     validateQuantity(subtask.getQuantity());
 
     final VPUser user = userService.getCurrentUser();
-    if (UserRatingUtils.hasDisasterRating(user)) {
+    if (userService.hasDisasterRating(user)) {
       throw new AuthorizationServiceException(
           "You are not allowed to create subtask. Your rating is too bad");
     }
