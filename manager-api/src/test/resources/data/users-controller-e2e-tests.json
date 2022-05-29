@@ -75,7 +75,11 @@
       }
     },
     "expected": {
-      "status": 403
+      "status": 403,
+      "body": {
+		"errorMessage": "User not verified",
+		"errorCode": "UNVERIFIED"
+	  }
     }
   },
   {
@@ -364,9 +368,13 @@
         "method": "GET"
       }
     },
-    "expected": {
-      "status": 403
-    }
+	"expected": {
+		"status": 403,
+		"body": {
+			"errorMessage": "Forbidden",
+			"errorCode": "NO_PERMISSION"
+		}
+	}
   },
   {
     "name": "root: lock",
