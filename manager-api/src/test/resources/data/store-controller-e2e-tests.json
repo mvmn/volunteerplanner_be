@@ -280,9 +280,13 @@
         "method": "GET"
       }
     },
-    "expected": {
-      "status": 403
-    }
+	"expected": {
+		"status": 403,
+		"body": {
+			"errorMessage": "Forbidden",
+			"errorCode": "NO_PERMISSION"
+		}
+	}
   },
   {
     "name": "POST: search by name",
