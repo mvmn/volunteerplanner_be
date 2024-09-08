@@ -52,6 +52,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Value("${swagger.enable:false}")
   private boolean enableSwagger;
 
+  @Value("${ui.enable:false}")
+  private boolean enableEmbeddedUi;
+
   @Value("${security.jwt.access-token-ttl:1m}")
   private Duration accessTokenTtl;
   @Value("${security.jwt.refresh-token-ttl:5m}")
@@ -89,6 +92,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
       urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }
     configureOpenApi(urlAuthConf).anyRequest().authenticated();
+    configureEmbeddedUi(urlAuthConf);
 
     http.addFilterBefore(new JWTAuthorizationFilter(jwtService(), exceptionResolver, enableCors),
         UsernamePasswordAuthenticationFilter.class);
@@ -149,6 +153,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .components(new Components().addSecuritySchemes(securitySchemeName,
             new SecurityScheme().name(securitySchemeName).type(SecurityScheme.Type.HTTP)
                 .scheme("bearer").bearerFormat("JWT")));
+  }
+  
+  private ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry configureEmbeddedUi(
+          ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry urlRegistry) {
+      if (enableEmbeddedUi) {
+          urlRegistry.antMatchers(HttpMethod.GET, "/")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/index.html")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/robots.txt")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/favicon.ico")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/logo192.png")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/logo512.png")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/manifest.json")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/asset-manifest.json")
+                  .permitAll()
+                  .antMatchers(HttpMethod.GET, "/static/**")
+                  .permitAll();
+      }
+      return urlRegistry;
   }
 
   private ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry configureOpenApi(
