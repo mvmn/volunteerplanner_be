@@ -45,3 +45,5 @@ out/
 
 ### Local config ###
 manager-api/src/main/resources/application-local*.yaml
+
+manager-api/src/main/resources/static
