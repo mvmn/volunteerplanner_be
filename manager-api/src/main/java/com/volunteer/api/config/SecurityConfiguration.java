@@ -91,8 +91,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     if (enableCors) {
       urlAuthConf = urlAuthConf.antMatchers(HttpMethod.OPTIONS, "/**").permitAll();
     }
-    configureOpenApi(urlAuthConf).anyRequest().authenticated();
     configureEmbeddedUi(urlAuthConf);
+    configureOpenApi(urlAuthConf).anyRequest().authenticated();
 
     http.addFilterBefore(new JWTAuthorizationFilter(jwtService(), exceptionResolver, enableCors),
         UsernamePasswordAuthenticationFilter.class);
