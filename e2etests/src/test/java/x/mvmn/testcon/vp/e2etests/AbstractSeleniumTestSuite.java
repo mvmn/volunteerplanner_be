@@ -13,45 +13,38 @@ import org.testcontainers.containers.Network;
 import org.testcontainers.containers.VncRecordingContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import x.mvmn.testcon.vp.e2etests.web.pages.PageObjectContext;
 
 import java.io.File;
 
-@Testcontainers
 @Slf4j
 public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
 
     protected RemoteWebDriver webDriver;
 
-    protected int waitTimeSeconds = 60;
-
-    @Value("${vncproxy.enable:false}")
-    private boolean enableVncProxy;
-
     @Value("${videorecording.enable:true}")
     private boolean enableVideoRecording = true;
 
-    @Container
-    private BrowserWebDriverContainer<?> webDriverContainer = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions().addArguments("--disable-dev-shm-usage")).withNetworkAliases("chrome").withNetwork(Network.SHARED).withSharedMemorySize(0L);
+    private BrowserWebDriverContainer<?> webDriverContainer = new BrowserWebDriverContainer<>()
+            .withCapabilities(new ChromeOptions().addArguments("--disable-dev-shm-usage"))
+            .withNetworkAliases("chrome")
+            .withNetwork(Network.SHARED)
+            .withSharedMemorySize(0L);
 
     private static TcpProxy proxy;
 
     @BeforeEach
     public void setupBeforeTest() {
         if (enableVideoRecording) {
-            webDriverContainer = webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL, new File("target"), VncRecordingContainer.VncRecordingFormat.MP4);
+            webDriverContainer = webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
+                                                                      new File("target"),
+                                                                      VncRecordingContainer.VncRecordingFormat.MP4);
         } else {
             webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, new File("target"));
         }
+        webDriverContainer.start();
         webDriver = webDriverContainer.getWebDriver();
         webDriver.manage().window().maximize();
-
-        if (enableVncProxy) {
-            StaticTcpProxyConfig config = new StaticTcpProxyConfig(5900, webDriverContainer.getHost(), webDriverContainer.getMappedPort(5900));
-            config.setWorkerCount(1);
-            proxy = new TcpProxy(config);
-            proxy.start();
-            log.info("Running VNC proxy on vnc://localhost:5900, password: 'secret'"); // pragma: allowlist secret
-        }
     }
 
     @AfterEach
@@ -63,5 +56,9 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
                 log.error("Failed to stop VNC proxy", e);
             }
         }
+    }
+
+    protected PageObjectContext poCtx() {
+        return PageObjectContext.of(webDriver, sharedTestEnv.getVPInternalUrl());
     }
 }

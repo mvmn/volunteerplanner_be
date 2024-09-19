@@ -55,6 +55,7 @@ public class TestEnvironment {
         String pgSqlNetworkAlias = "pgsql";
 
         Startables.deepStart(redis, pgSqlServer).join();
+        volunteerPlanner.addExposedPort(8080);
         volunteerPlanner.addEnv("ENABLE_SMS", "false");
         volunteerPlanner.addEnv("CACHE_TYPE", "redis");
         volunteerPlanner.addEnv("SPRING_REDIS_HOST", redisNetworkAlias);
@@ -92,5 +93,17 @@ public class TestEnvironment {
         String host = volunteerPlanner.getNetworkAliases().get(0).toString();
         int port = vpPort;
         return String.format("http://%s:%s", host, port);
+    }
+
+    public String getVPUrl() {
+        String host = volunteerPlanner.getHost();
+        int port = volunteerPlanner.getMappedPort(vpPort);
+        return String.format("http://%s:%s", host, port);
+    }
+
+    public String getPGSqlJDBCUrl() {
+        String host = pgSqlServer.getHost();
+        int port = pgSqlServer.getMappedPort(vpPort);
+        return String.format("jdbc:postgresql://%s:%s/vp", host, port);
     }
 }
