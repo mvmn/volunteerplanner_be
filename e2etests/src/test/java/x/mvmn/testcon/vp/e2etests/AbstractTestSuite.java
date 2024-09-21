@@ -4,10 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import x.mvmn.testcon.vp.e2etests.util.UnsafeFunction;
 
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,6 +18,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.sql.Connection;
+import java.sql.Statement;
 
 @ContextConfiguration(classes = ContainersConfig.class)
 @ExtendWith(SpringExtension.class)
@@ -23,6 +28,8 @@ public abstract class AbstractTestSuite {
     protected static TestEnvironment sharedTestEnv;
     @Autowired
     private TestEnvironment testEnv;
+
+    private DataSource dbDataSource;
 
     protected HttpClient http = HttpClient.newHttpClient();
 
@@ -73,5 +80,25 @@ public abstract class AbstractTestSuite {
                 break;
         }
         return http.send(reqBuilder.build(), BodyHandlers.ofByteArray());
+    }
+
+    public <T> T queryDb(UnsafeFunction<Statement, T> queryFunction) {
+       if(dbDataSource == null) {
+           dbDataSource = createDataSource();
+       }
+       try (Connection conn = dbDataSource.getConnection()) {
+           Statement stmt = conn.createStatement();
+           return queryFunction.apply(stmt);
+       } catch (Exception e) {
+           throw new RuntimeException("DB call failure", e);
+       }
+    }
+
+    protected DataSource createDataSource() {
+        PGSimpleDataSource dataSourceBuilder = new PGSimpleDataSource() ;
+        dataSourceBuilder.setURL(testEnv.getPGSqlJDBCUrl());
+        dataSourceBuilder.setUser(TestEnvironment.PG_DB_USERNAME);
+        dataSourceBuilder.setPassword(TestEnvironment.PG_DB_PASSWORD);
+        return dataSourceBuilder;
     }
 }

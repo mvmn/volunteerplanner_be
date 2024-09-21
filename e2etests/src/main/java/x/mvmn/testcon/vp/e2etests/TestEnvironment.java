@@ -18,6 +18,9 @@ import java.util.stream.Stream;
 @Builder
 @Slf4j
 public class TestEnvironment {
+    public static final String PG_DB_USERNAME = "postgres";
+    public static final String PG_DB_PASSWORD = "postgres123";
+    public static final String PG_DB_NAME = "vp";
     @Getter
     protected Network network;
 
@@ -54,25 +57,28 @@ public class TestEnvironment {
         String redisNetworkAlias = "redis";
         String pgSqlNetworkAlias = "pgsql";
 
-        Startables.deepStart(redis, pgSqlServer).join();
+        Startables.deepStart(redis.withExposedPorts(redisPort), pgSqlServer.withExposedPorts(pgDbPort)).join();
         volunteerPlanner.addExposedPort(8080);
         volunteerPlanner.addEnv("ENABLE_SMS", "false");
         volunteerPlanner.addEnv("CACHE_TYPE", "redis");
         volunteerPlanner.addEnv("SPRING_REDIS_HOST", redisNetworkAlias);
         volunteerPlanner.addEnv("SPRING_REDIS_PORT", "" + redisPort);
-        volunteerPlanner.addEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://" + pgSqlNetworkAlias + ":" + pgDbPort + "/vp");
-        volunteerPlanner.addEnv("SPRING_DATASOURCE_USERNAME", "postgres");
-        volunteerPlanner.addEnv("SPRING_DATASOURCE_PASSWORD", "postgres123");
+        volunteerPlanner.addEnv("SPRING_DATASOURCE_URL",
+                                "jdbc:postgresql://" + pgSqlNetworkAlias + ":" + pgDbPort + "/" + PG_DB_NAME);
+        volunteerPlanner.addEnv("SPRING_DATASOURCE_USERNAME", PG_DB_USERNAME);
+        volunteerPlanner.addEnv("SPRING_DATASOURCE_PASSWORD", PG_DB_PASSWORD);
         volunteerPlanner.addEnv("UI_ENABLE", "true");
         Startables.deepStart(volunteerPlanner).join();
 
         WaitingConsumer consumer = new WaitingConsumer();
         volunteerPlanner.followOutput(consumer, OutputFrame.OutputType.STDOUT);
         try {
-            consumer.waitUntil(line -> line.getUtf8String().contains("Started Application in") && line.getUtf8String().contains("JVM running for"), 1, TimeUnit.MINUTES);
+            consumer.waitUntil(line -> line.getUtf8String().contains("Started Application in") && line
+                    .getUtf8String()
+                    .contains("JVM running for"), 1, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
-            throw new RuntimeException(
-                    "Didn't get start message in logs from container " + volunteerPlanner.getDockerImageName(), e);
+            throw new RuntimeException("Didn't get start message in logs from container " + volunteerPlanner.getDockerImageName(),
+                                       e);
         }
 
         log.info("Test environment started.");
@@ -103,7 +109,7 @@ public class TestEnvironment {
 
     public String getPGSqlJDBCUrl() {
         String host = pgSqlServer.getHost();
-        int port = pgSqlServer.getMappedPort(vpPort);
-        return String.format("jdbc:postgresql://%s:%s/vp", host, port);
+        int port = pgSqlServer.getMappedPort(pgDbPort);
+        return String.format("jdbc:postgresql://%s:%s/" + PG_DB_NAME, host, port);
     }
 }

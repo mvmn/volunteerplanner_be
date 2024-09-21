@@ -14,6 +14,7 @@ import org.testcontainers.utility.DockerImageName;
 @Configuration
 @ComponentScan(basePackages = "x.mvmn.testcon.vp.e2etests")
 public class ContainersConfig {
+
     @Value("${container.image.volplanner:volunteerplanner_be:latest}")
     private String volunteerPlannerImageName;
     @Value("${container.image.pgsql:postgres:16-alpine}")
@@ -25,10 +26,20 @@ public class ContainersConfig {
     @Bean
     @Scope("prototype")
     public TestEnvironment testEnvironment() {
-        PostgreSQLContainer pgSql = configureContainer(new PostgreSQLContainer<>(DockerImageName.parse(pgSqlImageName)), "pgsql").withUsername("postgres").withPassword("postgres123").withDatabaseName("vp");
+        PostgreSQLContainer pgSql = configureContainer(new PostgreSQLContainer<>(DockerImageName.parse(pgSqlImageName)),
+                                                       "pgsql")
+                .withUsername(TestEnvironment.PG_DB_USERNAME)
+                .withPassword(TestEnvironment.PG_DB_PASSWORD)
+                .withDatabaseName(TestEnvironment.PG_DB_NAME);
         RedisContainer redis = configureContainer(new RedisContainer(DockerImageName.parse(redisImageName)), "redis");
         GenericContainer vp = configureContainer(new GenericContainer<>(volunteerPlannerImageName), "vp");
-        return TestEnvironment.builder().redis(redis).pgSqlServer(pgSql).volunteerPlanner(vp).network(containerNetwork).build();
+        return TestEnvironment
+                .builder()
+                .redis(redis)
+                .pgSqlServer(pgSql)
+                .volunteerPlanner(vp)
+                .network(containerNetwork)
+                .build();
     }
 
     protected <T extends GenericContainer> T configureContainer(T container, String networkAlias) {
