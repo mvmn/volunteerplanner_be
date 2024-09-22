@@ -19,7 +19,7 @@ public class BasicTestSuite extends AbstractSeleniumTestSuite {
                                         "select phone_number from \"user\""))).size());
         var response = callVP("POST",
                               "/api/v1/users",
-                              "{\"phoneNumber\":\"123456789012\",\"displayName\":\"testuser\",\"password\":\"12345\",\"role\":\"root\"}".getBytes(
+                              "{\"phoneNumber\":\"123456789012\",\"displayName\":\"testuser\",\"password\":\"1234567890Abc!\",\"role\":\"root\"}".getBytes(
                                       StandardCharsets.UTF_8));
         Assertions.assertEquals(201, response.statusCode(), new String(response.body(), StandardCharsets.UTF_8));
         var userData = queryDb(stmt -> convertResultSetToList(stmt.executeQuery(
@@ -30,6 +30,6 @@ public class BasicTestSuite extends AbstractSeleniumTestSuite {
 
         var welcomePage = new WelcomePage(poCtx());
         welcomePage.open();
-        welcomePage.gotoLogin().login("123456789012", "12345");
+        Assertions.assertTrue(welcomePage.gotoLogin().login("123456789012", "1234567890Abc!"));
     }
 }
