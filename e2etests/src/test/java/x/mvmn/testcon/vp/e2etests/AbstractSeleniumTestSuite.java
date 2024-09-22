@@ -11,11 +11,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.testcontainers.containers.BrowserWebDriverContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.VncRecordingContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import x.mvmn.testcon.vp.e2etests.web.pages.PageObjectContext;
 
 import java.io.File;
+import java.util.List;
 
 @Slf4j
 public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
@@ -24,6 +23,9 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
 
     @Value("${videorecording.enable:true}")
     private boolean enableVideoRecording = true;
+
+    @Value("${seleniumhub.port:}")
+    private String seleniumHubPort;
 
     private BrowserWebDriverContainer<?> webDriverContainer = new BrowserWebDriverContainer<>()
             .withCapabilities(new ChromeOptions().addArguments("--disable-dev-shm-usage"))
@@ -41,6 +43,9 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
                                                                       VncRecordingContainer.VncRecordingFormat.MP4);
         } else {
             webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, new File("target"));
+        }
+        if (seleniumHubPort != null && !seleniumHubPort.isBlank()) {
+            webDriverContainer.setPortBindings(List.of("" + Integer.parseInt(seleniumHubPort) + ":4444"));
         }
         webDriverContainer.start();
         webDriver = webDriverContainer.getWebDriver();
