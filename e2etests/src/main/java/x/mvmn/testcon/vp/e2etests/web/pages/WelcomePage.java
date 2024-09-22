@@ -12,7 +12,7 @@ public class WelcomePage extends AbstractPageObject {
 
     public WelcomePage open() {
         getWebDriver().get(getBaseUrl());
-        waitFor(wd->wd.findElement(By.xpath("//a[text()='Ввійти']")), 30);
+        waitFor(wd -> wd.findElement(By.xpath("//a[text()='Ввійти']")), 30);
         return this;
     }
 

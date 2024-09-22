@@ -27,11 +27,12 @@ public class ContainersConfig {
     @Scope("prototype")
     public TestEnvironment testEnvironment() {
         PostgreSQLContainer pgSql = configureContainer(new PostgreSQLContainer<>(DockerImageName.parse(pgSqlImageName)),
-                                                       "pgsql")
+                                                       TestEnvironment.PG_SQL_NETWORK_ALIAS)
                 .withUsername(TestEnvironment.PG_DB_USERNAME)
                 .withPassword(TestEnvironment.PG_DB_PASSWORD)
                 .withDatabaseName(TestEnvironment.PG_DB_NAME);
-        RedisContainer redis = configureContainer(new RedisContainer(DockerImageName.parse(redisImageName)), "redis");
+        RedisContainer redis = configureContainer(new RedisContainer(DockerImageName.parse(redisImageName)),
+                                                  TestEnvironment.REDIS_NETWORK_ALIAS);
         GenericContainer vp = configureContainer(new GenericContainer<>(volunteerPlannerImageName), "vp");
         return TestEnvironment
                 .builder()

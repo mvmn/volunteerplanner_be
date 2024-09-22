@@ -30,36 +30,26 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
     private BrowserWebDriverContainer<?> webDriverContainer = new BrowserWebDriverContainer<>()
             .withCapabilities(new ChromeOptions().addArguments("--disable-dev-shm-usage"))
             .withNetworkAliases("chrome")
-            .withNetwork(Network.SHARED)
             .withSharedMemorySize(0L);
-
-    private static TcpProxy proxy;
 
     @BeforeEach
     public void setupBeforeTest() {
-        if (enableVideoRecording) {
-            webDriverContainer = webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
-                                                                      new File("target"),
-                                                                      VncRecordingContainer.VncRecordingFormat.MP4);
-        } else {
-            webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP, new File("target"));
-        }
-        if (seleniumHubPort != null && !seleniumHubPort.isBlank()) {
-            webDriverContainer.setPortBindings(List.of("" + Integer.parseInt(seleniumHubPort) + ":4444"));
-        }
-        webDriverContainer.start();
-        webDriver = webDriverContainer.getWebDriver();
-        webDriver.manage().window().maximize();
-    }
-
-    @AfterEach
-    public void teardownAfterTest() {
-        if (proxy != null) {
-            try {
-                proxy.shutdown();
-            } catch (Exception e) {
-                log.error("Failed to stop VNC proxy", e);
+        if(webDriver == null) {
+            webDriverContainer.withNetwork(sharedTestEnv.getNetwork());
+            if (enableVideoRecording) {
+                webDriverContainer = webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
+                                                                          new File("target"),
+                                                                          VncRecordingContainer.VncRecordingFormat.MP4);
+            } else {
+                webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.SKIP,
+                                                     new File("target"));
             }
+            if (seleniumHubPort != null && !seleniumHubPort.isBlank()) {
+                webDriverContainer.setPortBindings(List.of("" + Integer.parseInt(seleniumHubPort) + ":4444"));
+            }
+            webDriverContainer.start();
+            webDriver = webDriverContainer.getWebDriver();
+            webDriver.manage().window().maximize();
         }
     }
 

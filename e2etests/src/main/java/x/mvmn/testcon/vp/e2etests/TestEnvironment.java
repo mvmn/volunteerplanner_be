@@ -21,6 +21,10 @@ public class TestEnvironment {
     public static final String PG_DB_USERNAME = "postgres";
     public static final String PG_DB_PASSWORD = "postgres123";
     public static final String PG_DB_NAME = "vp";
+    public static final String REDIS_NETWORK_ALIAS = "redis";
+    public static final String PG_SQL_NETWORK_ALIAS = "pgsql";
+
+
     @Getter
     protected Network network;
 
@@ -54,17 +58,14 @@ public class TestEnvironment {
         }
         log.info("Starting test environment...");
 
-        String redisNetworkAlias = "redis";
-        String pgSqlNetworkAlias = "pgsql";
-
         Startables.deepStart(redis.withExposedPorts(redisPort), pgSqlServer.withExposedPorts(pgDbPort)).join();
-        volunteerPlanner.addExposedPort(8080);
+        volunteerPlanner.addExposedPort(vpPort);
         volunteerPlanner.addEnv("ENABLE_SMS", "false");
         volunteerPlanner.addEnv("CACHE_TYPE", "redis");
-        volunteerPlanner.addEnv("SPRING_REDIS_HOST", redisNetworkAlias);
+        volunteerPlanner.addEnv("SPRING_REDIS_HOST", REDIS_NETWORK_ALIAS);
         volunteerPlanner.addEnv("SPRING_REDIS_PORT", "" + redisPort);
         volunteerPlanner.addEnv("SPRING_DATASOURCE_URL",
-                                "jdbc:postgresql://" + pgSqlNetworkAlias + ":" + pgDbPort + "/" + PG_DB_NAME);
+                                "jdbc:postgresql://" + PG_SQL_NETWORK_ALIAS + ":" + pgDbPort + "/" + PG_DB_NAME);
         volunteerPlanner.addEnv("SPRING_DATASOURCE_USERNAME", PG_DB_USERNAME);
         volunteerPlanner.addEnv("SPRING_DATASOURCE_PASSWORD", PG_DB_PASSWORD);
         volunteerPlanner.addEnv("UI_ENABLE", "true");
@@ -97,8 +98,7 @@ public class TestEnvironment {
 
     public String getVPInternalUrl() {
         String host = volunteerPlanner.getNetworkAliases().get(0).toString();
-        int port = vpPort;
-        return String.format("http://%s:%s", host, port);
+        return String.format("http://%s:%s", host, vpPort);
     }
 
     public String getVPUrl() {
