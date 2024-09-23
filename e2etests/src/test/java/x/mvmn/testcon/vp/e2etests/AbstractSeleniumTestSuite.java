@@ -34,7 +34,7 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
 
     @BeforeEach
     public void setupBeforeTest() {
-        if(webDriver == null) {
+        if (webDriver == null) {
             webDriverContainer.withNetwork(sharedTestEnv.getNetwork());
             if (enableVideoRecording) {
                 webDriverContainer = webDriverContainer.withRecordingMode(BrowserWebDriverContainer.VncRecordingMode.RECORD_ALL,
@@ -48,9 +48,14 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
                 webDriverContainer.setPortBindings(List.of("" + Integer.parseInt(seleniumHubPort) + ":4444"));
             }
             webDriverContainer.start();
-            webDriver = webDriverContainer.getWebDriver();
-            webDriver.manage().window().maximize();
         }
+        webDriver = webDriverContainer.getWebDriver();
+        webDriver.manage().window().maximize();
+    }
+
+    @AfterEach
+    public void teardown() {
+        webDriver.close();
     }
 
     protected PageObjectContext poCtx() {
