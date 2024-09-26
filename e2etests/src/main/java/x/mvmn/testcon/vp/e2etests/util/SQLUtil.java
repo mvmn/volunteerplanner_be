@@ -10,7 +10,6 @@ import java.util.List;
 
 @UtilityClass
 public class SQLUtil {
-
     public static List<List<String>> convertResultSetToList(ResultSet resultSet) throws SQLException {
         List<List<String>> result = new ArrayList<>();
 

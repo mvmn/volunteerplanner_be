@@ -77,7 +77,6 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>selenium</artifactId>
             <version>1.20.1</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

@@ -11,6 +11,7 @@ import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.output.WaitingConsumer;
 import org.testcontainers.lifecycle.Startables;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
@@ -23,10 +24,11 @@ public class TestEnvironment {
     public static final String PG_DB_NAME = "vp";
     public static final String REDIS_NETWORK_ALIAS = "redis";
     public static final String PG_SQL_NETWORK_ALIAS = "pgsql";
-
+    public static final String VP_NETWORK_ALIAS = "vp";
 
     @Getter
-    protected Network network;
+    @Builder.Default
+    protected Network network = Network.SHARED;
 
     @Getter
     protected PostgreSQLContainer pgSqlServer;
@@ -35,7 +37,7 @@ public class TestEnvironment {
     protected RedisContainer redis;
 
     @Getter
-    protected GenericContainer volunteerPlanner;
+    protected VPContainer volunteerPlanner;
 
     @Getter
     protected volatile boolean started;
@@ -64,11 +66,11 @@ public class TestEnvironment {
         volunteerPlanner.addEnv("CACHE_TYPE", "redis");
         volunteerPlanner.addEnv("SPRING_REDIS_HOST", REDIS_NETWORK_ALIAS);
         volunteerPlanner.addEnv("SPRING_REDIS_PORT", "" + redisPort);
-        volunteerPlanner.addEnv("SPRING_DATASOURCE_URL",
-                                "jdbc:postgresql://" + PG_SQL_NETWORK_ALIAS + ":" + pgDbPort + "/" + PG_DB_NAME);
+        volunteerPlanner.withPGSqlJDBCUrl("jdbc:postgresql://" + PG_SQL_NETWORK_ALIAS + ":" + pgDbPort + "/" + PG_DB_NAME);
         volunteerPlanner.addEnv("SPRING_DATASOURCE_USERNAME", PG_DB_USERNAME);
         volunteerPlanner.addEnv("SPRING_DATASOURCE_PASSWORD", PG_DB_PASSWORD);
         volunteerPlanner.addEnv("UI_ENABLE", "true");
+        volunteerPlanner.withStartupTimeout(Duration.ofMinutes(5));
         Startables.deepStart(volunteerPlanner).join();
 
         WaitingConsumer consumer = new WaitingConsumer();
@@ -76,7 +78,7 @@ public class TestEnvironment {
         try {
             consumer.waitUntil(line -> line.getUtf8String().contains("Started Application in") && line
                     .getUtf8String()
-                    .contains("JVM running for"), 1, TimeUnit.MINUTES);
+                    .contains("JVM running for"), 5, TimeUnit.MINUTES);
         } catch (TimeoutException e) {
             throw new RuntimeException("Didn't get start message in logs from container " + volunteerPlanner.getDockerImageName(),
                                        e);

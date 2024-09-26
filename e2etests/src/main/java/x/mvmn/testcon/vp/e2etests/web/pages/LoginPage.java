@@ -2,7 +2,6 @@ package x.mvmn.testcon.vp.e2etests.web.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
@@ -16,8 +15,7 @@ public class LoginPage extends AbstractPageObject {
         webDriver.findElement(By.id("phoneNumber")).sendKeys(username);
         webDriver.findElement(By.id("password")).sendKeys(password);
         webDriver.findElement(By.xpath("//button[contains(text(), 'Відправити')]")).click();
-        WebDriverWait wait = new WebDriverWait(webDriver, Duration.ofSeconds(60));
-        wait.until(wd -> wd.findElements(By.className("MuiAvatar-root")).size() > 0);
+        waitFor(wd -> wd.findElements(By.className("MuiAvatar-root")).size() > 0, Duration.ofSeconds(60));
         return webDriver.findElements(By.className("MuiAvatar-root")).size() > 0;
     }
 }

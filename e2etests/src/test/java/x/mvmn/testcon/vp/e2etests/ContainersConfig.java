@@ -33,7 +33,8 @@ public class ContainersConfig {
                 .withDatabaseName(TestEnvironment.PG_DB_NAME);
         RedisContainer redis = configureContainer(new RedisContainer(DockerImageName.parse(redisImageName)),
                                                   TestEnvironment.REDIS_NETWORK_ALIAS);
-        GenericContainer vp = configureContainer(new GenericContainer<>(volunteerPlannerImageName), "vp");
+        VPContainer vp = configureContainer(new VPContainer(volunteerPlannerImageName),
+                                                 TestEnvironment.VP_NETWORK_ALIAS);
         return TestEnvironment
                 .builder()
                 .redis(redis)
