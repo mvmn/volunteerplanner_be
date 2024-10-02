@@ -6,3 +6,7 @@
 - Run `gradle bootRun --args='--spring.profiles.active=local'`
 
 To adjust PostgreSQL DB parameters - edit ./manager-api/src/main/resources/application.yaml for the `local` profile, or suppy parameters such as DB username and password via bootRun args: `gradle bootRun --args='--spring.profiles.active=local -Dspring.datasource.username=postgres -Dspring.datasource.password=mypass123'`
+
+## Frontend
+
+See https://github.com/mvmn/volunteerplanner_fe
