@@ -3,13 +3,13 @@ package x.mvmn.testcon.vp.e2etests;
 import com.github.terma.javaniotcpproxy.StaticTcpProxyConfig;
 import com.github.terma.javaniotcpproxy.TcpProxy;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.testcontainers.containers.BrowserWebDriverContainer;
-import org.testcontainers.containers.Network;
 import org.testcontainers.containers.VncRecordingContainer;
 import x.mvmn.testcon.vp.e2etests.web.pages.PageObjectContext;
 
@@ -26,6 +26,8 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
 
     @Value("${seleniumhub.port:}")
     private String seleniumHubPort;
+
+    private static BrowserWebDriverContainer<?> sharedWebDriverContainer;
 
     private BrowserWebDriverContainer<?> webDriverContainer = new BrowserWebDriverContainer<>()
             .withCapabilities(new ChromeOptions().addArguments("--disable-dev-shm-usage"))
@@ -47,6 +49,7 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
             if (seleniumHubPort != null && !seleniumHubPort.isBlank()) {
                 webDriverContainer.setPortBindings(List.of("" + Integer.parseInt(seleniumHubPort) + ":4444"));
             }
+            sharedWebDriverContainer = webDriverContainer;
             webDriverContainer.start();
         }
         webDriver = webDriverContainer.getWebDriver();
@@ -56,6 +59,11 @@ public abstract class AbstractSeleniumTestSuite extends AbstractTestSuite {
     @AfterEach
     public void teardown() {
         webDriver.close();
+    }
+
+    @AfterAll
+    public static void stopAll() {
+        sharedWebDriverContainer.stop();
     }
 
     protected PageObjectContext poCtx() {

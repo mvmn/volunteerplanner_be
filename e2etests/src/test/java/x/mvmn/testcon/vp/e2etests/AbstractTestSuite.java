@@ -83,15 +83,15 @@ public abstract class AbstractTestSuite {
     }
 
     public <T> T queryDb(UnsafeFunction<Statement, T> queryFunction) {
-       if(dbDataSource == null) {
-           dbDataSource = createDataSource();
-       }
-       try (Connection conn = dbDataSource.getConnection()) {
-           Statement stmt = conn.createStatement();
-           return queryFunction.apply(stmt);
-       } catch (Exception e) {
-           throw new RuntimeException("DB call failure", e);
-       }
+        if (dbDataSource == null) {
+            dbDataSource = createDataSource();
+        }
+        try (Connection conn = dbDataSource.getConnection()) {
+            Statement stmt = conn.createStatement();
+            return queryFunction.apply(stmt);
+        } catch (Exception e) {
+            throw new RuntimeException("DB call failure", e);
+        }
     }
 
     protected DataSource createDataSource() {
